@@ -69,7 +69,7 @@ const MarketCard = ({ name, detail, flagImage, alt }) => {
 
 const Markets = () => {
   return (
-    <section className="px-4 sm:px-6 py-4 max-w-7xl mx-auto">
+    <section className="px-4 sm:px-6 py-12 max-w-7xl mx-auto">
       {/* Centered section header */}
       <div className="text-center mb-10">
         <div className="flex items-center justify-center gap-2 mb-2">

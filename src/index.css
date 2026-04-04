@@ -117,3 +117,15 @@ input:focus, textarea:focus {
   background: rgba(245, 180, 0, 0.3);
   color: #000;
 }
+/* ── Marquee Animation for Clients ── */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-33.33%); }
+}
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+  width: max-content;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}

@@ -19,11 +19,15 @@ const State = () => {
         border: "1px solid var(--color-border)",
       }}
     >
-      <div className="text-center mb-6">
-        <span className="text-[11px] font-semibold tracking-[3px] uppercase text-primery">
-          Trusted By Industry Leaders
-        </span>
-        <h3 className="text-xl lg:text-2xl font-bold text-white mt-2">Our Clients</h3>
+
+      <div className="text-center mb-10">
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <span className="w-6 h-0.5 rounded bg-primery" />
+          <span className="text-[11px] font-semibold tracking-[3px] uppercase text-primery">
+            Trusted By Industry Leaders
+          </span>
+        </div>
+        <h2 className="text-3xl lg:text-4xl font-extrabold text-white">Our Clients</h2>
       </div>
 
       {/* Marquee container */}
@@ -46,21 +50,6 @@ const State = () => {
           ))}
         </div>
       </div>
-
-      {/* Add this CSS to your global styles (index.css) */}
-      <style>{`
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-33.33%); }
-        }
-        .animate-marquee {
-          animation: marquee 20s linear infinite;
-          width: max-content;
-        }
-        .animate-marquee:hover {
-          animation-play-state: paused;
-        }
-      `}</style>
     </div>
   );
 };

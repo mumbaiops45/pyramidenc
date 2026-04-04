@@ -92,7 +92,7 @@ const Hero = () => {
 
               <h1
                 className="font-black text-white leading-none mb-5"
-                style={{ fontSize: "clamp(48px, 7vw, 88px)" }}
+                style={{ fontSize: "clamp(36px, 6vw, 64px)" }}
               >
                 {slide.headline}
               </h1>
