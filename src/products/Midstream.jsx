@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaWarehouse, FaCubes, FaSnowflake, FaOilCan, FaGasPump, FaChartLine, FaShieldAlt, FaBolt, FaGlobe } from 'react-icons/fa';
+import { FaWarehouse, FaCubes, FaSnowflake, FaOilCan, FaGasPump, FaShieldAlt, FaBolt, FaGlobe } from 'react-icons/fa';
 
 const Midstream = () => {
   return (
