@@ -1,36 +1,46 @@
-/* ── Google Font ───────────────────────────── */
+/* ─────────────────────────────────────────────
+   Google Font
+───────────────────────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
-/* ── Tailwind ─────────────────────────────── */
+/* ─────────────────────────────────────────────
+   Tailwind Base
+───────────────────────────────────────────── */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ── Design Tokens ────────────────────────── */
+/* ─────────────────────────────────────────────
+   Design Tokens (Theme)
+───────────────────────────────────────────── */
 :root {
-  /* Brand */
+  /* 🎨 Brand Colors */
   --primery: #F5B400;
   --primery-dark: #D99A00;
   --primery-light: #FFC107;
 
-  /* Dark Theme */
+  /* 🖤 Dark Theme */
   --black-deep: #0A0A0A;
   --black-soft: #121212;
   --black-light: #1A1A1A;
 
-  /* Text */
+  /* ⚪ Text */
   --white: #FFFFFF;
-  --gray-200: #E0E0E0;
-  --gray-400: #A0A0A0;
-  --gray-600: #666666;
+  --gray-200: #E5E7EB;
+  --gray-300: #D1D5DB;
+  --gray-400: #9CA3AF;
+  --gray-600: #4B5563;
 
-  /* Semantic */
+  /* 📦 Semantic */
   --color-bg: var(--black-deep);
-  --color-text: var(--gray-200);
-  --color-border: #2A2A2A;
+  --color-card: var(--black-soft);
+  --color-border: #262626;
+  --color-text: var(--gray-300);
 }
 
-/* ── Base Reset ───────────────────────────── */
+/* ─────────────────────────────────────────────
+   Base Reset
+───────────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -42,21 +52,21 @@
 html {
   scroll-behavior: smooth;
 }
-img {
-  max-width: 100%;
-  height: auto;
-}
+
 body {
   font-family: 'Poppins', sans-serif;
-  background: #e5e7eb;
+  background: var(--color-bg);
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Typography ───────────────────────────── */
+/* ─────────────────────────────────────────────
+   Typography
+───────────────────────────────────────────── */
 h1, h2, h3, h4, h5, h6 {
   color: var(--white);
   font-weight: 700;
+  line-height: 1.2;
 }
 
 p {
@@ -64,68 +74,173 @@ p {
   line-height: 1.6;
 }
 
-/* ── Links ────────────────────────────────── */
-a {
-  color: var(--primery);
-  transition: 0.2s ease;
-}
-a:hover {
-  color: var(--primery-light);
+/* ─────────────────────────────────────────────
+   Images
+───────────────────────────────────────────── */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
-/* ── Buttons ─────────────────────────────── */
-button {
+/* ─────────────────────────────────────────────
+   Links
+───────────────────────────────────────────── */
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+a:hover {
+  color: var(--primery);
+}
+
+/* ─────────────────────────────────────────────
+   Buttons
+───────────────────────────────────────────── */
+.btn-primary {
   background: var(--primery);
   color: #000;
   padding: 10px 20px;
-  border-radius: 8px;
+  border-radius: 999px;
   font-weight: 600;
-  transition: 0.3s;
-}
-button:hover {
-  background: var(--primery-light);
+  transition: all 0.3s ease;
 }
 
-/* ── Inputs ──────────────────────────────── */
-input, textarea {
+.btn-primary:hover {
+  background: var(--primery-light);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(245, 180, 0, 0.3);
+}
+
+/* ─────────────────────────────────────────────
+   Inputs
+───────────────────────────────────────────── */
+input,
+textarea {
   background: var(--black-light);
   border: 1px solid var(--color-border);
   color: var(--white);
   padding: 12px;
-  border-radius: 8px;
+  border-radius: 10px;
+  width: 100%;
 }
-input:focus, textarea:focus {
+
+input:focus,
+textarea:focus {
   border-color: var(--primery);
   outline: none;
   box-shadow: 0 0 0 2px rgba(245, 180, 0, 0.2);
 }
 
-/* ── Scrollbar ───────────────────────────── */
+/* ─────────────────────────────────────────────
+   Scrollbar
+───────────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 6px;
 }
+
+::-webkit-scrollbar-track {
+  background: var(--black-deep);
+}
+
 ::-webkit-scrollbar-thumb {
   background: var(--primery);
   border-radius: 10px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primery-light);
 }
 
-/* ── Selection ───────────────────────────── */
+/* ─────────────────────────────────────────────
+   Selection
+───────────────────────────────────────────── */
 ::selection {
   background: rgba(245, 180, 0, 0.3);
   color: #000;
 }
-/* ── Marquee Animation for Clients ── */
+
+/* ─────────────────────────────────────────────
+   Utility Classes
+───────────────────────────────────────────── */
+.container-custom {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.section-padding {
+  padding: 80px 0;
+}
+
+/* Glass Effect */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Card */
+.card {
+  background: var(--color-card);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  border-color: var(--primery);
+}
+
+/* ─────────────────────────────────────────────
+   Animations
+───────────────────────────────────────────── */
+
+/* Marquee */
 @keyframes marquee {
   0% { transform: translateX(0); }
-  100% { transform: translateX(-33.33%); }
+  100% { transform: translateX(-50%); }
 }
+
 .animate-marquee {
-  animation: marquee 20s linear infinite;
+  animation: marquee 25s linear infinite;
   width: max-content;
 }
+
 .animate-marquee:hover {
   animation-play-state: paused;
+}
+
+/* Fade In */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+/* ─────────────────────────────────────────────
+   Helpers
+───────────────────────────────────────────── */
+.text-gradient {
+  background: linear-gradient(90deg, #F5B400, #FFC107);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.border-gradient {
+  border: 1px solid;
+  border-image: linear-gradient(90deg, #F5B400, transparent) 1;
 }

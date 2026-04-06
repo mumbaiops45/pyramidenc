@@ -1,91 +1,81 @@
-import React, { useState } from "react";
+import React from "react";
 
 const markets = [
   {
     name: "India",
     detail: "Largest operations hub with R&D and fabrication facilities",
     flagImage: "/Flag-India.jpg",
-    alt: "India flag",
   },
   {
     name: "Middle East",
     detail: "UAE, Saudi Arabia — key oil & gas project delivery",
     flagImage: "/Flag-Dubai.jpg",
-    alt: "UAE flag",
   },
   {
     name: "Nigeria",
     detail: "West Africa upstream gas monetization projects",
     flagImage: "/Flag-Nigeria.jpg",
-    alt: "Nigeria flag",
   },
   {
     name: "UK / Europe",
     detail: "Decarbonization and digitalization engineering",
     flagImage: "/Flag-London.jpg",
-    alt: "UK flag",
   },
 ];
 
-const MarketCard = ({ name, detail, flagImage, alt }) => {
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <div
-      className="rounded-xl p-5 cursor-pointer transition-all duration-300"
-      style={{
-        background: hovered
-          ? "linear-gradient(135deg, #ffd700, #ffb347)"
-          : "linear-gradient(135deg, #fff3e0, #ffe0b5)",
-        transform: hovered ? "translateY(-6px)" : "translateY(0)",
-        boxShadow: hovered
-          ? "0 20px 25px -12px rgba(0,0,0,0.2)"
-          : "0 4px 6px -1px rgba(0,0,0,0.1)",
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <div className="flex justify-center mb-4">
-        <div className="w-11 h-7 rounded overflow-hidden shadow-md">
-          <img
-            src={flagImage}
-            alt={alt}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              e.target.src = "https://placehold.co/44x28?text=Flag";
-            }}
-          />
-        </div>
-      </div>
-      <h3 className="text-base font-bold text-gray-900 mb-1.5 text-center">
-        {name}
-      </h3>
-      <p className="text-xs leading-relaxed text-gray-700 text-center">
-        {detail}
-      </p>
-    </div>
-  );
-};
-
 const Markets = () => {
   return (
-    <section className="px-4 sm:px-6 py-12 max-w-7xl mx-auto">
-      {/* Centered section header */}
-      <div className="text-center mb-10">
-        <div className="flex items-center justify-center gap-2 mb-2">
-          <span className="w-6 h-0.5 rounded bg-primery" />
-          <span className="text-[11px] font-semibold tracking-[3px] uppercase text-primery">
-            Global Reach
-          </span>
-        </div>
-        <h2 className="text-3xl lg:text-4xl font-extrabold text-white">Our Markets</h2>
-      </div>
+    <section className="bg-black-soft text-white py-20 lg:py-28 px-6">
+      <div className="max-w-7xl mx-auto">
 
-      {/* Centered grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {markets.map((market, idx) => (
-          <MarketCard key={idx} {...market} />
-        ))}
+        {/* Header */}
+        <div className="text-center mb-14">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <span className="w-8 h-[2px] bg-primery"></span>
+            <span className="text-xs font-semibold tracking-[3px] uppercase text-primery">
+              Global Reach
+            </span>
+          </div>
+
+          <h2 className="text-3xl lg:text-5xl font-extrabold">
+            Our Markets
+          </h2>
+        </div>
+
+        {/* Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {markets.map((market, idx) => (
+            <div
+              key={idx}
+              className="bg-white/5 border border-white/10 rounded-xl p-6 text-center transition-all duration-300 hover:border-primery hover:-translate-y-2 group"
+            >
+              {/* Flag */}
+              <div className="flex justify-center mb-4">
+                <div className="w-12 h-8 rounded overflow-hidden border border-white/10">
+                  <img
+                    src={market.flagImage}
+                    alt={market.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+
+              {/* Title */}
+              <h3 className="text-white font-semibold text-lg mb-2">
+                {market.name}
+              </h3>
+
+              {/* Description */}
+              <p className="text-gray-400 text-sm leading-relaxed">
+                {market.detail}
+              </p>
+
+              {/* Hover Line */}
+              <div className="mt-4 h-[2px] w-0 bg-primery group-hover:w-full transition-all duration-300 mx-auto"></div>
+            </div>
+          ))}
+        </div>
+
       </div>
     </section>
   );

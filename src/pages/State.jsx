@@ -7,51 +7,52 @@ const clients = [
   { name: "Hydroblue", logo: "/Hydroblue-Logo-Vertical.png" },
 ];
 
-// Duplicate logos to create seamless loop
 const scrollingLogos = [...clients, ...clients, ...clients];
 
-const State = () => {
+const Clients = () => {
   return (
-    <div
-      className="mx-3 my-8 rounded-2xl p-6 overflow-hidden"
-      style={{
-        background: "var(--black-soft)",
-        border: "1px solid var(--color-border)",
-      }}
-    >
+    <section className="bg-black-deep text-white py-12 lg:py-4 px-6">
+      <div className="max-w-7xl mx-auto">
 
-      <div className="text-center mb-10">
-        <div className="flex items-center justify-center gap-2 mb-2">
-          <span className="w-6 h-0.5 rounded bg-primery" />
-          <span className="text-[11px] font-semibold tracking-[3px] uppercase text-primery">
-            Trusted By Industry Leaders
-          </span>
-        </div>
-        <h2 className="text-3xl lg:text-4xl font-extrabold text-white">Our Clients</h2>
-      </div>
+        {/* Header */}
+        <div className="text-center mb-14">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <span className="w-8 h-[2px] bg-primery"></span>
+            <span className="text-xs font-semibold tracking-[3px] uppercase text-primery">
+              Trusted By Industry Leaders
+            </span>
+          </div>
 
-      {/* Marquee container */}
-      <div className="relative overflow-hidden">
-        <div className="flex animate-marquee whitespace-nowrap gap-8 md:gap-12">
-          {scrollingLogos.map((client, idx) => (
-            <div
-              key={idx}
-              className="w-28 h-28 lg:w-32 lg:h-32 flex-shrink-0 flex items-center justify-center p-3 rounded-xl border-2 border-primery bg-black-soft/50"
-            >
-              <img
-                src={client.logo}
-                alt={client.name}
-                className="max-w-full max-h-full object-contain"
-                onError={(e) => {
-                  e.target.src = "https://placehold.co/100x100?text=Logo";
-                }}
-              />
-            </div>
-          ))}
+          <h2 className="text-3xl lg:text-5xl font-extrabold">
+            Our Clients
+          </h2>
         </div>
+
+        {/* Marquee */}
+        <div className="relative overflow-hidden">
+
+          <div className="flex animate-marquee gap-10">
+
+            {scrollingLogos.map((client, idx) => (
+              <div
+                key={idx}
+                className="w-28 h-28 lg:w-32 lg:h-32 flex items-center justify-center p-4 rounded-xl bg-white/5 border border-white/10 transition-all duration-300 hover:border-primery hover:-translate-y-2 group"
+              >
+                <img
+                  src={client.logo}
+                  alt={client.name}
+                  className="max-w-full max-h-full object-contain grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition duration-300"
+                />
+              </div>
+            ))}
+
+          </div>
+
+        </div>
+
       </div>
-    </div>
+    </section>
   );
 };
 
-export default State;
+export default Clients;

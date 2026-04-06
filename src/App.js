@@ -10,15 +10,25 @@ import Solutions from './pages/Solutions';  // solutions grid
 import Market from './pages/Market';       
 import Services from './pages/Services';    
 import About from './pages/About';
-
+import Projects from './pages/Projects';
+import CTA from './pages/CTA';
+import PyramidGroup from './about/PyramidGroup';
 // Other full pages
 import Contact from './pages/Contact';
+import GuidingPrinciples from './about/GuidingPrinciples';
+import History from './about/History';
+import Management from './about/Management';
+import Leadership from './about/Leadership';  
+import Markets from './about/Markets';
+import OilGas from './products/OilGas';
+import Midstream from './products/Midstream';
+import Biochemical from './products/BioChemicals';
+import SyngasDerivatives from './products/SyngasDerivatives';
+import Decarbonization from './products/Decarbonization';
+import Digitalization from './products/Decarbonization';
 
 function App() {
-  // Homepage component – renders all sections in order
   const HomePage = () => {
-    // Optional: if you need scroll animations, add useEffect here (like your reference code)
-    // For now, it simply returns all sections stacked vertically.
     return (
       <>
         <Home />
@@ -26,7 +36,9 @@ function App() {
         <Solutions />
         <Services />
         <Market />
+        <Projects />
         <State />
+        <CTA />
       </>
     );
   };
@@ -40,12 +52,24 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/services" element={<Services />} />
             <Route path="/contact" element={<Contact />} />
-            {/* <Route path="/state" element={<State />} /> */}
+            <Route path="/projects" element={<Projects />} />
             <Route path="/solutions" element={<Solutions />} />
             <Route path="/market" element={<Market />} />
-            {/* Redirect extra routes to home */}
-            <Route path="/about" element={<HomePage />} />
-            <Route path="/products" element={<HomePage />} />
+            <Route path="/about/pyramid-e-c-group" element={<PyramidGroup />} />
+            <Route path="/about/guiding-principles" element={<GuidingPrinciples />} />
+            <Route path="/about/history" element={<History />} />
+            <Route path="/about/management-team" element={<Management />} />
+            <Route path="/about/leadership" element={<Leadership />} />
+            <Route path="/about/markets" element={<Markets />} />
+
+            <Route path="/products/oilgas" element={<OilGas />} />
+            <Route path="/products/midstream"element={<Midstream />} />
+            <Route path="/products/biochemicals"element={<Biochemical />} />
+            <Route path="/products/syngas"element={<SyngasDerivatives />} />
+            <Route path="/products/decarbonization"element={<Decarbonization />} />
+            <Route path="/products/digitalization"element={<Digitalization />} />
+
+            
             <Route path="/news" element={<HomePage />} />
           </Routes>
         </main>
