@@ -25,19 +25,19 @@ const projects = [
 
 const Projects = () => {
   return (
-    <section className="bg-black-deep text-white py-20 lg:py-28 px-6">
+    <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-28 px-6">
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
         <div className="text-center mb-14">
           <div className="flex items-center justify-center gap-2 mb-3">
-            <span className="w-8 h-[2px] bg-primery"></span>
-            <span className="text-xs font-semibold tracking-[3px] uppercase text-primery">
+            <span className="w-8 h-[2px] bg-amber-600"></span>
+            <span className="text-xs font-semibold tracking-[3px] uppercase text-amber-700">
               Our Work
             </span>
           </div>
 
-          <h2 className="text-3xl lg:text-5xl font-extrabold">
+          <h2 className="text-3xl lg:text-5xl font-extrabold text-gray-900">
             Featured Projects
           </h2>
         </div>
@@ -48,7 +48,7 @@ const Projects = () => {
           {projects.map((project, idx) => (
             <div
               key={idx}
-              className="relative rounded-xl overflow-hidden group cursor-pointer"
+              className="relative rounded-xl overflow-hidden group cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-300"
             >
               {/* Image */}
               <img
@@ -57,21 +57,21 @@ const Projects = () => {
                 className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
               />
 
-              {/* Overlay */}
-              <div className="absolute inset-0 bg-black/60 group-hover:bg-black/70 transition"></div>
+              {/* Dark overlay for text contrast */}
+              <div className="absolute inset-0 bg-black/50 group-hover:bg-black/60 transition"></div>
 
               {/* Content */}
               <div className="absolute bottom-0 p-5">
                 <h3 className="text-white font-semibold text-lg">
                   {project.title}
                 </h3>
-                <p className="text-gray-300 text-sm">
+                <p className="text-gray-200 text-sm">
                   {project.location}
                 </p>
               </div>
 
-              {/* Hover line */}
-              <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-primery group-hover:w-full transition-all duration-300"></div>
+              {/* Hover line – gold */}
+              <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-amber-500 group-hover:w-full transition-all duration-300"></div>
             </div>
           ))}
 

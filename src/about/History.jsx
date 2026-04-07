@@ -9,6 +9,8 @@ import {
   FaFlask,
   FaArrowRight,
 } from "react-icons/fa";
+import { Link } from "react-router-dom";
+
 
 const HERO_BG_IMAGE = "/background.png";
 const MILESTONE_IMAGES = {
@@ -41,7 +43,7 @@ function useInView(options = {}) {
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, [options]); // ✅ Added options to dependency array
+  }, [options]);
   return [ref, inView];
 }
 
@@ -65,44 +67,7 @@ function AnimatedYear({ target, inView }) {
   return <span>{displayYear}</span>;
 }
 
-// function HeroStat({ value, label, delay }) {
-//   const [ref, inView] = useInView();
-//   const [count, setCount] = useState(0);
-//   useEffect(() => {
-//     if (!inView) return;
-//     let start = 0;
-//     const increment = Math.ceil(value / 40);
-//     const interval = setInterval(() => {
-//       start += increment;
-//       if (start >= value) {
-//         setCount(value);
-//         clearInterval(interval);
-//       } else {
-//         setCount(start);
-//       }
-//     }, 30);
-//     return () => clearInterval(interval);
-//   }, [inView, value]);
-//   return (
-//     <div
-//       ref={ref}
-//       className="text-center transition-all duration-700"
-//       style={{
-//         opacity: inView ? 1 : 0,
-//         transform: inView ? "translateY(0)" : "translateY(20px)",
-//         transitionDelay: `${delay}s`,
-//       }}
-//     >
-//       <div className="text-4xl md:text-5xl font-black text-[#F5B400] leading-tight">
-//         {count}+
-//       </div>
-//       <div className="text-xs md:text-sm text-gray-500 uppercase tracking-wider mt-1">
-//         {label}
-//       </div>
-//     </div>
-//   );
-// }
-
+// Light‑theme milestone card
 function MilestoneCard({ milestone, index }) {
   const [ref, inView] = useInView();
   const [hovered, setHovered] = useState(false);
@@ -111,14 +76,13 @@ function MilestoneCard({ milestone, index }) {
   return (
     <div
       ref={ref}
-      className={`relative flex flex-col md:flex-row gap-6 mb-20 ${
-        isLeft ? "md:flex-row" : "md:flex-row-reverse"
-      }`}
+      className={`relative flex flex-col md:flex-row gap-6 mb-20 ${isLeft ? "md:flex-row" : "md:flex-row-reverse"
+        }`}
     >
-      {/* spine dot */}
+      {/* Center spine dot – gold */}
       <div className="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 z-10">
         <div
-          className="w-11 h-11 rounded-full bg-gray-900 border-2 flex items-center justify-center transition-shadow duration-500"
+          className="w-11 h-11 rounded-full bg-white border-2 flex items-center justify-center transition-shadow duration-500 shadow-md"
           style={{
             borderColor: GOLD,
             boxShadow: inView ? `0 0 20px 5px ${GOLD}50` : "none",
@@ -137,33 +101,27 @@ function MilestoneCard({ milestone, index }) {
         )}
       </div>
 
-      {/* card */}
+      {/* Card – light background */}
       <div
-        className={`w-full md:w-5/12 pl-14 md:pl-0 ${
-          isLeft ? "md:pr-12" : "md:pl-12"
-        }`}
+        className={`w-full md:w-5/12 pl-14 md:pl-0 ${isLeft ? "md:pr-12" : "md:pl-12"
+          }`}
         style={{
           opacity: inView ? 1 : 0,
           transform: inView
             ? "translateX(0) rotateY(0deg)"
-            : `${
-                isLeft ? "translateX(-48px)" : "translateX(48px)"
-              } rotateY(${isLeft ? "6deg" : "-6deg"})`,
-          transition: `opacity 0.6s cubic-bezier(0.22,1,0.36,1) ${
-            index * 0.08
-          }s, transform 0.6s cubic-bezier(0.22,1,0.36,1) ${index * 0.08}s`,
+            : `${isLeft ? "translateX(-48px)" : "translateX(48px)"
+            } rotateY(${isLeft ? "6deg" : "-6deg"})`,
+          transition: `opacity 0.6s cubic-bezier(0.22,1,0.36,1) ${index * 0.08
+            }s, transform 0.6s cubic-bezier(0.22,1,0.36,1) ${index * 0.08}s`,
           perspective: "1000px",
         }}
       >
         <div
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
-          className="rounded-2xl overflow-hidden backdrop-blur-md transition-all duration-300"
+          className="rounded-2xl overflow-hidden bg-white shadow-md hover:shadow-2xl transition-all duration-300"
           style={{
-            background: "rgba(15,23,42,0.75)",
-            border: `1px solid ${
-              hovered ? `${GOLD}60` : "rgba(255,255,255,0.07)"
-            }`,
+            border: `1px solid ${hovered ? `${GOLD}60` : "#e5e7eb"}`,
             transform: hovered
               ? "translateY(-6px) scale(1.02)"
               : "translateY(0) scale(1)",
@@ -178,7 +136,7 @@ function MilestoneCard({ milestone, index }) {
               className="w-full h-full object-cover transition-transform duration-700"
               style={{ transform: hovered ? "scale(1.08)" : "scale(1)" }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-100 via-gray-100/40 to-transparent" />
             <div
               className="absolute top-0 left-0 right-0 h-1"
               style={{
@@ -191,7 +149,7 @@ function MilestoneCard({ milestone, index }) {
             <div
               className="absolute bottom-3 left-4 text-3xl font-black"
               style={{
-                background: `linear-gradient(90deg,${GOLD},#fff)`,
+                background: `linear-gradient(90deg,${GOLD},#d97706)`,
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
               }}
@@ -202,9 +160,11 @@ function MilestoneCard({ milestone, index }) {
           <div className="p-5">
             <div className="flex items-center gap-2 mb-2">
               <milestone.icon style={{ color: GOLD, fontSize: 14 }} />
-              <h3 className="text-lg font-bold text-white">{milestone.title}</h3>
+              <h3 className="text-lg font-bold text-gray-900">
+                {milestone.title}
+              </h3>
             </div>
-            <p className="text-sm text-gray-400 leading-relaxed">
+            <p className="text-sm text-gray-600 leading-relaxed">
               {milestone.description}
             </p>
           </div>
@@ -284,86 +244,90 @@ const History = () => {
   const animationStyles = `
     @keyframes fadeUp { 0%{opacity:0;transform:translateY(30px)} 100%{opacity:1;transform:translateY(0)} }
     @keyframes fadeLeft { 0%{opacity:0;transform:translateX(-30px)} 100%{opacity:1;transform:translateX(0)} }
+    @keyframes float { 0%,100%{transform:translateY(0px) rotate(0deg)} 50%{transform:translateY(-20px) rotate(5deg)} }
     @keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
     @keyframes ping { 0%{transform:scale(1);opacity:0.7} 80%{transform:scale(2.4);opacity:0} 100%{transform:scale(2.4);opacity:0} }
     .animate-fadeUp { animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) forwards; }
     .animate-fadeLeft { animation: fadeLeft 0.8s cubic-bezier(0.22,1,0.36,1) forwards; }
+    .animate-float { animation: float 6s ease-in-out infinite; }
     .delay-100{animation-delay:0.1s} .delay-200{animation-delay:0.2s} .delay-300{animation-delay:0.3s}
   `;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black text-white overflow-x-hidden">
+    <div className="bg-white">
       <style>{animationStyles}</style>
 
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-[#F5B400]/10 rounded-full blur-3xl animate-fadeLeft" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#D99A00]/10 rounded-full blur-3xl animate-fadeUp delay-200" />
-      </div>
-
-      {/* Hero */}
-      <section className="relative pt-28 pb-20 border-b border-white/10 overflow-hidden">
+      {/* Hero Section – with background image, overlay, and floating circles */}
+      <section className="relative overflow-hidden text-white">
+        {/* Background image */}
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${HERO_BG_IMAGE})` }}
         />
-        <div className="absolute inset-0 bg-black/60"></div>
-        <div className="container-custom relative z-10 text-center">
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/60 z-0"></div>
+
+        {/* Animated floating amber circles */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-amber-400/10 rounded-full blur-3xl animate-float"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: "2s" }}></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-amber-300/10 rounded-full blur-3xl animate-float" style={{ animationDelay: "4s" }}></div>
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 text-center">
+          {/* Breadcrumb */}
           <div className="inline-flex items-center justify-center gap-2 text-sm text-gray-200 mb-6 bg-black/40 backdrop-blur-sm px-4 py-2 rounded-full mx-auto w-fit animate-fadeLeft">
-            <span>Home</span>
-            <span>›</span>
-            <span>About</span>
-            <span>›</span>
-            <span className="text-[#F5B400] font-medium">History</span>
+            <span>Home</span><span>›</span><span>About</span><span>›</span>
+            <span className="text-amber-400 font-medium">History</span>
           </div>
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-tight text-white animate-fadeLeft delay-100">
+
+          {/* Title with shimmer */}
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fadeLeft delay-100">
             Our{" "}
             <span
-              className="bg-gradient-to-r from-[#F5B400] via-[#FFC107] to-[#F5B400] bg-clip-text text-transparent"
-              style={{
-                backgroundSize: "200% auto",
-                animation: "shimmer 3s linear infinite",
-              }}
+              className="bg-gradient-to-r from-amber-400 via-amber-500 to-amber-400 bg-clip-text text-transparent"
+              style={{ backgroundSize: "200% auto", animation: "shimmer 3s linear infinite" }}
             >
               Journey
             </span>
           </h1>
-          <p className="text-lg md:text-xl text-gray-300 mt-4 max-w-xl mx-auto leading-relaxed animate-fadeUp delay-200">
+
+          {/* Subtitle */}
+          <p className="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto leading-relaxed animate-fadeUp delay-200">
             From a bold vision in Mumbai to a global engineering powerhouse —
             innovation, integrity, and impact across five continents.
           </p>
         </div>
+
+        {/* Bottom fade to white */}
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent z-10"></div>
       </section>
 
-      {/* Legacy */}
-      <section className="section-padding">
-        <div className="container-custom">
-          <div className="max-w-3xl mx-auto text-center animate-fadeUp delay-100">
-            <div className="inline-block px-4 py-1 rounded-full bg-[#F5B400]/10 text-[#F5B400] text-sm font-semibold mb-4">
-              Our Legacy
-            </div>
-            <p className="text-gray-300 text-lg leading-relaxed">
-              Founded in 1995,{" "}
-              <span className="text-[#F5B400] font-semibold">
-                Pyramid E&C Group
-              </span>{" "}
-              has grown into a global hydrocarbon engineering and solutions
-              provider, delivering integrated research, engineering,
-              digitalization, and modular fabrication services to clients
-              worldwide.
-            </p>
+      {/* Legacy Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <div className="inline-block px-4 py-1 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold mb-4 animate-fadeUp delay-100">
+            Our Legacy
           </div>
+          <p className="text-gray-700 text-lg leading-relaxed animate-fadeUp delay-200">
+            Founded in 1995,{" "}
+            <span className="text-amber-600 font-semibold">Pyramid E&C Group</span>{" "}
+            has grown into a global hydrocarbon engineering and solutions provider,
+            delivering integrated research, engineering, digitalization, and modular
+            fabrication services to clients worldwide.
+          </p>
         </div>
       </section>
 
-      {/* Timeline */}
-      <section className="section-padding">
-        <div className="container-custom">
+      {/* Timeline Section – light cards */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-5xl mx-auto relative">
+            {/* Center line – gold gradient */}
             <div
               className="hidden md:block absolute left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-px"
               style={{
-                background:
-                  "linear-gradient(180deg,rgba(245,180,0,0.6) 0%,rgba(245,180,0,0.05) 100%)",
+                background: "linear-gradient(180deg, #F5B400 0%, rgba(245,180,0,0.1) 100%)",
               }}
             />
             {milestones.map((milestone, idx) => (
@@ -373,29 +337,25 @@ const History = () => {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="section-padding border-t border-white/10">
-        <div className="container-custom">
-          <div
-            className="max-w-3xl mx-auto text-center rounded-2xl p-10 backdrop-blur-sm animate-fadeUp delay-200"
-            style={{
-              background:
-                "linear-gradient(135deg,rgba(245,180,0,0.08),rgba(255,193,7,0.02))",
-              border: "1px solid rgba(255,255,255,0.07)",
-            }}
-          >
-            <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
-              Shaping the Future of Hydrocarbons
-            </h3>
-            <p className="text-gray-400 mb-8 max-w-xl mx-auto">
-              From past milestones to future innovations — we continue to
-              engineer excellence.
-            </p>
-            <button className="group inline-flex items-center gap-2 bg-[#F5B400] hover:bg-[#D99A00] text-black font-semibold px-8 py-3 rounded-xl transition-all duration-300 shadow-lg shadow-[#F5B400]/25 hover:translate-y-[-2px]">
-              Explore Our Capabilities{" "}
-              <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
-            </button>
+      {/* CTA Section – matches other pages (dark gradient with amber button) */}
+
+
+      <section className="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-20">
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <div className="inline-block px-4 py-1 rounded-full bg-amber-500/20 text-amber-300 text-sm font-semibold mb-4">
+            Shaping the Future of Hydrocarbons
           </div>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">From past milestones to future innovations</h2>
+          <p className="text-gray-300 text-lg mb-8">
+            We continue to engineer excellence – partner with us for your next project.
+          </p>
+          <Link
+            to="/contact"
+            className="group inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-gray-900 font-semibold px-8 py-3 rounded-lg transition-all transform hover:scale-105 shadow-lg"
+          >
+            Explore Our Capabilities
+            <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
+          </Link>
         </div>
       </section>
     </div>

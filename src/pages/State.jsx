@@ -11,7 +11,7 @@ const scrollingLogos = [...clients, ...clients, ...clients];
 
 const Clients = () => {
   return (
-    <section className="bg-black-deep text-white py-12 lg:py-4 px-6">
+    <section className="bg-black-deep text-white py-12 lg:py-20 px-6">
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}

@@ -1,5 +1,7 @@
 import React from 'react';
-import { FaOilCan, FaIndustry, FaWater, FaGasPump, FaChartLine, FaShieldAlt, FaBolt, FaGlobe } from 'react-icons/fa';
+import { FaOilCan, FaIndustry, FaWater,FaArrowRight, FaGasPump, FaChartLine, FaShieldAlt, FaBolt, FaGlobe } from 'react-icons/fa';
+import { Link } from "react-router-dom";
+
 
 const OilGas = () => {
   return (
@@ -16,11 +18,11 @@ const OilGas = () => {
                 <span className="block text-amber-400">Integrated Solutions</span>
               </h1>
               <p className="text-lg md:text-xl text-gray-200 mb-8 leading-relaxed">
-                Pyramid E&C delivers integrated Oil & Gas engineering solutions across the upstream 
-                and midstream value chain, providing reliable, efficient, and safety-focused designs 
+                Pyramid E&C delivers integrated Oil & Gas engineering solutions across the upstream
+                and midstream value chain, providing reliable, efficient, and safety-focused designs
                 tailored to complex energy projects.
               </p>
-              
+
             </div>
 
             {/* Right side - Oil & Gas Image */}
@@ -196,7 +198,7 @@ const OilGas = () => {
                   <h3 className="text-2xl font-bold text-gray-900">Project Lifecycle Support</h3>
                 </div>
                 <p className="text-gray-700 mb-4 leading-relaxed">
-                  From concept through detailed engineering and execution support, Pyramid E&C ensures compliance 
+                  From concept through detailed engineering and execution support, Pyramid E&C ensures compliance
                   with international standards (API, ASME, ISO, NACE) while optimizing cost, performance, and operational efficiency.
                 </p>
                 <div className="flex flex-wrap gap-2 mt-6">
@@ -242,20 +244,22 @@ const OilGas = () => {
       </section>
 
       {/* Call to Action */}
+
+
+
       <section className="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-16">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to engineer your next energy project?</h2>
           <p className="text-gray-300 text-lg mb-8">
             Partner with Pyramid E&C for reliable, innovative, and cost-effective oil & gas engineering solutions.
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <button className="bg-amber-500 hover:bg-amber-600 text-gray-900 font-semibold px-8 py-3 rounded-lg transition-all transform hover:scale-105 shadow-lg">
-              Contact Our Experts
-            </button>
-            <button className="border border-white/30 hover:bg-white/10 font-semibold px-8 py-3 rounded-lg transition-all">
-              Download Brochure
-            </button>
-          </div>
+          <Link
+            to="/contact"
+            className="group inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-gray-900 font-semibold px-8 py-3 rounded-lg transition-all transform hover:scale-105 shadow-lg"
+          >
+            Contact Our Experts
+            <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
+          </Link>
         </div>
       </section>
     </div>

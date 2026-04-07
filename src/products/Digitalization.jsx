@@ -10,18 +10,6 @@ const Digitalization = () => {
   return (
     <div className="bg-white">
       {/* Breadcrumb */}
-      <div className="bg-gray-50 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center space-x-2 text-sm text-gray-500">
-            <span className="hover:text-gray-700 cursor-pointer">Home</span>
-            <span>/</span>
-            <span className="hover:text-gray-700 cursor-pointer">Products & Solutions</span>
-            <span>/</span>
-            <span className="text-gray-900 font-medium">Digitalization</span>
-          </div>
-        </div>
-      </div>
-
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
         <div className="absolute inset-0 bg-black/50 z-0"></div>
@@ -39,22 +27,14 @@ const Digitalization = () => {
                 Pyramid E&C supplies plants that are truly <strong>Digital by design</strong>. Advanced features such as 
                 real-time process optimization and remote performance management via handheld devices provide complete 
                 control to stakeholders.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <button className="bg-amber-500 hover:bg-amber-600 text-gray-900 font-semibold px-6 py-3 rounded-lg transition-all transform hover:scale-105 shadow-lg">
-                  Business Enquiry
-                </button>
-                <button className="border border-white/30 hover:bg-white/10 text-white font-semibold px-6 py-3 rounded-lg transition-all flex items-center gap-2">
-                  <FaDownload className="text-sm" /> Download Brochure
-                </button>
-              </div>
+              </p> 
             </div>
             <div className="lg:w-1/2 flex justify-center">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/20">
                 <img
                   src="/digitalization-hero.jpg"
                   alt="Digital plant control dashboard on mobile device"
-                  className="w-full h-auto max-h-[400px] object-cover"
+                  className="w-600 h-auto max-h-[400px] object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent"></div>
               </div>

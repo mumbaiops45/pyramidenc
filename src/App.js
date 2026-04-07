@@ -25,9 +25,16 @@ import Midstream from './products/Midstream';
 import Biochemical from './products/BioChemicals';
 import SyngasDerivatives from './products/SyngasDerivatives';
 import Decarbonization from './products/Decarbonization';
-import Digitalization from './products/Decarbonization';
-
+import Digitalization from './products/Digitalization';
+import Research from './services/research';
+import Project from './services/project-development';
+import Epcm from './services/epcm-services';
+import Modular from './services/modular';
+// import EPC from './services/epc';
+import ScrollToTop from './components/ScrollToTop';
+import Career from './career';
 function App() {
+  
   const HomePage = () => {
     return (
       <>
@@ -45,6 +52,7 @@ function App() {
 
   return (
     <Router>
+      <ScrollToTop/>
       <div className="min-h-screen bg-black-deep flex flex-col">
         <Navbar />
         <main className="flex-grow pt-20">
@@ -69,6 +77,13 @@ function App() {
             <Route path="/products/decarbonization"element={<Decarbonization />} />
             <Route path="/products/digitalization"element={<Digitalization />} />
 
+            <Route path='/services/research-and-development'element={<Research />}/>
+            <Route path='/services/project-development'element={<Project/>} />
+            <Route path='/services/epcm-services'element={<Epcm/>}/>
+            {/* <Route path='/services/epc'element={<Epc/>}/> */}
+            <Route path='/services/modular'element={<Modular/>}/>
+
+            <Route path="/career" element={<Career />} />
             
             <Route path="/news" element={<HomePage />} />
           </Routes>
