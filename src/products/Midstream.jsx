@@ -1,10 +1,11 @@
 import React from 'react';
 import { FaWarehouse, FaCubes, FaSnowflake, FaOilCan, FaGasPump, FaShieldAlt, FaBolt, FaGlobe } from 'react-icons/fa';
+import { Link } from "react-router-dom";
 
 const Midstream = () => {
   return (
     <div className="bg-white">
-     
+
 
       {/* Hero Section with Image */}
       <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
@@ -18,11 +19,11 @@ const Midstream = () => {
                 <span className="block text-amber-400">Storage & Transportation</span>
               </h1>
               <p className="text-lg md:text-xl text-gray-200 mb-8 leading-relaxed">
-                Pyramid E&C provides end-to-end solutions for storage, loading and transportation systems 
-                for the full range of Oil, Gas and Chemical products. We also deliver pipeline pumping 
+                Pyramid E&C provides end-to-end solutions for storage, loading and transportation systems
+                for the full range of Oil, Gas and Chemical products. We also deliver pipeline pumping
                 stations and compression systems.
               </p>
-              
+
             </div>
 
             {/* Right side - Midstream Image */}
@@ -168,7 +169,7 @@ const Midstream = () => {
                   <h3 className="text-2xl font-bold">Pipeline & Pumping Systems</h3>
                 </div>
                 <p className="text-gray-300 mb-6">
-                  Complete pipeline infrastructure including pumping stations, compression systems, and metering 
+                  Complete pipeline infrastructure including pumping stations, compression systems, and metering
                   for efficient long-distance transport of oil, gas, and chemical products.
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -198,8 +199,8 @@ const Midstream = () => {
                   <h3 className="text-2xl font-bold text-gray-900">EPCM Services</h3>
                 </div>
                 <p className="text-gray-700 mb-4 leading-relaxed">
-                  Our delivery scope typically includes supply of design, critical equipment, and EPCM 
-                  (Engineering, Procurement, Construction Management) services for balance work. 
+                  Our delivery scope typically includes supply of design, critical equipment, and EPCM
+                  (Engineering, Procurement, Construction Management) services for balance work.
                   We ensure seamless project execution from concept to commissioning.
                 </p>
                 <div className="flex flex-wrap gap-2 mt-6">
@@ -250,14 +251,12 @@ const Midstream = () => {
           <p className="text-gray-300 text-lg mb-8">
             Let Pyramid E&C design, build, and manage your storage and transportation infrastructure.
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <button className="bg-amber-500 hover:bg-amber-600 text-gray-900 font-semibold px-8 py-3 rounded-lg transition-all transform hover:scale-105 shadow-lg">
-              Contact Our Experts
-            </button>
-            <button className="border border-white/30 hover:bg-white/10 font-semibold px-8 py-3 rounded-lg transition-all">
-              Download Brochure
-            </button>
-          </div>
+          <Link
+            to="/contact"
+            className="inline-block bg-amber-500 hover:bg-amber-600 text-gray-900 font-semibold px-8 py-3 rounded-lg transition-all transform hover:scale-105 shadow-lg"
+          >
+            Contact Our Experts
+          </Link>
         </div>
       </section>
     </div>

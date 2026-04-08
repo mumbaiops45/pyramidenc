@@ -1,12 +1,13 @@
 import React from 'react';
-import { FaLeaf, FaFlask, FaRecycle, FaChartLine, FaShieldAlt, FaBolt, FaGlobe, FaDownload } from 'react-icons/fa';
+import { FaLeaf, FaFlask, FaRecycle, FaChartLine, FaShieldAlt, FaBolt, FaGlobe } from 'react-icons/fa';
 import { GiPlantSeed, GiGasPump } from 'react-icons/gi';
 import { MdBiotech } from 'react-icons/md';
+import { Link } from "react-router-dom";
 
 const BioChemicals = () => {
   return (
     <div className="bg-white">
-     
+
 
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
@@ -19,15 +20,15 @@ const BioChemicals = () => {
                 <span className="block text-amber-400">Sustainable Technology</span>
               </h1>
               <p className="text-lg md:text-xl text-gray-200 mb-8 leading-relaxed">
-                Pyramid E&C offers modern, efficient, and fully automated Conventional and Cellulosic 
+                Pyramid E&C offers modern, efficient, and fully automated Conventional and Cellulosic
                 Bioethanol plants with Zero Liquid Discharge (ZLD) and Zero Greenhouse Gas (GHG) emissions.
               </p>
-             
+
             </div>
             <div className="lg:w-1/2 flex justify-center">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/20">
                 <img
-                  src="/biochemicals-hero.jpg"
+                  src="/biochemicals.jpg"
                   alt="Bioethanol plant and green technology"
                   className="w-full h-auto max-h-[400px] object-cover"
                 />
@@ -116,7 +117,7 @@ const BioChemicals = () => {
                 <h3 className="text-2xl font-bold text-gray-900">Own Technology</h3>
               </div>
               <p className="text-gray-700 leading-relaxed">
-                Proprietary technology for <strong>Bioethanol</strong> and <strong>Bio-methanol</strong> production, 
+                Proprietary technology for <strong>Bioethanol</strong> and <strong>Bio-methanol</strong> production,
                 developed in-house for maximum efficiency, lower CAPEX/OPEX, and seamless integration.
               </p>
             </div>
@@ -155,7 +156,7 @@ const BioChemicals = () => {
                   <h3 className="text-2xl font-bold">Sustainable Aviation Fuel (SAF)</h3>
                 </div>
                 <p className="text-gray-300 leading-relaxed">
-                  Through strategic partnerships, Pyramid E&C offers advanced technology for Sustainable Aviation Fuel production, 
+                  Through strategic partnerships, Pyramid E&C offers advanced technology for Sustainable Aviation Fuel production,
                   enabling decarbonization of the aviation sector via HEFA, ATJ, and Gasification-FT routes.
                 </p>
               </div>
@@ -225,14 +226,12 @@ const BioChemicals = () => {
           <p className="text-gray-300 text-lg mb-8">
             From concept to commissioning, our bio-chemical solutions help you achieve sustainability goals.
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <button className="bg-amber-500 hover:bg-amber-600 text-gray-900 font-semibold px-8 py-3 rounded-lg transition-all transform hover:scale-105 shadow-lg">
-              Contact Our Experts
-            </button>
-            <button className="border border-white/30 hover:bg-white/10 font-semibold px-8 py-3 rounded-lg transition-all flex items-center gap-2">
-              <FaDownload className="text-sm" /> Download Brochure
-            </button>
-          </div>
+          <Link
+            to="/contact"
+            className="inline-block bg-amber-500 hover:bg-amber-600 text-gray-900 font-semibold px-8 py-3 rounded-lg transition-all transform hover:scale-105 shadow-lg"
+          >
+            Contact Our Experts
+          </Link>
         </div>
       </section>
     </div>

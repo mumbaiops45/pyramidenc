@@ -1,10 +1,12 @@
 import React from 'react';
-import { 
-  FaMobileAlt, FaChartLine, FaRobot, FaCogs, FaLink, 
+import {
+  FaMobileAlt, FaChartLine, FaRobot, FaCogs, FaLink,
   FaBrain, FaTachometerAlt, FaUsers, FaMoneyBillWave,
-  FaHeadset, FaDownload, FaShieldAlt, FaBolt, FaGlobe
+  FaHeadset, FaShieldAlt, FaBolt, FaGlobe
 } from 'react-icons/fa';
 import { GiArtificialIntelligence, GiDigitalTrace } from 'react-icons/gi';
+import { Link } from "react-router-dom";
+
 
 const Digitalization = () => {
   return (
@@ -24,10 +26,10 @@ const Digitalization = () => {
                 <span className="block text-amber-400">Plants by Design</span>
               </h1>
               <p className="text-lg md:text-xl text-gray-200 mb-8 leading-relaxed">
-                Pyramid E&C supplies plants that are truly <strong>Digital by design</strong>. Advanced features such as 
-                real-time process optimization and remote performance management via handheld devices provide complete 
+                Pyramid E&C supplies plants that are truly <strong>Digital by design</strong>. Advanced features such as
+                real-time process optimization and remote performance management via handheld devices provide complete
                 control to stakeholders.
-              </p> 
+              </p>
             </div>
             <div className="lg:w-1/2 flex justify-center">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/20">
@@ -174,7 +176,7 @@ const Digitalization = () => {
                   <h3 className="text-2xl font-bold">24/7 Help Desk & Advisory</h3>
                 </div>
                 <p className="text-gray-300 leading-relaxed">
-                  To maximize plant performance, Pyramid E&C offers comprehensive Digitalization solutions for hydrocarbon 
+                  To maximize plant performance, Pyramid E&C offers comprehensive Digitalization solutions for hydrocarbon
                   asset owners across the globe with round-the-clock help desk and advisory services.
                 </p>
                 <div className="mt-6 flex items-center gap-2 text-amber-400">
@@ -242,20 +244,21 @@ const Digitalization = () => {
       </section>
 
       {/* Call to Action */}
+
+
+
       <section className="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-16">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to digitize your plant?</h2>
           <p className="text-gray-300 text-lg mb-8">
             Unlock real-time insights, predictive intelligence, and unmatched operational control with Pyramid E&C.
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <button className="bg-amber-500 hover:bg-amber-600 text-gray-900 font-semibold px-8 py-3 rounded-lg transition-all transform hover:scale-105 shadow-lg">
-              Business Enquiry
-            </button>
-            <button className="border border-white/30 hover:bg-white/10 font-semibold px-8 py-3 rounded-lg transition-all flex items-center gap-2">
-              <FaDownload className="text-sm" /> Download Brochure
-            </button>
-          </div>
+          <Link
+            to="/contact"
+            className="inline-block bg-amber-500 hover:bg-amber-600 text-gray-900 font-semibold px-8 py-3 rounded-lg transition-all transform hover:scale-105 shadow-lg"
+          >
+            Business Enquiry
+          </Link>
         </div>
       </section>
     </div>

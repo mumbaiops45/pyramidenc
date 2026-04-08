@@ -1,6 +1,7 @@
 import React from 'react';
-import { FaWind, FaFlask, FaLeaf, FaCompress, FaWarehouse, FaChartLine, FaShieldAlt, FaBolt, FaGlobe, FaDownload } from 'react-icons/fa';
+import { FaWind, FaFlask, FaLeaf, FaCompress, FaWarehouse, FaChartLine, FaShieldAlt, FaBolt, FaGlobe } from 'react-icons/fa';
 import { GiChemicalDrop, GiGasPump } from 'react-icons/gi';
+import { Link } from "react-router-dom";
 
 const SyngasDerivatives = () => {
   return (
@@ -28,7 +29,7 @@ const SyngasDerivatives = () => {
             <div className="lg:w-1/2 flex justify-center">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/20">
                 <img
-                  src="/syngas-hero.jpg"
+                  src="/syngas.jpg"
                   alt="Syngas derivatives plant - Hydrogen, Ammonia, Methanol"
                   className="w-full h-auto max-h-[400px] object-cover"
                 />
@@ -217,22 +218,20 @@ const SyngasDerivatives = () => {
       </section>
 
       {/* Call to Action */}
-      <section className="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-16">
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to advance your syngas derivatives project?</h2>
-          <p className="text-gray-300 text-lg mb-8">
-            Partner with Pyramid E&C for innovative, safe, and efficient hydrogen, ammonia, and methanol facilities.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <button className="bg-amber-500 hover:bg-amber-600 text-gray-900 font-semibold px-8 py-3 rounded-lg transition-all transform hover:scale-105 shadow-lg">
-              Contact Our Experts
-            </button>
-            <button className="border border-white/30 hover:bg-white/10 font-semibold px-8 py-3 rounded-lg transition-all flex items-center gap-2">
-              <FaDownload className="text-sm" /> Download Brochure
-            </button>
-          </div>
-        </div>
-      </section>
+    <section className="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-16">
+  <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+    <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to advance your syngas derivatives project?</h2>
+    <p className="text-gray-300 text-lg mb-8">
+      Partner with Pyramid E&C for innovative, safe, and efficient hydrogen, ammonia, and methanol facilities.
+    </p>
+    <Link
+      to="/contact"
+      className="inline-block bg-amber-500 hover:bg-amber-600 text-gray-900 font-semibold px-8 py-3 rounded-lg transition-all transform hover:scale-105 shadow-lg"
+    >
+      Contact Our Experts
+    </Link>
+  </div>
+</section>
     </div>
   );
 };

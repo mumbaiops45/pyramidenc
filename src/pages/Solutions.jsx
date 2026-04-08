@@ -232,7 +232,7 @@ function useInView(options = {}) {
 // ============================================================
 function AnimatedCard({ name, description, icon, path, index }) {
   const [ref, inView] = useInView();
-  const [ setHovered] = useState(false);
+  const [hovered ,setHovered] = useState(false);
   const delay = index * 0.1;
 
   return (

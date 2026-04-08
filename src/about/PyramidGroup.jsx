@@ -84,7 +84,7 @@ const PyramidGroup = () => {
       <style>{animationStyles}</style>
 
       {/* Hero Section – Centered with background image */}
-      <section className="relative overflow-hidden text-white">
+      <section className="relative overflow-hidden text-white ">
         {/* Background image */}
         <div
           className="absolute inset-0 bg-cover bg-center"

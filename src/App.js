@@ -21,7 +21,7 @@ import Management from './about/Management';
 import Leadership from './about/Leadership';  
 import Markets from './about/Markets';
 import OilGas from './products/OilGas';
-import Midstream from './products/Midstream';
+import Midstream from './products/Midstream'; 
 import Biochemical from './products/BioChemicals';
 import SyngasDerivatives from './products/SyngasDerivatives';
 import Decarbonization from './products/Decarbonization';
@@ -30,9 +30,11 @@ import Research from './services/research';
 import Project from './services/project-development';
 import Epcm from './services/epcm-services';
 import Modular from './services/modular';
-// import EPC from './services/epc';
+import EPC from './services/epc';
 import ScrollToTop from './components/ScrollToTop';
 import Career from './career';
+import News from './components/news';
+import NewsDetail from './components/NewsDetail';
 function App() {
   
   const HomePage = () => {
@@ -53,7 +55,7 @@ function App() {
   return (
     <Router>
       <ScrollToTop/>
-      <div className="min-h-screen bg-black-deep flex flex-col">
+      <div>
         <Navbar />
         <main className="flex-grow pt-20">
           <Routes>
@@ -80,12 +82,14 @@ function App() {
             <Route path='/services/research-and-development'element={<Research />}/>
             <Route path='/services/project-development'element={<Project/>} />
             <Route path='/services/epcm-services'element={<Epcm/>}/>
-            {/* <Route path='/services/epc'element={<Epc/>}/> */}
+            <Route path='/services/epc'element={<EPC/>}/>
             <Route path='/services/modular'element={<Modular/>}/>
 
             <Route path="/career" element={<Career />} />
             
-            <Route path="/news" element={<HomePage />} />
+            <Route path="/news" element={<News />} />
+            <Route path="/news/:id" element={<NewsDetail />} />
+            
           </Routes>
         </main>
         <Footer />

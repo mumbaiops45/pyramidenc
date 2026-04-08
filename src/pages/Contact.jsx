@@ -68,16 +68,19 @@ const Contact = () => {
 
   return (
     <div className="bg-white">
-      {/* Hero Section */}
+      {/* Hero Section with rounded border container */}
       <section className="relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-amber-50 py-16 md:py-20">
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
-            Contact <span className="text-amber-500">Us</span>
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Connect with Pyramid E&C to explore tailored engineering, modular plant and energy-transition
-            solutions backed by over 25 years of global hydrocarbon expertise.
-          </p>
+          {/* Rounded container with border */}
+          <div className="max-w-3xl mx-auto bg-white/80 backdrop-blur-sm rounded-2xl border border-amber-200 shadow-lg p-6 md:p-10">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
+              Contact <span className="text-amber-500">Us</span>
+            </h1>
+            <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+              Connect with Pyramid E&C to explore tailored engineering, modular plant and energy-transition
+              solutions backed by over 25 years of global hydrocarbon expertise.
+            </p>
+          </div>
         </div>
         <div className="absolute -top-24 -right-24 w-64 h-64 bg-amber-100 rounded-full blur-3xl opacity-40"></div>
         <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-amber-50 rounded-full blur-3xl opacity-40"></div>
