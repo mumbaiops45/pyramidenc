@@ -162,7 +162,7 @@ const Certifications = () => {
                   >
                     <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-amber-300 hover:-translate-y-1 h-full">
                       <div className="p-8 text-center">
-                        <div className="w-28 h-28 mx-auto mb-5 flex items-center justify-center bg-gray-50 rounded-xl p-3">
+                        <div className="w-28 h-28 mx-auto mb-5 flex items-center justify-center bg-gray-700 rounded-xl p-3">
                           <img
                             src={cert.image}
                             alt={cert.name}
