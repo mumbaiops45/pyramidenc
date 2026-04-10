@@ -392,7 +392,6 @@ import {
   FaGraduationCap,
   FaChartLine,
   FaCloudUploadAlt,
-  FaCheckCircle,
   FaExclamationCircle,
 } from "react-icons/fa";
 

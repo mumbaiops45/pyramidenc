@@ -681,7 +681,7 @@ const Contact = () => {
   const validateName = (name) => {
     if (!name.trim()) return "Full name is required";
     if (name.trim().length < 2) return "Name must be at least 2 characters";
-    if (!/^[a-zA-Z\s\-'.]+$/.test(name.trim())) return "Name can only contain letters, spaces, hyphens, apostrophes, and dots";
+    if (!/^[a-zA-Z\s\-']+$/.test(name.trim())) return "Name can only contain letters, spaces, hyphens, apostrophes, and dots";
     return "";
   };
 
