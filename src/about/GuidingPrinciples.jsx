@@ -241,7 +241,7 @@ import {
   FaHandshake,
   FaShieldAlt,
   FaNetworkWired,
-  FaArrowRight,
+ 
 } from "react-icons/fa";
 import { MdSecurity } from "react-icons/md";
 import { Link } from "react-router-dom";

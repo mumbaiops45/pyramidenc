@@ -733,7 +733,7 @@ import {
   FaMicrophoneAlt,
   FaFlask as FaBeaker,
   FaSolarPanel,
-  FaArrowRight,
+  
 } from "react-icons/fa";
 import { MdLocationOn, MdEngineering, MdFactory } from "react-icons/md";
 import { Link } from "react-router-dom";

@@ -833,7 +833,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import {
-  FaArrowRight,
   FaHardHat,
   FaChartLine,
   FaTools,

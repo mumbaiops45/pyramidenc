@@ -271,36 +271,12 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  FaOilCan, FaIndustry, FaWater, FaArrowRight, FaGasPump,
+  FaOilCan, FaIndustry, FaWater, FaGasPump,
   FaChartLine, FaShieldAlt, FaBolt, FaGlobe
 } from 'react-icons/fa';
 import { Link } from "react-router-dom";
 
-// ============================================================
-// Custom hook with correct dependency handling
-// ============================================================
-function useInView(options = {}) {
-  const ref = useRef(null);
-  const [inView, setInView] = useState(false);
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.2, ...options }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [options]);
-
-  return [ref, inView];
-}
 
 // ============================================================
 // Animation styles (including bubbleFloat and fade animations)
@@ -354,8 +330,8 @@ const OilGas = () => {
   const heroBubbles = generateBubbles(18, 15, 50);
 
   // Refs for fade-in sections
-  const heroRef = useRef(null);
-  const [heroInView] = useState(true);
+  // const heroRef = useRef(null);
+  // const [heroInView] = useState(true);
   const expertiseRef = useRef(null);
   const [expertiseInView, setExpertiseInView] = useState(false);
   const midstreamRef = useRef(null);

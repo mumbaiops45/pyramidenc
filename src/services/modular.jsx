@@ -333,7 +333,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import {
-  FaArrowRight,
   FaMapMarkerAlt,
   FaCogs,
   FaCheckCircle,

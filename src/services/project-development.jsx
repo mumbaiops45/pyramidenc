@@ -330,7 +330,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import {
-  FaArrowRight,
   FaOilCan,
   FaLeaf,
   FaChartLine,

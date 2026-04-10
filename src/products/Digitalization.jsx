@@ -272,36 +272,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   FaMobileAlt, FaChartLine, FaRobot, FaCogs, FaLink,
   FaBrain, FaTachometerAlt, FaUsers, FaMoneyBillWave,
-  FaHeadset, FaShieldAlt, FaBolt, FaGlobe, FaArrowRight
+  FaHeadset, FaShieldAlt, FaBolt, FaGlobe
 } from 'react-icons/fa';
 import { GiArtificialIntelligence, GiDigitalTrace } from 'react-icons/gi';
 import { Link } from "react-router-dom";
 
-// ============================================================
-// Custom hook with correct dependency handling
-// ============================================================
-function useInView(options = {}) {
-  const ref = useRef(null);
-  const [inView, setInView] = useState(false);
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.2, ...options }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [options]);
-
-  return [ref, inView];
-}
 
 // ============================================================
 // Animation styles (including bubbleFloat and fade animations)

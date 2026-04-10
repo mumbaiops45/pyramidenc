@@ -309,7 +309,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import {
-  FaArrowRight, FaOilCan, FaIndustry, FaLeaf,
+  FaOilCan, FaIndustry, FaLeaf,
   FaHardHat, FaTools, FaShip, FaSolarPanel, FaCogs, FaCheckCircle,
 } from "react-icons/fa";
 import { GiChemicalTank } from "react-icons/gi";

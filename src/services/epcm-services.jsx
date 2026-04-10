@@ -372,7 +372,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import {
-  FaArrowRight,
   FaMicrochip,
   FaHardHat,
   FaChartLine,

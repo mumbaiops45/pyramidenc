@@ -243,36 +243,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   FaLeaf, FaSnowflake, FaFire, FaArrowDown, FaFlask,
   FaRecycle, FaSolarPanel, FaShieldAlt, FaBolt, FaGlobe,
-  FaChartLine, FaArrowRight
+  FaChartLine
 } from 'react-icons/fa';
 import { GiWindmill } from 'react-icons/gi';
 import { Link } from "react-router-dom";
 
-// ============================================================
-// Custom hook with correct dependency handling
-// ============================================================
-function useInView(options = {}) {
-  const ref = useRef(null);
-  const [inView, setInView] = useState(false);
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.2, ...options }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [options]);
-
-  return [ref, inView];
-}
 
 // ============================================================
 // Animation styles (including bubbleFloat and fade animations)
