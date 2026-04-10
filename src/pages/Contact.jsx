@@ -693,7 +693,7 @@ const Contact = () => {
 
   const validateWebsite = (website) => {
     if (!website.trim()) return "Website is required";
-    const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+    const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
     if (!urlPattern.test(website.trim())) return "Please enter a valid website URL (e.g., https://example.com)";
     return "";
   };
