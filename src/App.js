@@ -35,6 +35,12 @@ import ScrollToTop from './components/ScrollToTop';
 import Career from './career';
 import News from './components/news';
 import NewsDetail from './components/NewsDetail';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import GDPRPolicy from './components/GDPRPolicy';
+import Certifications from './about/Certifications';
+
+
+
 function App() {
   
   const HomePage = () => {
@@ -89,6 +95,9 @@ function App() {
             
             <Route path="/news" element={<News />} />
             <Route path="/news/:id" element={<NewsDetail />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/gdpr-policy" element={<GDPRPolicy />} />
+            <Route path="/about/certifications" element={<Certifications />} />
             
           </Routes>
         </main>
