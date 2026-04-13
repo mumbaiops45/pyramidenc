@@ -177,11 +177,13 @@ const Research = () => {
         >
           <div className="order-2 md:order-1">
             {/* Gradient heading for State-of-the-Art Facilities */}
-            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
-                State‑of‑the‑Art Facilities
-              </span>
-            </h3>
+          
+             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mt-4">
+            State of the Art{" "}
+            <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+              Facilities
+            </span>
+          </h2>
             <p className="text-gray-600 mb-6 leading-relaxed">
               Our technology centers in Mumbai and Houston are equipped with advanced pilot plant facilities,
               simulation software, and multidisciplinary engineering teams to accelerate your R&D and commercialization journey.

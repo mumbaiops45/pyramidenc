@@ -265,7 +265,7 @@ const History = () => {
 
           {/* Heading with gradient on key word */}
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mt-4">
-            A{" "}
+            A Legacy of{" "}
             <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
               Legacy of Excellence
             </span>

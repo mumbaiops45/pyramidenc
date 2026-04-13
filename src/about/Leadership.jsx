@@ -343,7 +343,13 @@ const Leadership = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 transition-all duration-700"
             style={{ opacity: visionInView ? 1 : 0, transform: visionInView ? "translateY(0)" : "translateY(30px)" }}>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Vision & Strategic Direction</h2>
+            {/* <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Vision & Strategic Direction</h2> */}
+             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mt-4">
+            Vision & Strategic{" "}
+            <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+              Direction
+            </span>
+          </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-amber-400 to-amber-600 mx-auto rounded-full mt-4 mb-4" />
             <p className="text-gray-600 max-w-2xl mx-auto">Long-term leadership pillars driving Pyramid E&C's growth</p>
           </div>
@@ -450,7 +456,13 @@ const Leadership = () => {
       <section className="py-16 px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Global Career</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mt-4">
+            Global{" "}
+            <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+              Career
+            </span>
+          </h2>
+
             <div className="w-16 h-0.5 bg-amber-500 mx-auto rounded-full mt-3 mb-3" />
             <p className="text-gray-600">Leading complex projects across continents</p>
           </div>
