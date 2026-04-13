@@ -115,7 +115,7 @@ const Research = () => {
     <div className="bg-white">
       <style>{animationStyles}</style>
 
-      {/* Hero – centered text, no image */}
+      {/* Hero – unchanged */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950"></div>
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -159,24 +159,29 @@ const Research = () => {
           className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 transition-all duration-700"
           style={{ opacity: introInView ? 1 : 0, transform: introInView ? "translateY(0)" : "translateY(30px)" }}
         >
-          <div className="inline-block px-4 py-1 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold mb-4">
+          <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Our Technology Centers
-          </div>
-          <p className="text-gray-700 text-lg leading-relaxed">
+          </span>
+          <p className="text-gray-700 text-lg leading-relaxed mt-4">
             Our experienced engineers use our technology centers for R&D and prototyping products developed and commercialized by the Pyramid Group of Companies.
             Furthermore, we provide critical services to clients with novel technologies who want to commercialize their products.
           </p>
         </div>
       </section>
 
-      {/* Image Section (moved from hero) */}
+      {/* Image Section – with gradient heading */}
       <section ref={imageSectionRef} className="py-16 px-6 bg-white">
         <div
           className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center transition-all duration-700"
           style={{ opacity: imageSectionInView ? 1 : 0, transform: imageSectionInView ? "translateY(0)" : "translateY(30px)" }}
         >
           <div className="order-2 md:order-1">
-            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">State‑of‑the‑Art Facilities</h3>
+            {/* Gradient heading for State-of-the-Art Facilities */}
+            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+                State‑of‑the‑Art Facilities
+              </span>
+            </h3>
             <p className="text-gray-600 mb-6 leading-relaxed">
               Our technology centers in Mumbai and Houston are equipped with advanced pilot plant facilities,
               simulation software, and multidisciplinary engineering teams to accelerate your R&D and commercialization journey.
@@ -206,18 +211,23 @@ const Research = () => {
         </div>
       </section>
 
-      {/* ========== RESEARCH & DEVELOPMENT SERVICES (two‑column grid, bottom border hover) ========== */}
+      {/* Research & Development Services */}
       <section ref={rdRef} className="py-20 bg-white">
         <div
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-700"
           style={{ opacity: rdInView ? 1 : 0, transform: rdInView ? "translateY(0)" : "translateY(30px)" }}
         >
           <div className="text-center mb-12">
-            <div className="inline-block px-4 py-1 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold mb-3">
+            <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Our Services
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Research & Development Services</h2>
-            <div className="w-24 h-1 bg-amber-500 mx-auto rounded-full mt-4"></div>
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4">
+              Research &{" "}
+              <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+                Development Services
+              </span>
+            </h2>
+            <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
             <p className="text-gray-600 mt-6 max-w-2xl mx-auto">
               From process validation to pilot plant manufacturing – we bring your ideas to life.
             </p>
@@ -249,27 +259,30 @@ const Research = () => {
         </div>
       </section>
 
-      {/* ========== TECHNOLOGY COMMERCIALIZATION – NEW DESIGN: numbered vertical steps ========== */}
+      {/* Technology Commercialization */}
       <section ref={commercialRef} className="py-20 bg-gray-50">
         <div
           className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-700"
           style={{ opacity: commercialInView ? 1 : 0, transform: commercialInView ? "translateY(0)" : "translateY(30px)" }}
         >
           <div className="text-center mb-12">
-            <div className="inline-block px-4 py-1 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold mb-3">
+            <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               After Pilot Success
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Technology Commercialization</h2>
-            <div className="w-24 h-1 bg-amber-500 mx-auto rounded-full mt-4"></div>
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4">
+              Technology{" "}
+              <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+                Commercialization
+              </span>
+            </h2>
+            <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
             <p className="text-gray-600 mt-6 max-w-2xl mx-auto">
               Full‑scale commercial plant design, engineering, and installation – from concept to operation.
             </p>
           </div>
 
           <div className="relative">
-            {/* Vertical line (hidden on mobile) */}
             <div className="absolute left-4 md:left-8 top-0 bottom-0 w-0.5 bg-amber-200 hidden md:block"></div>
-
             <div className="space-y-10">
               {commercializationServices.map((service, idx) => (
                 <div
@@ -277,13 +290,11 @@ const Research = () => {
                   className="relative flex flex-col md:flex-row gap-6 group"
                   style={{ transitionDelay: `${idx * 0.1}s` }}
                 >
-                  {/* Step number circle */}
                   <div className="flex-shrink-0">
                     <div className="relative z-10 w-8 h-8 md:w-10 md:h-10 rounded-full bg-amber-500 text-white flex items-center justify-center text-sm font-bold shadow-md">
                       {idx + 1}
                     </div>
                   </div>
-                  {/* Content */}
                   <div className="flex-1 pb-6 border-b border-gray-200 last:border-0 group-hover:border-amber-300 transition-colors">
                     <div className="flex items-start gap-3">
                       <service.icon className="text-2xl text-amber-500 mt-1 group-hover:text-amber-600 transition-colors" />
@@ -302,27 +313,28 @@ const Research = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA Section – only "Your Technology?" in gradient */}
       <section ref={ctaRef} className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6">
         <div
           className="max-w-4xl mx-auto text-center transition-all duration-700"
           style={{ opacity: ctaInView ? 1 : 0, transform: ctaInView ? "translateY(0)" : "translateY(30px)" }}
         >
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <span className="w-8 h-[2px] bg-amber-600"></span>
-            <span className="text-xs font-semibold tracking-[3px] uppercase text-amber-700">
-              Let's Innovate Together
+          <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
+            Let's Innovate Together
+          </span>
+          <h2 className="text-3xl lg:text-5xl font-extrabold leading-tight text-gray-900 mt-4 mb-6">
+            Ready to Commercialize{" "}
+            <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+              Your Technology?
             </span>
-          </div>
-          <h2 className="text-3xl lg:text-5xl font-extrabold mb-6 leading-tight text-gray-900">
-            Ready to Commercialize Your Technology?
           </h2>
+          <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-2 mb-6 rounded-full" />
           <p className="text-gray-700 text-sm lg:text-base max-w-2xl mx-auto mb-10">
             Partner with Pyramid E&C to take your innovation from pilot plant to full‑scale production.
           </p>
           <Link
             to="/contact"
-            className="inline-flex px-8 py-3 rounded-full text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition-all duration-300 shadow-lg"
+            className="inline-flex px-8 py-3 rounded-full text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
           >
             Contact Our R&D Team →
           </Link>

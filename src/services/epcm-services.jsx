@@ -131,7 +131,7 @@ const Epcm = () => {
     <div className="bg-white">
       <style>{animationStyles}</style>
 
-      {/* Hero Section – no image, centered text (already animated) */}
+      {/* Hero Section – unchanged */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950"></div>
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -168,7 +168,7 @@ const Epcm = () => {
         </div>
       </section>
 
-      {/* ========== INTRODUCTION – added scroll animation ========== */}
+      {/* INTRODUCTION – updated pill badge */}
       <section ref={introRef} className="py-16 bg-gray-50">
         <div
           className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 transition-all duration-700"
@@ -177,10 +177,10 @@ const Epcm = () => {
             transform: introInView ? "translateY(0)" : "translateY(30px)",
           }}
         >
-          <div className="inline-block px-4 py-1 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold mb-4">
+          <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Pyramid E&C USA & India Offices
-          </div>
-          <p className="text-gray-700 text-lg leading-relaxed">
+          </span>
+          <p className="text-gray-700 text-lg leading-relaxed mt-4">
             Our integrated engineering centers in Houston and Mumbai deliver world‑class EPCm solutions.
             From concept to commissioning, we provide comprehensive engineering and project management services
             across all disciplines.
@@ -188,7 +188,7 @@ const Epcm = () => {
         </div>
       </section>
 
-      {/* Image Section (moved from hero) – already has animation */}
+      {/* Image Section – UPDATED with pill badge + gradient heading + underline */}
       <section ref={imageSectionRef} className="py-16 px-6 bg-white">
         <div
           className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center transition-all duration-700"
@@ -198,7 +198,19 @@ const Epcm = () => {
           }}
         >
           <div className="order-2 md:order-1">
-            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Global Engineering Centers</h3>
+            {/* Pill badge */}
+            <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
+              Global Presence
+            </span>
+            {/* Gradient heading */}
+            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4 mb-4">
+              Global{" "}
+              <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+                Engineering Centers
+              </span>
+            </h3>
+            {/* Underline */}
+            <div className="w-24 h-1 bg-[var(--primery)] rounded-full mb-6" />
             <p className="text-gray-600 mb-6 leading-relaxed">
               Our Houston and Mumbai offices work as one integrated team, leveraging time zones for round‑the‑clock engineering.
               We combine deep domain expertise with modern digital tools to deliver accurate, cost‑effective designs.
@@ -228,7 +240,7 @@ const Epcm = () => {
         </div>
       </section>
 
-      {/* Engineering Disciplines – top‑border panels (already animated) */}
+      {/* Engineering Disciplines – UPDATED header */}
       <section ref={disciplinesRef} className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div
@@ -238,11 +250,19 @@ const Epcm = () => {
               transform: disciplinesInView ? "translateY(0)" : "translateY(30px)",
             }}
           >
-            <div className="inline-block px-4 py-1 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold mb-3">
+            {/* Pill badge */}
+            <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Our Capabilities
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Engineering Disciplines</h2>
-            <div className="w-24 h-1 bg-amber-500 mx-auto rounded-full mt-4"></div>
+            </span>
+            {/* Gradient heading */}
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4">
+              Engineering{" "}
+              <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+                Disciplines
+              </span>
+            </h2>
+            {/* Underline */}
+            <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
             <p className="text-gray-600 mt-6 max-w-2xl mx-auto">
               Full‑spectrum in‑house engineering expertise for complex hydrocarbon projects.
             </p>
@@ -270,7 +290,7 @@ const Epcm = () => {
         </div>
       </section>
 
-      {/* Project Phases – horizontal timeline (already animated) */}
+      {/* Project Execution Phases – UPDATED header */}
       <section ref={phasesRef} className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div
@@ -280,11 +300,19 @@ const Epcm = () => {
               transform: phasesInView ? "translateY(0)" : "translateY(30px)",
             }}
           >
-            <div className="inline-block px-4 py-1 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold mb-3">
+            {/* Pill badge */}
+            <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Our Approach
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Project Execution Phases</h2>
-            <div className="w-24 h-1 bg-amber-500 mx-auto rounded-full mt-4"></div>
+            </span>
+            {/* Gradient heading */}
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4">
+              Project{" "}
+              <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+                Execution Phases
+              </span>
+            </h2>
+            {/* Underline */}
+            <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
             <p className="text-gray-600 mt-6 max-w-2xl mx-auto">
               Structured engineering delivery from FEED through construction.
             </p>
@@ -322,7 +350,7 @@ const Epcm = () => {
         </div>
       </section>
 
-      {/* FEED Deliverables – simple two‑column list (already animated) */}
+      {/* FEED Deliverables – UPDATED header */}
       <section ref={deliverablesRef} className="py-16 bg-gray-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div
@@ -332,11 +360,19 @@ const Epcm = () => {
               transform: deliverablesInView ? "translateY(0)" : "translateY(30px)",
             }}
           >
-            <div className="inline-block px-4 py-1 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold mb-3">
+            {/* Pill badge */}
+            <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               FEED Phase
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Key Deliverables</h2>
-            <div className="w-24 h-1 bg-amber-500 mx-auto rounded-full mt-4"></div>
+            </span>
+            {/* Gradient heading */}
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4">
+              Key{" "}
+              <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+                Deliverables
+              </span>
+            </h2>
+            {/* Underline */}
+            <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
             <p className="text-gray-600 mt-6 max-w-2xl mx-auto">
               Comprehensive front‑end engineering design outputs for accurate project definition.
             </p>
@@ -360,7 +396,7 @@ const Epcm = () => {
         </div>
       </section>
 
-      {/* ========== CTA SECTION – added scroll animation ========== */}
+      {/* CTA SECTION – UPDATED with pill badge + gradient heading + underline */}
       <section ref={ctaRef} className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6">
         <div
           className="max-w-4xl mx-auto text-center transition-all duration-700"
@@ -369,21 +405,25 @@ const Epcm = () => {
             transform: ctaInView ? "translateY(0)" : "translateY(30px)",
           }}
         >
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <span className="w-8 h-[2px] bg-amber-600"></span>
-            <span className="text-xs font-semibold tracking-[3px] uppercase text-amber-700">
-              Let's Engineer Your Success
+          {/* Pill badge */}
+          <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
+            Let's Engineer Your Success
+          </span>
+          {/* Gradient heading */}
+          <h2 className="text-3xl lg:text-5xl font-extrabold leading-tight text-gray-900 mt-4 mb-6">
+            Ready to Engineer{" "}
+            <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+               Your Project?
             </span>
-          </div>
-          <h2 className="text-3xl lg:text-5xl font-extrabold mb-6 leading-tight text-gray-900">
-            Ready to Engineer Your Project?
           </h2>
+          {/* Underline */}
+          <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-2 mb-6 rounded-full" />
           <p className="text-gray-700 text-sm lg:text-base max-w-2xl mx-auto mb-10">
             Leverage our engineering centers in Houston and Mumbai for seamless project delivery.
           </p>
           <Link
             to="/contact"
-            className="inline-flex px-8 py-3 rounded-full text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition-all duration-300 shadow-lg"
+            className="inline-flex px-8 py-3 rounded-full text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
           >
             Contact Our Engineering Team →
           </Link>

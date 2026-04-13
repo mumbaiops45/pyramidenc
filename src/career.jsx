@@ -2,9 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   FaArrowRight,
   FaPaperPlane,
-  FaBriefcase,
-  FaGraduationCap,
-  FaChartLine,
   FaCloudUploadAlt,
   FaExclamationCircle,
 } from "react-icons/fa";
@@ -80,7 +77,6 @@ const Career = () => {
   const validateFullName = (name) => {
     if (!name.trim()) return "Full name is required";
     if (name.trim().length < 2) return "Name must be at least 2 characters";
-    // ✅ Fixed: removed unnecessary backslash before apostrophe
     if (!/^[a-zA-Z\s\-']+$/.test(name.trim()))
       return "Name can only contain letters, spaces, hyphens, apostrophes, and dots";
     return "";
@@ -95,7 +91,6 @@ const Career = () => {
 
   const validatePhone = (phone) => {
     if (!phone.trim()) return "Phone number is required";
-    // ✅ Fixed: removed unnecessary escapes inside character class
     const phoneRegex = /^[+\d\s\-()]{8,20}$/;
     if (!phoneRegex.test(phone.trim())) return "Please enter a valid phone number (8-20 digits, may include +, -, spaces, parentheses)";
     const digitCount = phone.replace(/\D/g, "").length;
@@ -234,7 +229,7 @@ const Career = () => {
     <div className="bg-white">
       <style>{animationStyles}</style>
 
-      {/* Hero Section – Navbar gradient + bubbles */}
+      {/* Hero Section – unchanged */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950"></div>
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -280,21 +275,41 @@ const Career = () => {
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Left Column */}
             <div>
+              {/* Current Openings – UPDATED */}
               <div ref={openingsRef} className="mb-10 transition-all duration-700" style={{ opacity: openingsInView ? 1 : 0, transform: openingsInView ? "translateY(0)" : "translateY(30px)" }}>
-                <div className="flex items-center gap-2 mb-4">
-                  <FaBriefcase className="text-amber-500" />
-                  <h2 className="text-2xl font-bold text-gray-900">Current Openings</h2>
-                </div>
+                {/* Pill badge */}
+                <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)] mb-3">
+                  Opportunities
+                </span>
+                {/* Gradient heading */}
+                <h2 className="text-2xl font-bold text-gray-900 mb-3">
+                  Current{" "}
+                  <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+                    Openings
+                  </span>
+                </h2>
+                {/* Underline */}
+                <div className="w-20 h-0.5 bg-[var(--primery)] rounded-full mb-4" />
                 <ul className="space-y-2 pl-6 list-disc text-gray-700">
                   {openings.map((opening, idx) => <li key={idx}>{opening}</li>)}
                 </ul>
               </div>
 
+              {/* Competence Development – UPDATED */}
               <div ref={competenceRef} className="mb-10 p-6 bg-gray-50 rounded-xl border border-gray-100 transition-all duration-700" style={{ opacity: competenceInView ? 1 : 0, transform: competenceInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.1s" }}>
-                <div className="flex items-center gap-2 mb-3">
-                  <FaGraduationCap className="text-amber-500" />
-                  <h3 className="text-xl font-bold text-gray-900">Competence Development</h3>
-                </div>
+                {/* Pill badge */}
+                <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)] mb-2">
+                  Growth
+                </span>
+                {/* Gradient heading */}
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Competence{" "}
+                  <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+                    Development
+                  </span>
+                </h3>
+                {/* Underline */}
+                <div className="w-16 h-0.5 bg-[var(--primery)] rounded-full mb-3" />
                 <p className="text-gray-600 leading-relaxed">
                   The employees at Pyramid E&C are exposed to world class engineering and project management skills
                   as well as hydrocarbon industry practices, thus the hardworking professionals can gain a great wealth
@@ -304,11 +319,21 @@ const Career = () => {
                 </p>
               </div>
 
+              {/* Career Path – UPDATED */}
               <div ref={careerPathRef} className="p-6 bg-amber-50 rounded-xl border border-amber-100 transition-all duration-700" style={{ opacity: careerPathInView ? 1 : 0, transform: careerPathInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.2s" }}>
-                <div className="flex items-center gap-2 mb-3">
-                  <FaChartLine className="text-amber-500" />
-                  <h3 className="text-xl font-bold text-gray-900">Career Path</h3>
-                </div>
+                {/* Pill badge */}
+                <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)] mb-2">
+                  Progression
+                </span>
+                {/* Gradient heading */}
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Career{" "}
+                  <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+                    Path
+                  </span>
+                </h3>
+                {/* Underline */}
+                <div className="w-16 h-0.5 bg-[var(--primery)] rounded-full mb-3" />
                 <p className="text-gray-700 leading-relaxed">
                   Pyramid E&C provides a full career cycle to a professional beginning from core department,
                   progressing into project management and then into manufacturing, construction and operation of
@@ -321,7 +346,7 @@ const Career = () => {
               </div>
             </div>
 
-            {/* Right Column: Application Form with validation */}
+            {/* Right Column: Application Form (unchanged) */}
             <div ref={formRef} className="transition-all duration-700" style={{ opacity: formInView ? 1 : 0, transform: formInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.1s" }}>
               <div className="bg-white rounded-2xl shadow-lg overflow-hidden sticky top-24">
                 <div className="bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-4">
@@ -331,7 +356,6 @@ const Career = () => {
                   </div>
                 </div>
                 <div className="p-6 md:p-8">
-                
                   <form onSubmit={handleSubmit} className="space-y-5">
                     {/* Full Name with validation */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -481,16 +505,30 @@ const Career = () => {
         </div>
       </section>
 
-      {/* CTA Section – Light yellow gradient */}
+      {/* CTA Section – UPDATED with pill badge + gradient heading + underline */}
       <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <span className="w-8 h-[2px] bg-amber-600"></span>
-            <span className="text-xs font-semibold tracking-[3px] uppercase text-amber-700">Shape the Future of Energy</span>
-          </div>
-          <h2 className="text-3xl lg:text-5xl font-extrabold mb-6 leading-tight text-gray-900">Join a global team driving innovation</h2>
-          <p className="text-gray-700 text-sm lg:text-base max-w-2xl mx-auto mb-10">Be part of Pyramid E&C – where your career meets excellence in hydrocarbon and renewable technologies.</p>
-          <button onClick={() => document.querySelector(".bg-gradient-to-r.from-amber-500")?.scrollIntoView({ behavior: "smooth" })} className="inline-flex px-8 py-3 rounded-full text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition-all duration-300 shadow-lg">
+          {/* Pill badge */}
+          <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
+            Shape the Future of Energy
+          </span>
+          {/* Gradient heading */}
+          <h2 className="text-3xl lg:text-5xl font-extrabold leading-tight text-gray-900 mt-4 mb-6">
+            Join a{" "}
+            <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+              global team
+            </span>{" "}
+            driving innovation
+          </h2>
+          {/* Underline */}
+          <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-2 mb-6 rounded-full" />
+          <p className="text-gray-700 text-sm lg:text-base max-w-2xl mx-auto mb-10">
+            Be part of Pyramid E&C – where your career meets excellence in hydrocarbon and renewable technologies.
+          </p>
+          <button
+            onClick={() => document.querySelector(".bg-gradient-to-r.from-amber-500")?.scrollIntoView({ behavior: "smooth" })}
+            className="inline-flex px-8 py-3 rounded-full text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+          >
             Apply Now →
           </button>
         </div>

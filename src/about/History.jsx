@@ -209,7 +209,7 @@ const History = () => {
     <div className="bg-white">
       <style>{animationStyles}</style>
 
-      {/* Hero Section */}
+      {/* Hero Section – unchanged (already has gradient) */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950"></div>
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -250,7 +250,7 @@ const History = () => {
         </div>
       </section>
 
-      {/* Legacy Section */}
+      {/* Legacy Section – updated with pill badge + gradient + underline */}
       <section className="py-16 bg-gray-50">
         <div
           ref={legacyRef}
@@ -258,10 +258,23 @@ const History = () => {
             legacyInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          <div className="inline-block px-4 py-1 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold mb-4">
+          {/* Pill badge – consistent with GuidingPrinciples */}
+          <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Our Legacy
-          </div>
-          <p className="text-gray-700 text-lg leading-relaxed">
+          </span>
+
+          {/* Heading with gradient on key word */}
+          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mt-4">
+            A{" "}
+            <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+              Legacy of Excellence
+            </span>
+          </h2>
+
+          {/* Underline */}
+          <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
+
+          <p className="text-gray-700 text-lg leading-relaxed mt-6">
             Founded in 1995,{" "}
             <span className="text-amber-600 font-semibold">Pyramid E&C Group</span>{" "}
             has grown into a global hydrocarbon engineering and solutions provider,
@@ -271,12 +284,12 @@ const History = () => {
         </div>
       </section>
 
-      {/* Animated Milestones */}
+      {/* Animated Milestones – unchanged */}
       {milestones.map((milestone, idx) => (
         <MilestoneBlock key={idx} milestone={milestone} idx={idx} />
       ))}
 
-      {/* CTA Section */}
+      {/* CTA Section – updated with pill badge + gradient heading + underline */}
       <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6">
         <div
           ref={ctaRef}
@@ -284,21 +297,29 @@ const History = () => {
             ctaInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <span className="w-8 h-[2px] bg-amber-600"></span>
-            <span className="text-xs font-semibold tracking-[3px] uppercase text-amber-700">
-              Shaping the Future of Hydrocarbons
+          {/* Pill badge */}
+          <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
+            Shaping the Future of Hydrocarbons
+          </span>
+
+          {/* Gradient heading */}
+          <h2 className="text-3xl lg:text-5xl font-extrabold leading-tight text-gray-900 mt-4 mb-6">
+            From past milestones to <br />{" "}
+            <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+              future innovations
             </span>
-          </div>
-          <h2 className="text-3xl lg:text-5xl font-extrabold mb-6 leading-tight text-gray-900">
-            From past milestones to <br /> future innovations
           </h2>
+
+          {/* Underline */}
+          <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-2 mb-6 rounded-full" />
+
           <p className="text-gray-700 text-sm lg:text-base max-w-2xl mx-auto mb-10">
             We continue to engineer excellence – partner with us for your next project.
           </p>
+
           <Link
             to="/contact"
-            className="inline-flex px-8 py-3 rounded-full text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition-all duration-300 shadow-lg"
+            className="inline-flex px-8 py-3 rounded-full text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
           >
             Explore Our Capabilities →
           </Link>

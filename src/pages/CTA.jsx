@@ -16,12 +16,15 @@ const CTA = () => {
 
         {/* Heading */}
         <h2 className="text-3xl lg:text-5xl font-extrabold mb-6 leading-tight text-gray-900">
-          Ready to Start Your <br /> Next Project?
+          Ready to Start Your{" "}
+          <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+            Next Project?
+          </span>
         </h2>
 
         {/* Description */}
         <p className="text-gray-700 text-sm lg:text-base max-w-2xl mx-auto mb-10">
-          Partner with Pyramid E&C to deliver high-performance engineering solutions 
+          Partner with Pyramid E&C to deliver high-performance engineering solutions
           across oil & gas, energy transition, and industrial infrastructure.
         </p>
 

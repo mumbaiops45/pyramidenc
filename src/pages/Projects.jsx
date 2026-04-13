@@ -25,22 +25,27 @@ const projects = [
 
 const Projects = () => {
   return (
-    <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-28 px-6">
+    <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-20 px-6">
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
         <div className="text-center mb-14">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <span className="w-8 h-[2px] bg-amber-600"></span>
-            <span className="text-xs font-semibold tracking-[3px] uppercase text-amber-700">
-              Our Work
-            </span>
-          </div>
+  {/* Top label – pill badge style */}
+  <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
+    Our Work
+  </span>
 
-          <h2 className="text-3xl lg:text-5xl font-extrabold text-gray-900">
-            Featured Projects
-          </h2>
-        </div>
+  {/* Title with gradient on the key word */}
+  <h2 className="text-4xl lg:text-5xl font-bold mt-4 text-gray-900">
+    Featured{" "}
+    <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+      Projects
+    </span>
+  </h2>
+
+  {/* Underline */}
+  <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full"></div>
+</div>
 
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

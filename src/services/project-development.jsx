@@ -111,7 +111,7 @@ const ProjectDevelopment = () => {
     <div className="bg-white">
       <style>{animationStyles}</style>
 
-      {/* Hero – centered text, no image */}
+      {/* Hero – unchanged */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950"></div>
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -149,29 +149,41 @@ const ProjectDevelopment = () => {
         </div>
       </section>
 
-      {/* Introduction – with animation */}
+      {/* Introduction – updated pill badge */}
       <section ref={introRef} className="py-16 bg-gray-50">
         <div
           className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 transition-all duration-700"
           style={{ opacity: introInView ? 1 : 0, transform: introInView ? "translateY(0)" : "translateY(30px)" }}
         >
-          <div className="inline-block px-4 py-1 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold mb-4">
+          <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Our Track Record
-          </div>
-          <p className="text-gray-700 text-lg leading-relaxed">
+          </span>
+          <p className="text-gray-700 text-lg leading-relaxed mt-4">
             Pyramid E&C has specialist project management teams who have delivered more than <span className="text-amber-600 font-semibold">700 projects</span> in the last <span className="text-amber-600 font-semibold">25 years</span> of operation. We conceptualize, engineer, and deliver projects from our regional headquarters in Houston, London, Dubai, and Mumbai.
           </p>
         </div>
       </section>
 
-      {/* Image Section (moved from hero) – with animation */}
+      {/* Image Section – UPDATED with pill badge + gradient heading + underline */}
       <section ref={imageSectionRef} className="py-16 px-6 bg-white">
         <div
           className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center transition-all duration-700"
           style={{ opacity: imageSectionInView ? 1 : 0, transform: imageSectionInView ? "translateY(0)" : "translateY(30px)" }}
         >
           <div className="order-2 md:order-1">
-            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Global Project Delivery</h3>
+            {/* Pill badge */}
+            <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
+              Global Presence
+            </span>
+            {/* Gradient heading */}
+            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4 mb-4">
+              Global{" "}
+              <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+                Project Delivery
+              </span>
+            </h3>
+            {/* Underline */}
+            <div className="w-24 h-1 bg-[var(--primery)] rounded-full mb-6" />
             <p className="text-gray-600 mb-6 leading-relaxed">
               Our teams across Houston, London, Dubai, and Mumbai work seamlessly to deliver projects on time and on budget.
               We combine local knowledge with global best practices to ensure success.
@@ -201,18 +213,23 @@ const ProjectDevelopment = () => {
         </div>
       </section>
 
-      {/* Sectors We Serve – NO CARDS: left‑border design */}
+      {/* Sectors We Serve – updated header */}
       <section ref={sectorsRef} className="py-20 bg-white">
         <div
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-700"
           style={{ opacity: sectorsInView ? 1 : 0, transform: sectorsInView ? "translateY(0)" : "translateY(30px)" }}
         >
           <div className="text-center mb-12">
-            <div className="inline-block px-4 py-1 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold mb-3">
+            <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Our Expertise
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Sectors We Serve</h2>
-            <div className="w-24 h-1 bg-amber-500 mx-auto rounded-full mt-4"></div>
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4">
+              Sectors{" "}
+              <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+                We Serve
+              </span>
+            </h2>
+            <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
             <p className="text-gray-600 mt-6 max-w-2xl mx-auto">
               Specialized project delivery across the hydrocarbon value chain – conventional and renewable.
             </p>
@@ -236,18 +253,23 @@ const ProjectDevelopment = () => {
         </div>
       </section>
 
-      {/* Project Phases – NO CARDS: step numbers + left border */}
+      {/* Project Phases – updated header */}
       <section ref={phasesRef} className="py-20 bg-gray-50">
         <div
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-700"
           style={{ opacity: phasesInView ? 1 : 0, transform: phasesInView ? "translateY(0)" : "translateY(30px)" }}
         >
           <div className="text-center mb-12">
-            <div className="inline-block px-4 py-1 rounded-full bg-amber-100 text-amber-700 text-sm font-semibold mb-3">
+            <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Our Approach
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Project Development Phases</h2>
-            <div className="w-24 h-1 bg-amber-500 mx-auto rounded-full mt-4"></div>
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4">
+              Project Development{" "}
+              <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+                Phases
+              </span>
+            </h2>
+            <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
             <p className="text-gray-600 mt-6 max-w-2xl mx-auto">
               A structured, proven methodology from initial concept to successful project completion.
             </p>
@@ -274,27 +296,28 @@ const ProjectDevelopment = () => {
         </div>
       </section>
 
-      {/* CTA Section – with animation */}
+      {/* CTA Section – updated header */}
       <section ref={ctaRef} className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6">
         <div
           className="max-w-4xl mx-auto text-center transition-all duration-700"
           style={{ opacity: ctaInView ? 1 : 0, transform: ctaInView ? "translateY(0)" : "translateY(30px)" }}
         >
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <span className="w-8 h-[2px] bg-amber-600"></span>
-            <span className="text-xs font-semibold tracking-[3px] uppercase text-amber-700">
-              Let's Build Together
+          <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
+            Let's Build Together
+          </span>
+          <h2 className="text-3xl lg:text-5xl font-extrabold leading-tight text-gray-900 mt-4 mb-6">
+            Ready to Start{" "}
+            <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+              Your Project?
             </span>
-          </div>
-          <h2 className="text-3xl lg:text-5xl font-extrabold mb-6 leading-tight text-gray-900">
-            Ready to Start Your Project?
           </h2>
+          <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-2 mb-6 rounded-full" />
           <p className="text-gray-700 text-sm lg:text-base max-w-2xl mx-auto mb-10">
             Let Pyramid E&C bring your vision to life – from feasibility to full‑scale delivery.
           </p>
           <Link
             to="/contact"
-            className="inline-flex px-8 py-3 rounded-full text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition-all duration-300 shadow-lg"
+            className="inline-flex px-8 py-3 rounded-full text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
           >
             Discuss Your Project →
           </Link>
