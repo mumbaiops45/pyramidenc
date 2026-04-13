@@ -90,7 +90,7 @@ const slides = [
 ];
 
 const DURATION = 5000;
-const YELLOW = "#F5B400"; // matches --primery in your CSS
+const YELLOW = "#F5B400";
 
 const Hero = () => {
   const [current, setCurrent] = useState(0);
@@ -113,7 +113,6 @@ const Hero = () => {
         return next;
       });
     }, DURATION);
-
     if (progressRef.current) {
       progressRef.current.style.transition = "none";
       progressRef.current.style.width = "0%";
@@ -131,7 +130,6 @@ const Hero = () => {
   useEffect(() => {
     restartProgress();
     return () => clearInterval(timerRef.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const pad = (n) => String(n).padStart(2, "0");
@@ -162,9 +160,46 @@ const Hero = () => {
         .h-btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
         .h-btn-outline:hover { border-color: rgba(255,255,255,0.7) !important; background: rgba(255,255,255,0.05) !important; }
         .h-btn-primary, .h-btn-outline { transition: all 0.2s ease !important; }
+
+        /* --- RESPONSIVE FIXES --- */
+        @media (max-width: 1024px) {
+          .hero-right-nav {
+            display: none !important;
+          }
+          .hero-left-content {
+            max-width: 100% !important;
+            padding: 0 20px !important;
+            text-align: center;
+          }
+          .hero-headline {
+            font-size: clamp(36px, 8vw, 64px) !important;
+            white-space: normal !important;
+            word-break: break-word;
+          }
+          .hero-desc {
+            max-width: 100% !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+          }
+          .hero-cta {
+            justify-content: center !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .hero-left-content {
+            padding: 0 16px !important;
+          }
+          .hero-eyebrow {
+            font-size: 10px !important;
+            letter-spacing: 2px !important;
+          }
+          .h-btn-primary, .h-btn-outline {
+            padding: 10px 20px !important;
+            font-size: 12px !important;
+          }
+        }
       `}</style>
 
-      {/* Slides */}
       {slides.map((slide, i) => {
         const { SVGIllustration } = slide;
         return (
@@ -186,11 +221,6 @@ const Hero = () => {
                 background: `linear-gradient(135deg, ${slide.bgFrom} 0%, ${slide.bgVia} 40%, ${slide.bgTo} 100%)`,
               }}
             >
-              {/* To use real photos instead of SVG, replace <SVGIllustration /> with:
-                  <img src={slide.image} alt={slide.headline}
-                    style={{ width:"100%", height:"100%", objectFit:"cover", position:"absolute", inset:0 }}
-                    loading={i === 0 ? "eager" : "lazy"} />
-              */}
               <SVGIllustration />
             </div>
 
@@ -218,13 +248,12 @@ const Hero = () => {
             >
               {/* LEFT: slide text */}
               <div
-                className={i === current ? "hero-text-animate" : ""}
+                className={i === current ? "hero-text-animate hero-left-content" : "hero-left-content"}
                 key={i === current ? animKey : undefined}
                 style={{ maxWidth: 560, flex: "0 0 auto" }}
               >
-                {/* Eyebrow */}
                 <div
-                  className="h-eyebrow"
+                  className="h-eyebrow hero-eyebrow"
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
@@ -241,9 +270,8 @@ const Hero = () => {
                   {slide.eyebrow}
                 </div>
 
-                {/* Headline — yellow */}
                 <h1
-                  className="h-headline"
+                  className="h-headline hero-headline"
                   style={{
                     fontSize: "clamp(48px, 7vw, 88px)",
                     fontWeight: 900,
@@ -257,9 +285,8 @@ const Hero = () => {
                   {slide.headline}
                 </h1>
 
-                {/* Description */}
                 <p
-                  className="h-desc"
+                  className="h-desc hero-desc"
                   style={{
                     fontSize: 15,
                     fontWeight: 400,
@@ -272,8 +299,7 @@ const Hero = () => {
                   {slide.desc}
                 </p>
 
-                {/* CTA buttons */}
-                <div className="h-cta" style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+                <div className="h-cta hero-cta" style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
                   <Link
                     to="/contact"
                     className="h-btn-primary"
@@ -319,6 +345,7 @@ const Hero = () => {
 
               {/* RIGHT: slide navigation */}
               <div
+                className="hero-right-nav"
                 style={{
                   display: "flex",
                   flexDirection: "column",
@@ -345,7 +372,6 @@ const Hero = () => {
                         : {}),
                     }}
                   >
-                    {/* Vertical fill bar */}
                     <div
                       style={{
                         width: 2,
@@ -359,7 +385,6 @@ const Hero = () => {
                     >
                       <ThumbFill active={idx === current} duration={DURATION} animKey={animKey} color={YELLOW} />
                     </div>
-
                     <div style={{ flex: 1 }}>
                       <div
                         style={{
@@ -385,7 +410,6 @@ const Hero = () => {
                         {s.eyebrow}
                       </div>
                     </div>
-
                     <div
                       style={{
                         fontSize: 11,
@@ -420,7 +444,7 @@ const Hero = () => {
         {pad(current + 1)} / {pad(slides.length)}
       </div>
 
-      {/* Bottom progress line — yellow */}
+      {/* Bottom progress line */}
       <div
         ref={progressRef}
         style={{
@@ -437,10 +461,8 @@ const Hero = () => {
   );
 };
 
-/** Animated vertical fill bar for thumbnails */
 const ThumbFill = ({ active, duration, animKey, color }) => {
   const ref = useRef(null);
-
   useEffect(() => {
     if (!ref.current) return;
     if (active) {
@@ -459,7 +481,6 @@ const ThumbFill = ({ active, duration, animKey, color }) => {
       ref.current.style.height = "0%";
     }
   }, [active, animKey, duration]);
-
   return (
     <div
       ref={ref}
