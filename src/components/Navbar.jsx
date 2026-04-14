@@ -62,20 +62,18 @@ const NavItem = ({ item, isActive }) => {
     >
       <Link
         to={item.path}
-        className={`flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
-          isActive
+        className={`flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${isActive
             ? "text-amber-400 bg-white/5"
             : "text-gray-400 hover:text-amber-400 hover:bg-white/5"
-        }`}
+          }`}
       >
         {item.name}
       </Link>
 
       {item.subMenu && (
         <div
-          className={`absolute left-0 top-full pt-2 w-60 transition-all duration-200 z-50 ${
-            open ? "opacity-100 visible translate-y-0" : "opacity-0 invisible -translate-y-1"
-          }`}
+          className={`absolute left-0 top-full pt-2 w-60 transition-all duration-200 z-50 ${open ? "opacity-100 visible translate-y-0" : "opacity-0 invisible -translate-y-1"
+            }`}
         >
           <div className="rounded-xl overflow-hidden shadow-xl border border-gray-800 bg-gray-900">
             {item.subMenu.map((sub, i) => (
@@ -112,12 +110,12 @@ const Navbar = () => {
       <div className="px-5 lg:px-8">
         <div className="flex items-center justify-between lg:justify-between justify-center h-20 relative">
           {/* Logo */}
-          <Link 
-  to="/" 
-  className="flex-shrink-0 lg:static absolute left-1/2 transform -translate-x-1/2"
->
-  <img src="/PYRAMID-EC-Logo.png" alt="logo" className="h-5" />
-</Link>
+          <Link
+            to="/"
+            className="flex-shrink-0 absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 lg:left-auto"
+          >
+            <img src="/PYRAMID-EC-Logo.png" alt="logo" className="h-5" />
+          </Link>
 
           {/* Desktop Menu */}
           <div className="hidden lg:flex items-center gap-4">
@@ -127,19 +125,18 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Button */}
-         <button
-  className="lg:hidden text-white absolute right-5"
-  onClick={() => setMobileOpen(!mobileOpen)}
->
-  ☰
-</button>
+          <button
+            className="lg:hidden text-white absolute right-5"
+            onClick={() => setMobileOpen(!mobileOpen)}
+          >
+            ☰
+          </button>
         </div>
 
         {/* Mobile Menu */}
         <div
-          className={`lg:hidden overflow-hidden transition-all duration-300 ${
-            mobileOpen ? "max-h-[700px] opacity-100" : "max-h-0 opacity-0"
-          }`}
+          className={`lg:hidden overflow-hidden transition-all duration-300 ${mobileOpen ? "max-h-[700px] opacity-100" : "max-h-0 opacity-0"
+            }`}
         >
           <div className="pt-3 pb-5 border-t border-gray-800 space-y-1">
             {menuItems.map((item, i) => (
@@ -166,9 +163,8 @@ const Navbar = () => {
 
                 {item.subMenu && (
                   <div
-                    className={`pl-5 overflow-hidden transition-all ${
-                      expandedMobile === i ? "max-h-96" : "max-h-0"
-                    }`}
+                    className={`pl-5 overflow-hidden transition-all ${expandedMobile === i ? "max-h-96" : "max-h-0"
+                      }`}
                   >
                     {item.subMenu.map((sub, j) => (
                       <Link
