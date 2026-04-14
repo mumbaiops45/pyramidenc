@@ -197,6 +197,14 @@ const Hero = () => {
             padding: 10px 20px !important;
             font-size: 12px !important;
           }
+            @media (max-width: 640px) {
+           .hero-headline {
+             white-space: normal !important;   /* ✅ allow wrapping */
+             word-break: break-word !important; /* ✅ prevent weird E break */
+             font-size: clamp(28px, 9vw, 42px) !important;
+             line-height: 1.2 !important;
+           }
+          }
         }
       `}</style>
 
