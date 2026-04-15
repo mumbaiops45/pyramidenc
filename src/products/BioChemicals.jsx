@@ -10,6 +10,10 @@ import { Link } from "react-router-dom";
 // Animation styles (including bubbleFloat and fade animations)
 // ============================================================
 const animationStyles = `
+  :root {
+    --primery: #f59e0b;
+    --primery-dark: #d97706;
+  }
   @keyframes fadeUp {
     0% { opacity: 0; transform: translateY(30px); }
     100% { opacity: 1; transform: translateY(0); }
@@ -87,10 +91,10 @@ const BioChemicals = () => {
   }, []);
 
   return (
-    <div className="bg-white">
+    <div className="bg-white overflow-x-hidden">
       <style>{animationStyles}</style>
 
-      {/* Hero Section – unchanged */}
+      {/* Hero Section */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950"></div>
 
@@ -114,23 +118,23 @@ const BioChemicals = () => {
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-          <div className="flex flex-col lg:flex-row items-center gap-12">
-            <div className="lg:w-1/2 animate-fadeLeft">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+          <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-12">
+            <div className="lg:w-1/2 animate-fadeLeft text-center lg:text-left">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
                 Bio Chemicals
                 <span className="block text-amber-400">Sustainable Technology</span>
               </h1>
-              <p className="text-lg md:text-xl text-gray-200 mb-8 leading-relaxed">
+              <p className="text-base md:text-lg lg:text-xl text-gray-200 mb-8 leading-relaxed">
                 Pyramid E&C offers modern, efficient, and fully automated Conventional and Cellulosic
                 Bioethanol plants with Zero Liquid Discharge (ZLD) and Zero Greenhouse Gas (GHG) emissions.
               </p>
             </div>
             <div className="lg:w-1/2 flex justify-center animate-fadeRight delay-200">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/20">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/20 w-full max-w-md mx-auto">
                 <img
                   src="/biochemicals.jpg"
                   alt="Bioethanol plant and green technology"
-                  className="w-full h-auto max-h-[400px] object-cover"
+                  className="w-full h-auto max-h-[250px] md:max-h-[400px] object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent"></div>
               </div>
@@ -139,40 +143,37 @@ const BioChemicals = () => {
         </div>
       </section>
 
-      {/* Core Bio-Chemical Products – Updated header */}
-      <section ref={portfolioRef} className="py-20 bg-gray-50">
+      {/* Core Bio-Chemical Products */}
+      <section ref={portfolioRef} className="py-12 md:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 transition-all duration-700"
+          <div className="text-center mb-10 md:mb-16 transition-all duration-700"
             style={{ opacity: portfolioInView ? 1 : 0, transform: portfolioInView ? "translateY(0)" : "translateY(30px)" }}>
-            {/* Pill badge */}
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Our Portfolio
             </span>
-            {/* Heading with gradient on "Sustainable Bio-Products" */}
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mt-4">
               Sustainable{" "}
               <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
                 Bio-Products
               </span>
             </h2>
-            {/* Underline */}
             <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
-            <p className="text-gray-600 max-w-2xl mx-auto mt-6">
+            <p className="text-gray-600 max-w-2xl mx-auto mt-6 text-sm sm:text-base px-4">
               From first-generation ethanol to advanced bioplastics and SAF, we deliver complete solutions.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
             {/* 1G Bioethanol */}
             <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
               style={{ opacity: portfolioInView ? 1 : 0, transform: portfolioInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.1s" }}>
               <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
-              <div className="p-6 text-center">
-                <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-600">
-                  <GiPlantSeed size={32} />
+              <div className="p-5 md:p-6 text-center">
+                <div className="w-14 h-14 md:w-16 md:h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-600">
+                  <GiPlantSeed size={28} className="md:w-8 md:h-8" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900">1G Bioethanol</h3>
-                <p className="text-gray-500 text-sm mt-2">First generation ethanol from sugar/starch crops</p>
+                <h3 className="text-lg md:text-xl font-bold text-gray-900">1G Bioethanol</h3>
+                <p className="text-gray-500 text-xs md:text-sm mt-2">First generation ethanol from sugar/starch crops</p>
               </div>
             </div>
 
@@ -180,12 +181,12 @@ const BioChemicals = () => {
             <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
               style={{ opacity: portfolioInView ? 1 : 0, transform: portfolioInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.2s" }}>
               <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
-              <div className="p-6 text-center">
-                <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-600">
-                  <FaFlask size={32} />
+              <div className="p-5 md:p-6 text-center">
+                <div className="w-14 h-14 md:w-16 md:h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-600">
+                  <FaFlask size={28} className="md:w-8 md:h-8" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900">Bio Methanol</h3>
-                <p className="text-gray-500 text-sm mt-2">Renewable methanol from biomass or captured CO₂</p>
+                <h3 className="text-lg md:text-xl font-bold text-gray-900">Bio Methanol</h3>
+                <p className="text-gray-500 text-xs md:text-sm mt-2">Renewable methanol from biomass or captured CO₂</p>
               </div>
             </div>
 
@@ -193,12 +194,12 @@ const BioChemicals = () => {
             <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
               style={{ opacity: portfolioInView ? 1 : 0, transform: portfolioInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.3s" }}>
               <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
-              <div className="p-6 text-center">
-                <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-600">
-                  <GiGasPump size={32} />
+              <div className="p-5 md:p-6 text-center">
+                <div className="w-14 h-14 md:w-16 md:h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-600">
+                  <GiGasPump size={28} className="md:w-8 md:h-8" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900">Bio LNG</h3>
-                <p className="text-gray-500 text-sm mt-2">Liquefied biomethane for clean transport</p>
+                <h3 className="text-lg md:text-xl font-bold text-gray-900">Bio LNG</h3>
+                <p className="text-gray-500 text-xs md:text-sm mt-2">Liquefied biomethane for clean transport</p>
               </div>
             </div>
 
@@ -206,68 +207,68 @@ const BioChemicals = () => {
             <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
               style={{ opacity: portfolioInView ? 1 : 0, transform: portfolioInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.4s" }}>
               <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
-              <div className="p-6 text-center">
-                <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-600">
-                  <FaRecycle size={32} />
+              <div className="p-5 md:p-6 text-center">
+                <div className="w-14 h-14 md:w-16 md:h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-600">
+                  <FaRecycle size={28} className="md:w-8 md:h-8" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900">Bioplastics</h3>
-                <p className="text-gray-500 text-sm mt-2">Renewable and biodegradable polymers</p>
+                <h3 className="text-lg md:text-xl font-bold text-gray-900">Bioplastics</h3>
+                <p className="text-gray-500 text-xs md:text-sm mt-2">Renewable and biodegradable polymers</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Technology & Plant Capacities – unchanged (no header) */}
-      <section ref={techRef} className="py-20 bg-white">
+      {/* Technology & Plant Capacities */}
+      <section ref={techRef} className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-10">
-            <div className="bg-gray-50 rounded-2xl p-8 shadow-sm border-b-4 border-amber-500 transition-all duration-700"
+          <div className="grid md:grid-cols-2 gap-6 md:gap-10">
+            <div className="bg-gray-50 rounded-2xl p-6 md:p-8 shadow-sm border-b-4 border-amber-500 transition-all duration-700"
               style={{ opacity: techInView ? 1 : 0, transform: techInView ? "translateX(0)" : "translateX(-30px)" }}>
               <div className="flex items-center gap-3 mb-4">
-                <FaLeaf className="text-amber-600 text-3xl" />
-                <h3 className="text-2xl font-bold text-gray-900">Own Technology</h3>
+                <FaLeaf className="text-amber-600 text-2xl md:text-3xl" />
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900">Own Technology</h3>
               </div>
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-gray-700 leading-relaxed text-sm md:text-base">
                 Proprietary technology for <strong>Bioethanol</strong> and <strong>Bio-methanol</strong> production,
                 developed in-house for maximum efficiency, lower CAPEX/OPEX, and seamless integration.
               </p>
             </div>
 
-            <div className="bg-gray-50 rounded-2xl p-8 shadow-sm border-b-4 border-amber-500 transition-all duration-700"
+            <div className="bg-gray-50 rounded-2xl p-6 md:p-8 shadow-sm border-b-4 border-amber-500 transition-all duration-700"
               style={{ opacity: techInView ? 1 : 0, transform: techInView ? "translateX(0)" : "translateX(30px)" }}>
               <div className="flex items-center gap-3 mb-4">
-                <FaChartLine className="text-amber-600 text-3xl" />
-                <h3 className="text-2xl font-bold text-gray-900">Standard Plants</h3>
+                <FaChartLine className="text-amber-600 text-2xl md:text-3xl" />
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900">Standard Plants</h3>
               </div>
-              <p className="text-gray-700 mb-3">
+              <p className="text-gray-700 mb-3 text-sm md:text-base">
                 Pre-engineered Bioethanol plants available in standard capacities:
               </p>
-              <div className="flex flex-wrap gap-3">
-                <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">100 KL/day</span>
-                <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">200 KL/day</span>
-                <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">400 KL/day</span>
+              <div className="flex flex-wrap gap-2 md:gap-3">
+                <span className="bg-amber-100 text-amber-800 px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm font-medium">100 KL/day</span>
+                <span className="bg-amber-100 text-amber-800 px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm font-medium">200 KL/day</span>
+                <span className="bg-amber-100 text-amber-800 px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm font-medium">400 KL/day</span>
               </div>
-              <p className="text-gray-600 text-sm mt-3">Fully automated with ZLD and zero GHG emissions.</p>
+              <p className="text-gray-600 text-xs md:text-sm mt-3">Fully automated with ZLD and zero GHG emissions.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* SAF and Partner Technologies – unchanged (no header) */}
-      <section ref={safRef} className="py-20 bg-gray-50">
+      {/* SAF and Partner Technologies */}
+      <section ref={safRef} className="py-12 md:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row gap-12">
+          <div className="flex flex-col lg:flex-row gap-8 md:gap-12">
             <div className="lg:w-1/2 transition-all duration-700"
               style={{ opacity: safInView ? 1 : 0, transform: safInView ? "translateX(0)" : "translateX(-30px)" }}>
-              <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-8 text-white shadow-xl h-full">
+              <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-6 md:p-8 text-white shadow-xl h-full">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center">
-                    <span className="text-gray-900 font-bold text-xl">✈️</span>
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-amber-500 rounded-xl flex items-center justify-center">
+                    <span className="text-gray-900 font-bold text-lg md:text-xl">✈️</span>
                   </div>
-                  <h3 className="text-2xl font-bold">Sustainable Aviation Fuel (SAF)</h3>
+                  <h3 className="text-xl md:text-2xl font-bold">Sustainable Aviation Fuel (SAF)</h3>
                 </div>
-                <p className="text-gray-300 leading-relaxed">
+                <p className="text-gray-300 leading-relaxed text-sm md:text-base">
                   Through strategic partnerships, Pyramid E&C offers advanced technology for Sustainable Aviation Fuel production,
                   enabling decarbonization of the aviation sector via HEFA, ATJ, and Gasification-FT routes.
                 </p>
@@ -276,16 +277,16 @@ const BioChemicals = () => {
 
             <div className="lg:w-1/2 transition-all duration-700"
               style={{ opacity: safInView ? 1 : 0, transform: safInView ? "translateX(0)" : "translateX(30px)" }}>
-              <div className="bg-white rounded-3xl p-8 shadow-lg border border-amber-100 h-full">
+              <div className="bg-white rounded-3xl p-6 md:p-8 shadow-lg border border-amber-100 h-full">
                 <div className="flex items-center gap-3 mb-4">
-                  <MdBiotech className="text-amber-600 text-3xl" />
-                  <h3 className="text-2xl font-bold text-gray-900">Partner Technologies</h3>
+                  <MdBiotech className="text-amber-600 text-2xl md:text-3xl" />
+                  <h3 className="text-xl md:text-2xl font-bold text-gray-900">Partner Technologies</h3>
                 </div>
-                <p className="text-gray-700 mb-4">Licensed access to world-class technologies for:</p>
+                <p className="text-gray-700 mb-4 text-sm md:text-base">Licensed access to world-class technologies for:</p>
                 <ul className="space-y-2">
-                  <li className="flex items-center gap-2"><span className="w-2 h-2 bg-amber-500 rounded-full"></span><span className="text-gray-800 font-medium">Ethylene Glycol</span></li>
-                  <li className="flex items-center gap-2"><span className="w-2 h-2 bg-amber-500 rounded-full"></span><span className="text-gray-800 font-medium">Ethylene Oxide</span></li>
-                  <li className="flex items-center gap-2"><span className="w-2 h-2 bg-amber-500 rounded-full"></span><span className="text-gray-800 font-medium">Sustainable Aviation Fuel (SAF)</span></li>
+                  <li className="flex items-center gap-2"><span className="w-2 h-2 bg-amber-500 rounded-full"></span><span className="text-gray-800 text-sm md:text-base font-medium">Ethylene Glycol</span></li>
+                  <li className="flex items-center gap-2"><span className="w-2 h-2 bg-amber-500 rounded-full"></span><span className="text-gray-800 text-sm md:text-base font-medium">Ethylene Oxide</span></li>
+                  <li className="flex items-center gap-2"><span className="w-2 h-2 bg-amber-500 rounded-full"></span><span className="text-gray-800 text-sm md:text-base font-medium">Sustainable Aviation Fuel (SAF)</span></li>
                 </ul>
               </div>
             </div>
@@ -293,59 +294,52 @@ const BioChemicals = () => {
         </div>
       </section>
 
-      {/* Environmental Value Proposition – unchanged (no header) */}
-      <section ref={envRef} className="py-16 bg-white">
+      {/* Environmental Value Proposition */}
+      <section ref={envRef} className="py-12 md:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-6 text-center">
-            <div className="bg-gray-50 p-8 rounded-xl shadow-sm transition-all duration-700"
+          <div className="grid md:grid-cols-3 gap-6 md:gap-6 text-center">
+            <div className="bg-gray-50 p-6 md:p-8 rounded-xl shadow-sm transition-all duration-700"
               style={{ opacity: envInView ? 1 : 0, transform: envInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.1s" }}>
-              <div className="text-amber-600 text-4xl mb-3 flex justify-center"><FaShieldAlt /></div>
-              <h4 className="text-xl font-bold text-gray-900 mb-2">Zero Liquid Discharge</h4>
-              <p className="text-gray-600">Complete water recycling and effluent elimination.</p>
+              <div className="text-amber-600 text-3xl md:text-4xl mb-3 flex justify-center"><FaShieldAlt /></div>
+              <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Zero Liquid Discharge</h4>
+              <p className="text-gray-600 text-sm md:text-base">Complete water recycling and effluent elimination.</p>
             </div>
-            <div className="bg-gray-50 p-8 rounded-xl shadow-sm transition-all duration-700"
+            <div className="bg-gray-50 p-6 md:p-8 rounded-xl shadow-sm transition-all duration-700"
               style={{ opacity: envInView ? 1 : 0, transform: envInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.2s" }}>
-              <div className="text-amber-600 text-4xl mb-3 flex justify-center"><FaBolt /></div>
-              <h4 className="text-xl font-bold text-gray-900 mb-2">Zero GHG Emissions</h4>
-              <p className="text-gray-600">Carbon-neutral processes with carbon capture integration.</p>
+              <div className="text-amber-600 text-3xl md:text-4xl mb-3 flex justify-center"><FaBolt /></div>
+              <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Zero GHG Emissions</h4>
+              <p className="text-gray-600 text-sm md:text-base">Carbon-neutral processes with carbon capture integration.</p>
             </div>
-            <div className="bg-gray-50 p-8 rounded-xl shadow-sm transition-all duration-700"
+            <div className="bg-gray-50 p-6 md:p-8 rounded-xl shadow-sm transition-all duration-700"
               style={{ opacity: envInView ? 1 : 0, transform: envInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.3s" }}>
-              <div className="text-amber-600 text-4xl mb-3 flex justify-center"><FaGlobe /></div>
-              <h4 className="text-xl font-bold text-gray-900 mb-2">Circular Economy</h4>
-              <p className="text-gray-600">Waste-to-value conversion and sustainable feedstocks.</p>
+              <div className="text-amber-600 text-3xl md:text-4xl mb-3 flex justify-center"><FaGlobe /></div>
+              <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Circular Economy</h4>
+              <p className="text-gray-600 text-sm md:text-base">Waste-to-value conversion and sustainable feedstocks.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section – Updated with pill badge + gradient heading + underline */}
-      <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6">
+      {/* CTA Section */}
+      <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-16 md:py-20 lg:py-24 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Pill badge */}
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Drive the green transition with Pyramid E&C
           </span>
-
-          {/* Gradient heading */}
-          <h2 className="text-3xl lg:text-5xl font-extrabold leading-tight text-gray-900 mt-4 mb-6">
+          <h2 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold leading-tight text-gray-900 mt-4 mb-6">
             Let's build a{" "}
             <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
               sustainable future
             </span>{" "}
             together
           </h2>
-
-          {/* Underline */}
           <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-2 mb-6 rounded-full" />
-
-          <p className="text-gray-700 text-sm lg:text-base max-w-2xl mx-auto mb-10">
+          <p className="text-gray-700 text-sm sm:text-base max-w-2xl mx-auto mb-8 sm:mb-10 px-4">
             From concept to commissioning, our bio-chemical solutions help you achieve sustainability goals.
           </p>
-
           <Link
             to="/contact"
-            className="inline-flex px-8 py-3 rounded-full text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            className="inline-flex px-6 sm:px-8 py-2.5 sm:py-3 rounded-full text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
           >
             Contact Our Experts →
           </Link>

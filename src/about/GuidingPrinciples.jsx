@@ -73,6 +73,10 @@ const GuidingPrinciples = () => {
   ];
 
   const animationStyles = `
+    :root {
+      --primery: #f59e0b;
+      --primery-dark: #d97706;
+    }
     @keyframes fadeUp {
       0% { opacity: 0; transform: translateY(30px); }
       100% { opacity: 1; transform: translateY(0); }
@@ -122,15 +126,15 @@ const GuidingPrinciples = () => {
   };
 
   const heroBubbles = generateBubbles(18, 15, 50);
-  const ctaBubbles  = generateBubbles(22, 10, 45);
+  const ctaBubbles = generateBubbles(22, 10, 45);
 
-  const [introRef,   introInView]   = useInView();
+  const [introRef, introInView] = useInView();
   const [pillarsRef, pillarsInView] = useInView();
-  const [certRef,    certInView]    = useInView();
-  const [ctaRef,     ctaInView]     = useInView();
+  const [certRef, certInView] = useInView();
+  const [ctaRef, ctaInView] = useInView();
 
   return (
-    <div className="bg-white">
+    <div className="bg-white overflow-x-hidden">
       <style>{animationStyles}</style>
 
       {/* ── Hero ── */}
@@ -181,12 +185,9 @@ const GuidingPrinciples = () => {
             introInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          {/* Pill badge — PyramidGroup style */}
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Our Priorities
           </span>
-
-          {/* Heading with gradient — PyramidGroup style */}
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mt-4">
             What{" "}
             <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
@@ -194,7 +195,6 @@ const GuidingPrinciples = () => {
             </span>
           </h2>
           <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
-
           <p className="text-gray-700 text-lg leading-relaxed mt-6">
             As an integrator and developer of technical solutions for the hydrocarbon industry,
             the tenets of{" "}
@@ -209,8 +209,6 @@ const GuidingPrinciples = () => {
       {/* ── Three Pillars ── */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-          {/* Section header — PyramidGroup style */}
           <div className="text-center mb-14">
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               ESG Framework
@@ -229,22 +227,19 @@ const GuidingPrinciples = () => {
 
           <div
             ref={pillarsRef}
-            className={`grid md:grid-cols-3 gap-8 transition-all duration-700 ${
+            className={`grid md:grid-cols-3 gap-6 md:gap-8 transition-all duration-700 ${
               pillarsInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
             }`}
           >
             {principles.map((principle, idx) => (
               <div
                 key={idx}
-                className="group bg-gray-50 border border-gray-100 rounded-2xl p-7 hover:border-amber-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+                className="group bg-gray-50 border border-gray-100 rounded-2xl p-5 sm:p-7 hover:border-amber-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
                 style={{ transitionDelay: `${idx * 0.15}s` }}
               >
-                {/* Top amber bar */}
                 <div className="mb-5">
                   <div className="w-10 h-[3px] bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] rounded-full group-hover:w-full transition-all duration-500" />
                 </div>
-
-                {/* Icon + title */}
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-11 h-11 rounded-full bg-amber-100 flex items-center justify-center group-hover:bg-amber-500 transition-colors duration-300 flex-shrink-0">
                     <principle.icon className="text-xl text-amber-600 group-hover:text-white transition-colors" />
@@ -253,8 +248,6 @@ const GuidingPrinciples = () => {
                     {principle.title}
                   </h2>
                 </div>
-
-                {/* List items */}
                 <ul className="space-y-2.5 pl-4 border-l-2 border-gray-200 group-hover:border-amber-400 transition-colors">
                   {principle.items.map((item, i) => (
                     <li
@@ -282,23 +275,19 @@ const GuidingPrinciples = () => {
         className="py-16 px-6 relative overflow-hidden"
         style={{ background: "linear-gradient(145deg,#0f172a 0%,#1e293b 50%,#0f172a 100%)" }}
       >
-        {/* Ambient glow */}
         <div
           className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-40 pointer-events-none"
           style={{ background: "radial-gradient(ellipse,rgba(245,158,11,0.12) 0%,transparent 70%)" }}
         />
-
         <div
           ref={certRef}
           className={`max-w-4xl mx-auto text-center relative z-10 transition-all duration-700 ${
             certInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          {/* Pill badge */}
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
             Certified Excellence
           </span>
-
           <h2 className="text-2xl lg:text-3xl font-bold text-slate-50 mt-4 mb-2">
             Internationally{" "}
             <span className="bg-gradient-to-r from-amber-400 to-amber-500 bg-clip-text text-transparent">
@@ -306,17 +295,15 @@ const GuidingPrinciples = () => {
             </span>
           </h2>
           <div className="w-16 h-[2px] bg-amber-500 mx-auto mt-3 mb-8 rounded-full" />
-
           <div className="flex flex-wrap justify-center gap-4">
             {[
-              { icon: MdSecurity,    label: "ISO 9001:2015",      sub: "Quality Management"  },
-              { icon: FaShieldAlt,   label: "ISO 14001 / 45001",  sub: "HSE System"           },
-              { icon: FaNetworkWired,label: "ISO 27001:2017",     sub: "Data Security"        },
+              { icon: MdSecurity, label: "ISO 9001:2015", sub: "Quality Management" },
+              { icon: FaShieldAlt, label: "ISO 14001 / 45001", sub: "HSE System" },
+              { icon: FaNetworkWired, label: "ISO 27001:2017", sub: "Data Security" },
             ].map(({ icon: Icon, label, sub }) => (
               <div
                 key={label}
-                className="flex items-center gap-3 px-6 py-3 rounded-xl cursor-default transition-all duration-300
-                           border border-white/10 hover:border-amber-400/50 hover:-translate-y-1"
+                className="flex items-center gap-3 px-3 sm:px-6 py-3 rounded-xl cursor-default transition-all duration-300 border border-white/10 hover:border-amber-400/50 hover:-translate-y-1"
                 style={{ background: "rgba(255,255,255,0.05)" }}
                 onMouseEnter={e => e.currentTarget.style.background = "rgba(245,158,11,0.1)"}
                 onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.05)"}
@@ -353,29 +340,24 @@ const GuidingPrinciples = () => {
             />
           ))}
         </div>
-
         <div
           ref={ctaRef}
           className={`relative z-10 max-w-5xl mx-auto text-center transition-all duration-700 ${
             ctaInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          {/* Pill badge — PyramidGroup CTA style */}
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Committed to Responsible Engineering
           </span>
-
           <h2 className="text-3xl lg:text-5xl font-extrabold leading-tight text-gray-900 mt-4 mb-6">
-            Our principles guide every <br />{" "}
+            Our principles guide every{" "}
             <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
               project, partnership, and innovation.
             </span>
           </h2>
-
           <p className="text-gray-700 text-sm lg:text-base max-w-2xl mx-auto mb-10">
             Learn more about how we integrate ESG into everything we do.
           </p>
-
           <Link
             to="/contact"
             className="inline-flex px-8 py-3 rounded-full text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
@@ -384,7 +366,6 @@ const GuidingPrinciples = () => {
           </Link>
         </div>
       </section>
-
     </div>
   );
 };

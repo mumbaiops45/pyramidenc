@@ -107,14 +107,13 @@ const milestones = [
   },
 ];
 
-// Component for each milestone with its own scroll animation
-const MilestoneBlock = ({ milestone, idx, direction }) => {
+const MilestoneBlock = ({ milestone, idx }) => {
   const [ref, inView] = useInView();
 
   return (
     <section
       ref={ref}
-      className={`py-16 transition-all duration-700 ${
+      className={`py-12 md:py-16 transition-all duration-700 ${
         idx % 2 === 0 ? "bg-white" : "bg-gray-50"
       }`}
     >
@@ -123,40 +122,38 @@ const MilestoneBlock = ({ milestone, idx, direction }) => {
           className={`flex flex-col ${
             idx % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
           } gap-8 items-center transition-all duration-700 ${
-            inView
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-10"
+            inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
           style={{ transitionDelay: `${idx * 0.1}s` }}
         >
-          {/* Image side */}
+          {/* Image side - FIXED ASPECT RATIO for uniform size */}
           <div className="md:w-1/2 group transition-all duration-500 delay-100">
-            <div className="relative overflow-hidden rounded-lg">
+            <div className="relative overflow-hidden rounded-lg aspect-[4/3] sm:aspect-[16/9]">
               <div className="absolute inset-0 bg-amber-500/0 group-hover:bg-amber-500/10 transition-all duration-500 z-10"></div>
               <img
                 src={milestone.image}
                 alt={milestone.imageAlt}
-                className="w-full h-80 object-cover transition-transform duration-700 group-hover:scale-105"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </div>
           </div>
 
-          {/* Text side */}
+          {/* Text side (unchanged) */}
           <div className="md:w-1/2 transition-all duration-500 delay-200">
             <div className="relative">
-              <div className="text-7xl md:text-8xl font-black text-gray-100 absolute -top-6 -left-4 z-0">
+              <div className="text-6xl sm:text-7xl md:text-8xl font-black text-gray-100 absolute -top-6 -left-4 z-0">
                 {milestone.year}
               </div>
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
                     <milestone.icon className="text-xl text-amber-600" />
                   </div>
-                  <h3 className="text-2xl md:text-3xl font-bold text-gray-900">
+                  <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
                     {milestone.title}
                   </h3>
                 </div>
-                <p className="text-gray-600 text-base leading-relaxed mb-4">
+                <p className="text-gray-600 text-sm sm:text-base leading-relaxed mb-4">
                   {milestone.description}
                 </p>
                 <div className="flex items-center gap-2 text-amber-600">
@@ -174,6 +171,10 @@ const MilestoneBlock = ({ milestone, idx, direction }) => {
 
 const History = () => {
   const animationStyles = `
+    :root {
+      --primery: #f59e0b;
+      --primery-dark: #d97706;
+    }
     @keyframes fadeUp { 0%{opacity:0;transform:translateY(30px)} 100%{opacity:1;transform:translateY(0)} }
     @keyframes fadeLeft { 0%{opacity:0;transform:translateX(-30px)} 100%{opacity:1;transform:translateX(0)} }
     @keyframes fadeRight { 0%{opacity:0;transform:translateX(30px)} 100%{opacity:1;transform:translateX(0)} }
@@ -206,10 +207,10 @@ const History = () => {
   const [ctaRef, ctaInView] = useInView();
 
   return (
-    <div className="bg-white">
+    <div className="bg-white overflow-x-hidden">
       <style>{animationStyles}</style>
 
-      {/* Hero Section – unchanged (already has gradient) */}
+      {/* Hero Section */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950"></div>
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -250,7 +251,7 @@ const History = () => {
         </div>
       </section>
 
-      {/* Legacy Section – updated with pill badge + gradient + underline */}
+      {/* Legacy Section */}
       <section className="py-16 bg-gray-50">
         <div
           ref={legacyRef}
@@ -258,23 +259,17 @@ const History = () => {
             legacyInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          {/* Pill badge – consistent with GuidingPrinciples */}
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Our Legacy
           </span>
-
-          {/* Heading with gradient on key word */}
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mt-4">
-            A Legacy of{" "}
+            A{" "}
             <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
               Legacy of Excellence
             </span>
           </h2>
-
-          {/* Underline */}
           <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
-
-          <p className="text-gray-700 text-lg leading-relaxed mt-6">
+          <p className="text-gray-700 text-base sm:text-lg leading-relaxed mt-6">
             Founded in 1995,{" "}
             <span className="text-amber-600 font-semibold">Pyramid E&C Group</span>{" "}
             has grown into a global hydrocarbon engineering and solutions provider,
@@ -284,12 +279,12 @@ const History = () => {
         </div>
       </section>
 
-      {/* Animated Milestones – unchanged */}
+      {/* Milestones */}
       {milestones.map((milestone, idx) => (
         <MilestoneBlock key={idx} milestone={milestone} idx={idx} />
       ))}
 
-      {/* CTA Section – updated with pill badge + gradient heading + underline */}
+      {/* CTA Section */}
       <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6">
         <div
           ref={ctaRef}
@@ -297,26 +292,19 @@ const History = () => {
             ctaInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          {/* Pill badge */}
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Shaping the Future of Hydrocarbons
           </span>
-
-          {/* Gradient heading */}
           <h2 className="text-3xl lg:text-5xl font-extrabold leading-tight text-gray-900 mt-4 mb-6">
-            From past milestones to <br />{" "}
+            From past milestones to{" "}
             <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
               future innovations
             </span>
           </h2>
-
-          {/* Underline */}
           <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-2 mb-6 rounded-full" />
-
           <p className="text-gray-700 text-sm lg:text-base max-w-2xl mx-auto mb-10">
             We continue to engineer excellence – partner with us for your next project.
           </p>
-
           <Link
             to="/contact"
             className="inline-flex px-8 py-3 rounded-full text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"

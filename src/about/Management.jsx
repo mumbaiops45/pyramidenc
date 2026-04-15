@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-   FaLinkedinIn, FaEnvelope,
+  FaLinkedinIn, FaEnvelope,
   FaUserTie, FaBriefcase, FaGraduationCap,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -72,9 +72,9 @@ function TeamCard({ member, index }) {
           }}
         />
 
-        {/* Avatar section with gradient ring on hover */}
+        {/* Avatar section with gradient ring on hover - responsive size */}
         <div className="relative pt-8 px-6">
-          <div className="relative w-28 h-28 mx-auto">
+          <div className="relative w-24 h-24 sm:w-28 sm:h-28 mx-auto">
             <div 
               className="absolute inset-0 rounded-full transition-all duration-500"
               style={{
@@ -103,38 +103,38 @@ function TeamCard({ member, index }) {
         </div>
 
         {/* Content */}
-        <div className="p-6 text-center">
+        <div className="p-5 sm:p-6 text-center">
           <h3 
-            className="text-xl font-bold mb-1 transition-colors duration-300"
+            className="text-lg sm:text-xl font-bold mb-1 transition-colors duration-300"
             style={{ color: hovered ? "#D97706" : "#1f2937" }}
           >
             {member.name}
           </h3>
-          <p className="text-sm font-semibold mb-3 text-amber-600">
+          <p className="text-xs sm:text-sm font-semibold mb-3 text-amber-600">
             {member.title}
           </p>
 
-          {/* Tags – side by side with whitespace-nowrap */}
+          {/* Tags – side by side with whitespace-nowrap, but wrap on very small */}
           <div className="flex flex-wrap justify-center gap-2 mb-4">
             {member.experience && (
-              <span className="inline-flex items-center gap-1 text-xs bg-amber-50 rounded-full px-2 py-1 border border-amber-200 whitespace-nowrap">
+              <span className="inline-flex items-center gap-1 text-xs bg-amber-50 rounded-full px-2 py-1 border border-amber-200">
                 <FaBriefcase className="text-amber-500 text-[10px]" />
                 <span className="text-gray-600">{member.experience}</span>
               </span>
             )}
             {member.education && (
-              <span className="inline-flex items-center gap-1 text-xs bg-amber-50 rounded-full px-2 py-1 border border-amber-200 whitespace-nowrap">
+              <span className="inline-flex items-center gap-1 text-xs bg-amber-50 rounded-full px-2 py-1 border border-amber-200">
                 <FaGraduationCap className="text-amber-500 text-[10px]" />
                 <span className="text-gray-600">{member.education}</span>
               </span>
             )}
           </div>
 
-          <p className="text-gray-600 text-sm leading-relaxed">
+          <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
             {member.description}
           </p>
 
-          {/* Decorative line between description and social icons */}
+          {/* Decorative line */}
           <div className="flex justify-center mt-5 mb-4">
             <div 
               className="w-12 h-0.5 rounded-full transition-all duration-300"
@@ -146,7 +146,7 @@ function TeamCard({ member, index }) {
             />
           </div>
 
-          {/* Social Icons – removed border-top */}
+          {/* Social Icons */}
           <div className="flex justify-center gap-3">
             {member.linkedin && (
               <a
@@ -192,9 +192,13 @@ function TeamCard({ member, index }) {
 }
 
 // ============================================================
-// Animation styles (including bubbleFloat)
+// Animation styles (including bubbleFloat and CSS variables)
 // ============================================================
 const animationStyles = `
+  :root {
+    --primery: #f59e0b;
+    --primery-dark: #d97706;
+  }
   @keyframes fadeUp {
     0% { opacity: 0; transform: translateY(30px); }
     100% { opacity: 1; transform: translateY(0); }
@@ -231,7 +235,6 @@ const animationStyles = `
 // Main Management Component (Light Theme)
 // ============================================================
 const Management = () => {
-  // Generate random bubbles for hero
   const generateBubbles = (count, baseSize = 20, sizeRange = 40) => {
     return Array.from({ length: count }, (_, i) => ({
       id: i,
@@ -315,10 +318,10 @@ const Management = () => {
   ];
 
   return (
-    <div className="bg-white">
+    <div className="bg-white overflow-x-hidden">
       <style>{animationStyles}</style>
 
-      {/* Hero Section – Navbar gradient + bubbles (unchanged) */}
+      {/* Hero Section */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950"></div>
 
@@ -360,32 +363,26 @@ const Management = () => {
         </div>
       </section>
 
-      {/* Team Grid – Updated header with pill badge + gradient + underline */}
-      <section className="py-20 px-6 relative z-10">
+      {/* Team Grid */}
+      <section className="py-12 md:py-20 px-4 sm:px-6 relative z-10">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            {/* Pill badge – consistent with other components */}
+          <div className="text-center mb-10 md:mb-12">
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Leadership
             </span>
-
-            {/* Heading with gradient on "Excellence" */}
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mt-4">
               Committed to{" "}
               <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
                 Excellence
               </span>
             </h2>
-
-            {/* Underline */}
             <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
-
-            <p className="text-gray-600 mt-6 max-w-2xl mx-auto">
+            <p className="text-gray-600 mt-6 max-w-2xl mx-auto text-sm sm:text-base px-4">
               Our leadership team combines decades of global experience to deliver world‑class engineering solutions.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {teamMembers.map((member, idx) => (
               <TeamCard key={idx} member={member} index={idx} />
             ))}
@@ -393,32 +390,25 @@ const Management = () => {
         </div>
       </section>
 
-      {/* CTA Section – Updated with pill badge + gradient heading + underline */}
-      <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6">
+      {/* CTA Section */}
+      <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-16 md:py-20 lg:py-24 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Pill badge */}
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Ready to work with our experts?
           </span>
-
-          {/* Gradient heading */}
-          <h2 className="text-3xl lg:text-5xl font-extrabold leading-tight text-gray-900 mt-4 mb-6">
+          <h2 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold leading-tight text-gray-900 mt-4 mb-6">
             Connect with our{" "}
             <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
               leadership team
             </span>
           </h2>
-
-          {/* Underline */}
           <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-2 mb-6 rounded-full" />
-
-          <p className="text-gray-700 text-sm lg:text-base max-w-2xl mx-auto mb-10">
+          <p className="text-gray-700 text-sm sm:text-base max-w-2xl mx-auto mb-8 sm:mb-10 px-4">
             Discuss how Pyramid E&C can drive your next project's success.
           </p>
-
           <Link
             to="/contact"
-            className="inline-flex px-8 py-3 rounded-full text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            className="inline-flex px-6 sm:px-8 py-2.5 sm:py-3 rounded-full text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
           >
             Contact Leadership →
           </Link>

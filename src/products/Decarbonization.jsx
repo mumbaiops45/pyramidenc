@@ -11,6 +11,10 @@ import { Link } from "react-router-dom";
 // Animation styles (including bubbleFloat and fade animations)
 // ============================================================
 const animationStyles = `
+  :root {
+    --primery: #f59e0b;
+    --primery-dark: #d97706;
+  }
   @keyframes fadeUp {
     0% { opacity: 0; transform: translateY(30px); }
     100% { opacity: 1; transform: translateY(0); }
@@ -84,10 +88,10 @@ const Decarbonization = () => {
   }, []);
 
   return (
-    <div className="bg-white">
+    <div className="bg-white overflow-x-hidden">
       <style>{animationStyles}</style>
 
-      {/* Hero Section – unchanged */}
+      {/* Hero Section */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950"></div>
 
@@ -111,23 +115,23 @@ const Decarbonization = () => {
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-          <div className="flex flex-col lg:flex-row items-center gap-12">
-            <div className="lg:w-1/2 animate-fadeLeft">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+          <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-12">
+            <div className="lg:w-1/2 animate-fadeLeft text-center lg:text-left lg:pr-8">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
                 Decarbonization
                 <span className="block text-amber-400">Process Solutions</span>
               </h1>
-              <p className="text-lg md:text-xl text-gray-200 mb-8 leading-relaxed">
+              <p className="text-base md:text-lg lg:text-xl text-gray-200 mb-8 leading-relaxed">
                 Pyramid E&C offers several solutions to reduce carbon impact of hydrocarbon processing,
                 from electric reforming and CO₂ liquefaction to flare mitigation and green petrochemicals.
               </p>
             </div>
             <div className="lg:w-1/2 flex justify-center animate-fadeRight delay-200">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/20">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/20 w-full max-w-md lg:max-w-none">
                 <img
                   src="/decarbonization-hero.jpg"
                   alt="Decarbonization plant"
-                  className="w-full h-auto max-h-[400px] object-cover"
+                  className="w-full h-auto max-h-[250px] md:max-h-[400px] object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent"></div>
               </div>
@@ -136,115 +140,112 @@ const Decarbonization = () => {
         </div>
       </section>
 
-      {/* Solutions Grid – Updated header */}
-      <section ref={solutionsRef} className="py-20 bg-gray-50">
+      {/* Solutions Grid */}
+      <section ref={solutionsRef} className="py-12 md:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 transition-all duration-700"
+          <div className="text-center mb-10 md:mb-16 transition-all duration-700"
             style={{ opacity: solutionsInView ? 1 : 0, transform: solutionsInView ? "translateY(0)" : "translateY(30px)" }}>
-            {/* Pill badge */}
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Our Technologies
             </span>
-            {/* Heading with gradient */}
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mt-4">
               Carbon Reduction{" "}
               <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
                 Solutions
               </span>
             </h2>
-            {/* Underline */}
             <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
-            <p className="text-gray-600 max-w-2xl mx-auto mt-6">
+            <p className="text-gray-600 max-w-2xl mx-auto mt-6 text-sm sm:text-base px-4">
               Innovative approaches to lower emissions, capture carbon, and create value.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Electric Reforming – unchanged */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {/* Electric Reforming */}
             <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
               style={{ opacity: solutionsInView ? 1 : 0, transform: solutionsInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.1s" }}>
               <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
-              <div className="p-6">
-                <div className="w-14 h-14 bg-amber-100 rounded-xl flex items-center justify-center mb-4 text-amber-600">
-                  <FaLeaf size={28} />
+              <div className="p-5 md:p-6">
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-amber-100 rounded-xl flex items-center justify-center mb-4 text-amber-600">
+                  <FaLeaf size={24} className="md:w-7 md:h-7" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900">Electric Reforming</h3>
-                <p className="text-gray-600 text-sm mt-2">
+                <h3 className="text-lg md:text-xl font-bold text-gray-900">Electric Reforming</h3>
+                <p className="text-gray-600 text-xs md:text-sm mt-2">
                   The innovative <strong>HydroBlue® Reformer</strong> eliminates flue gas emissions.
                 </p>
               </div>
             </div>
 
-            {/* CO2 Liquefaction – unchanged */}
+            {/* CO2 Liquefaction */}
             <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
               style={{ opacity: solutionsInView ? 1 : 0, transform: solutionsInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.2s" }}>
               <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
-              <div className="p-6">
-                <div className="w-14 h-14 bg-amber-100 rounded-xl flex items-center justify-center mb-4 text-amber-600">
-                  <FaSnowflake size={28} />
+              <div className="p-5 md:p-6">
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-amber-100 rounded-xl flex items-center justify-center mb-4 text-amber-600">
+                  <FaSnowflake size={24} className="md:w-7 md:h-7" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900">CO₂ Liquefaction</h3>
-                <p className="text-gray-600 text-sm mt-2">
+                <h3 className="text-lg md:text-xl font-bold text-gray-900">CO₂ Liquefaction</h3>
+                <p className="text-gray-600 text-xs md:text-sm mt-2">
                   Concentrated CO₂ is efficiently liquefied or converted into dry ice.
                 </p>
               </div>
             </div>
 
-            {/* Flare Mitigation – unchanged */}
+            {/* Flare Mitigation */}
             <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
               style={{ opacity: solutionsInView ? 1 : 0, transform: solutionsInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.3s" }}>
               <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
-              <div className="p-6">
-                <div className="w-14 h-14 bg-amber-100 rounded-xl flex items-center justify-center mb-4 text-amber-600">
-                  <FaFire size={28} />
+              <div className="p-5 md:p-6">
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-amber-100 rounded-xl flex items-center justify-center mb-4 text-amber-600">
+                  <FaFire size={24} className="md:w-7 md:h-7" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900">Flare Mitigation</h3>
-                <p className="text-gray-600 text-sm mt-2">
+                <h3 className="text-lg md:text-xl font-bold text-gray-900">Flare Mitigation</h3>
+                <p className="text-gray-600 text-xs md:text-sm mt-2">
                   Liquefy flared hydrocarbons into "Blue" Ammonia or Methanol.
                 </p>
               </div>
             </div>
 
-            {/* Carbon Sequestration – unchanged */}
+            {/* Carbon Sequestration */}
             <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
               style={{ opacity: solutionsInView ? 1 : 0, transform: solutionsInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.4s" }}>
               <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
-              <div className="p-6">
-                <div className="w-14 h-14 bg-amber-100 rounded-xl flex items-center justify-center mb-4 text-amber-600">
-                  <FaArrowDown size={28} />
+              <div className="p-5 md:p-6">
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-amber-100 rounded-xl flex items-center justify-center mb-4 text-amber-600">
+                  <FaArrowDown size={24} className="md:w-7 md:h-7" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900">Carbon Sequestration</h3>
-                <p className="text-gray-600 text-sm mt-2">
+                <h3 className="text-lg md:text-xl font-bold text-gray-900">Carbon Sequestration</h3>
+                <p className="text-gray-600 text-xs md:text-sm mt-2">
                   Compression and reinjection to store CO₂ in subsurface reservoirs.
                 </p>
               </div>
             </div>
 
-            {/* Fuel Ethanol – unchanged */}
+            {/* Fuel Ethanol */}
             <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
               style={{ opacity: solutionsInView ? 1 : 0, transform: solutionsInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.5s" }}>
               <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
-              <div className="p-6">
-                <div className="w-14 h-14 bg-amber-100 rounded-xl flex items-center justify-center mb-4 text-amber-600">
-                  <FaFlask size={28} />
+              <div className="p-5 md:p-6">
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-amber-100 rounded-xl flex items-center justify-center mb-4 text-amber-600">
+                  <FaFlask size={24} className="md:w-7 md:h-7" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900">Fuel Ethanol</h3>
-                <p className="text-gray-600 text-sm mt-2">
+                <h3 className="text-lg md:text-xl font-bold text-gray-900">Fuel Ethanol</h3>
+                <p className="text-gray-600 text-xs md:text-sm mt-2">
                   Anhydrous Bio-Ethanol from grains, sugar cane, or cellulosic feedstock.
                 </p>
               </div>
             </div>
 
-            {/* Green Petrochemicals – unchanged */}
+            {/* Green Petrochemicals */}
             <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
               style={{ opacity: solutionsInView ? 1 : 0, transform: solutionsInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.6s" }}>
               <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
-              <div className="p-6">
-                <div className="w-14 h-14 bg-amber-100 rounded-xl flex items-center justify-center mb-4 text-amber-600">
-                  <FaRecycle size={28} />
+              <div className="p-5 md:p-6">
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-amber-100 rounded-xl flex items-center justify-center mb-4 text-amber-600">
+                  <FaRecycle size={24} className="md:w-7 md:h-7" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900">Green Petrochemicals</h3>
-                <p className="text-gray-600 text-sm mt-2">
+                <h3 className="text-lg md:text-xl font-bold text-gray-900">Green Petrochemicals</h3>
+                <p className="text-gray-600 text-xs md:text-sm mt-2">
                   Bio-Ethanol as feedstock for petrochemicals, plastics, and hydrogen.
                 </p>
               </div>
@@ -253,49 +254,49 @@ const Decarbonization = () => {
         </div>
       </section>
 
-      {/* Alternative Energy Integration – unchanged (no header) */}
-      <section ref={energyRef} className="py-20 bg-white">
+      {/* Alternative Energy Integration */}
+      <section ref={energyRef} className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row gap-12 items-center">
+          <div className="flex flex-col lg:flex-row gap-8 md:gap-12 items-center">
             <div className="lg:w-1/2 transition-all duration-700"
               style={{ opacity: energyInView ? 1 : 0, transform: energyInView ? "translateX(0)" : "translateX(-30px)" }}>
-              <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-8 text-white shadow-xl">
+              <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-6 md:p-8 text-white shadow-xl">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center">
-                    <FaSolarPanel className="text-gray-900 text-xl" />
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-amber-500 rounded-xl flex items-center justify-center">
+                    <FaSolarPanel className="text-gray-900 text-lg md:text-xl" />
                   </div>
-                  <h3 className="text-2xl font-bold">Alternative Energy Integration</h3>
+                  <h3 className="text-xl md:text-2xl font-bold">Alternative Energy Integration</h3>
                 </div>
-                <p className="text-gray-300 leading-relaxed">
+                <p className="text-gray-300 leading-relaxed text-sm md:text-base">
                   Energy audit and replacement of conventional power with solar, wind, or other renewables.
                 </p>
                 <div className="mt-6 grid grid-cols-2 gap-3">
                   <div className="bg-white/10 rounded-lg p-3 text-center">
-                    <GiWindmill className="text-amber-400 mx-auto text-2xl mb-1" />
-                    <span className="text-sm">Wind Power</span>
+                    <GiWindmill className="text-amber-400 mx-auto text-xl md:text-2xl mb-1" />
+                    <span className="text-xs md:text-sm">Wind Power</span>
                   </div>
                   <div className="bg-white/10 rounded-lg p-3 text-center">
-                    <FaSolarPanel className="text-amber-400 mx-auto text-2xl mb-1" />
-                    <span className="text-sm">Solar PV</span>
+                    <FaSolarPanel className="text-amber-400 mx-auto text-xl md:text-2xl mb-1" />
+                    <span className="text-xs md:text-sm">Solar PV</span>
                   </div>
                 </div>
               </div>
             </div>
             <div className="lg:w-1/2 transition-all duration-700"
               style={{ opacity: energyInView ? 1 : 0, transform: energyInView ? "translateX(0)" : "translateX(30px)" }}>
-              <div className="bg-amber-50 rounded-2xl p-8 border border-amber-100">
+              <div className="bg-amber-50 rounded-2xl p-6 md:p-8 border border-amber-100">
                 <div className="flex items-center gap-3 mb-4">
-                  <FaChartLine className="text-amber-600 text-3xl" />
-                  <h3 className="text-2xl font-bold text-gray-900">Integrated Approach</h3>
+                  <FaChartLine className="text-amber-600 text-2xl md:text-3xl" />
+                  <h3 className="text-xl md:text-2xl font-bold text-gray-900">Integrated Approach</h3>
                 </div>
-                <p className="text-gray-700 leading-relaxed">
+                <p className="text-gray-700 leading-relaxed text-sm md:text-base">
                   Combining process engineering, renewables, and carbon management for holistic decarbonization.
                 </p>
                 <div className="flex flex-wrap gap-2 mt-6">
-                  <span className="bg-amber-200 text-amber-900 px-3 py-1 rounded-full text-sm font-medium">Carbon Footprint Analysis</span>
-                  <span className="bg-amber-200 text-amber-900 px-3 py-1 rounded-full text-sm font-medium">Feasibility Studies</span>
-                  <span className="bg-amber-200 text-amber-900 px-3 py-1 rounded-full text-sm font-medium">Technology Selection</span>
-                  <span className="bg-amber-200 text-amber-900 px-3 py-1 rounded-full text-sm font-medium">EPC Implementation</span>
+                  <span className="bg-amber-200 text-amber-900 px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm font-medium">Carbon Footprint Analysis</span>
+                  <span className="bg-amber-200 text-amber-900 px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm font-medium">Feasibility Studies</span>
+                  <span className="bg-amber-200 text-amber-900 px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm font-medium">Technology Selection</span>
+                  <span className="bg-amber-200 text-amber-900 px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm font-medium">EPC Implementation</span>
                 </div>
               </div>
             </div>
@@ -303,59 +304,52 @@ const Decarbonization = () => {
         </div>
       </section>
 
-      {/* Value Proposition – unchanged (no header) */}
-      <section ref={valueRef} className="py-16 bg-gray-50">
+      {/* Value Proposition */}
+      <section ref={valueRef} className="py-12 md:py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-6 text-center">
-            <div className="bg-white p-8 rounded-xl shadow-sm transition-all duration-700"
+          <div className="grid md:grid-cols-3 gap-6 md:gap-6 text-center">
+            <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm transition-all duration-700"
               style={{ opacity: valueInView ? 1 : 0, transform: valueInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.1s" }}>
-              <div className="text-amber-600 text-4xl mb-3 flex justify-center"><FaShieldAlt /></div>
-              <h4 className="text-xl font-bold text-gray-900 mb-2">Net Zero Ready</h4>
-              <p className="text-gray-600">Solutions for carbon neutrality.</p>
+              <div className="text-amber-600 text-3xl md:text-4xl mb-3 flex justify-center"><FaShieldAlt /></div>
+              <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Net Zero Ready</h4>
+              <p className="text-gray-600 text-sm md:text-base">Solutions for carbon neutrality.</p>
             </div>
-            <div className="bg-white p-8 rounded-xl shadow-sm transition-all duration-700"
+            <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm transition-all duration-700"
               style={{ opacity: valueInView ? 1 : 0, transform: valueInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.2s" }}>
-              <div className="text-amber-600 text-4xl mb-3 flex justify-center"><FaBolt /></div>
-              <h4 className="text-xl font-bold text-gray-900 mb-2">Value Creation</h4>
-              <p className="text-gray-600">Turning waste into revenue.</p>
+              <div className="text-amber-600 text-3xl md:text-4xl mb-3 flex justify-center"><FaBolt /></div>
+              <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Value Creation</h4>
+              <p className="text-gray-600 text-sm md:text-base">Turning waste into revenue.</p>
             </div>
-            <div className="bg-white p-8 rounded-xl shadow-sm transition-all duration-700"
+            <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm transition-all duration-700"
               style={{ opacity: valueInView ? 1 : 0, transform: valueInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.3s" }}>
-              <div className="text-amber-600 text-4xl mb-3 flex justify-center"><FaGlobe /></div>
-              <h4 className="text-xl font-bold text-gray-900 mb-2">ESG Excellence</h4>
-              <p className="text-gray-600">Enhance your ESG performance.</p>
+              <div className="text-amber-600 text-3xl md:text-4xl mb-3 flex justify-center"><FaGlobe /></div>
+              <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-2">ESG Excellence</h4>
+              <p className="text-gray-600 text-sm md:text-base">Enhance your ESG performance.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section – Updated with pill badge + gradient heading + underline */}
-      <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6">
+      {/* CTA Section */}
+      <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-16 md:py-20 lg:py-24 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Pill badge */}
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Ready to decarbonize your operations?
           </span>
-
-          {/* Gradient heading */}
-          <h2 className="text-3xl lg:text-5xl font-extrabold leading-tight text-gray-900 mt-4 mb-6">
+          <h2 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold leading-tight text-gray-900 mt-4 mb-6">
             Let's lead the{" "}
             <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
               energy transition
             </span>{" "}
             together
           </h2>
-
-          {/* Underline */}
           <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-2 mb-6 rounded-full" />
-
-          <p className="text-gray-700 text-sm lg:text-base max-w-2xl mx-auto mb-10">
+          <p className="text-gray-700 text-sm sm:text-base max-w-2xl mx-auto mb-8 sm:mb-10 px-4">
             Partner with Pyramid E&C to reduce emissions and create sustainable value.
           </p>
-
           <Link
             to="/contact"
-            className="inline-flex px-8 py-3 rounded-full text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            className="inline-flex px-6 sm:px-8 py-2.5 sm:py-3 rounded-full text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
           >
             Contact Our Experts →
           </Link>
