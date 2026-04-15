@@ -187,6 +187,10 @@ const Career = () => {
   const heroBubbles = generateBubbles(18, 15, 50);
 
   const animationStyles = `
+    :root {
+      --primery: #f59e0b;
+      --primery-dark: #d97706;
+    }
     @keyframes fadeUp {
       0% { opacity: 0; transform: translateY(30px); }
       100% { opacity: 1; transform: translateY(0); }
@@ -226,7 +230,7 @@ const Career = () => {
   const [formRef, formInView] = useInView();
 
   return (
-    <div className="bg-white">
+    <div className="bg-white overflow-x-hidden">
       <style>{animationStyles}</style>
 
       {/* Hero Section – unchanged */}

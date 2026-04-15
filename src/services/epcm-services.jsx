@@ -128,7 +128,7 @@ const Epcm = () => {
   ];
 
   return (
-    <div className="bg-white">
+    <div className="bg-white overflow-x-hidden">
       <style>{animationStyles}</style>
 
       {/* Hero Section – unchanged */}
@@ -413,7 +413,7 @@ const Epcm = () => {
           <h2 className="text-3xl lg:text-5xl font-extrabold leading-tight text-gray-900 mt-4 mb-6">
             Ready to Engineer{" "}
             <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
-               Your Project?
+              Your Project?
             </span>
           </h2>
           {/* Underline */}

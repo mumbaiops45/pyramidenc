@@ -121,7 +121,7 @@ const Epc = () => {
   ];
 
   return (
-    <div className="bg-white">
+      <div className="bg-white overflow-x-hidden">
       <style>{animationStyles}</style>
 
       {/* Hero Section – centered text, brand gradient */}

@@ -58,13 +58,13 @@ const Contact = () => {
 
   // ======================== VALIDATION FUNCTIONS ========================
   // General validations (for enquiry & supplier)
-  const validateName    = (v) => !v.trim() ? "Full name is required" : v.trim().length < 2 ? "Min 2 characters" : !/^[a-zA-Z\s\-']+$/.test(v.trim()) ? "Letters only" : "";
+  const validateName = (v) => !v.trim() ? "Full name is required" : v.trim().length < 2 ? "Min 2 characters" : !/^[a-zA-Z\s\-']+$/.test(v.trim()) ? "Letters only" : "";
   const validateCompany = (v) => !v.trim() ? "Company name is required" : v.trim().length < 2 ? "Min 2 characters" : "";
   const validateWebsite = (v) => !v.trim() ? "Website is required" : !/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/.test(v.trim()) ? "Enter a valid URL" : "";
-  const validatePhone   = (v) => !v.trim() ? "Phone is required" : (v.replace(/\D/g,"").length < 8 || v.replace(/\D/g,"").length > 15) ? "8–15 digits required" : "";
-  const validateEmail   = (v) => !v.trim() ? "Email is required" : !/^[^\s@]+@([^\s@]+\.)+[^\s@]+$/.test(v.trim()) ? "Enter a valid email" : "";
-  const validateOtp     = (v) => !v.trim() ? "OTP is required" : !/^\d{6}$/.test(v.trim()) ? "6-digit OTP required" : "";
-  const validateDesc    = (v) => !v.trim() ? "Description is required" : v.trim().length < 10 ? "Min 10 characters" : "";
+  const validatePhone = (v) => !v.trim() ? "Phone is required" : (v.replace(/\D/g, "").length < 8 || v.replace(/\D/g, "").length > 15) ? "8–15 digits required" : "";
+  const validateEmail = (v) => !v.trim() ? "Email is required" : !/^[^\s@]+@([^\s@]+\.)+[^\s@]+$/.test(v.trim()) ? "Enter a valid email" : "";
+  const validateOtp = (v) => !v.trim() ? "OTP is required" : !/^\d{6}$/.test(v.trim()) ? "6-digit OTP required" : "";
+  const validateDesc = (v) => !v.trim() ? "Description is required" : v.trim().length < 10 ? "Min 10 characters" : "";
 
   // Special validations for Report a Concern
   const validateConcernName = (v) => {
@@ -138,14 +138,14 @@ const Contact = () => {
   }, [concernData, concernTouched, concernOtpSent, concernDemoOtp]);
 
   // Handlers
-  const handleChange = (e) => { const {name,value}=e.target; setFormData(p=>({...p,[name]:value})); };
-  const handleBlur   = (e) => { const {name}=e.target; setTouched(p=>({...p,[name]:true})); };
+  const handleChange = (e) => { const { name, value } = e.target; setFormData(p => ({ ...p, [name]: value })); };
+  const handleBlur = (e) => { const { name } = e.target; setTouched(p => ({ ...p, [name]: true })); };
 
-  const handleSupplierChange = (e) => { const {name,value}=e.target; setSupplierData(p=>({...p,[name]:value})); };
-  const handleSupplierBlur   = (e) => { const {name}=e.target; setSupplierTouched(p=>({...p,[name]:true})); };
+  const handleSupplierChange = (e) => { const { name, value } = e.target; setSupplierData(p => ({ ...p, [name]: value })); };
+  const handleSupplierBlur = (e) => { const { name } = e.target; setSupplierTouched(p => ({ ...p, [name]: true })); };
 
-  const handleConcernChange = (e) => { const {name,value}=e.target; setConcernData(p=>({...p,[name]:value})); };
-  const handleConcernBlur   = (e) => { const {name}=e.target; setConcernTouched(p=>({...p,[name]:true})); };
+  const handleConcernChange = (e) => { const { name, value } = e.target; setConcernData(p => ({ ...p, [name]: value })); };
+  const handleConcernBlur = (e) => { const { name } = e.target; setConcernTouched(p => ({ ...p, [name]: true })); };
 
   const handleFileChange = (files) => {
     const arr = Array.from(files);
@@ -155,27 +155,27 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const allTouched = {}; Object.keys(formData).forEach(k => allTouched[k]=true); setTouched(allTouched);
-    const errs = [validateName(formData.name),validateCompany(formData.company),validateWebsite(formData.website),validatePhone(formData.phone),validateEmail(formData.email),validateOtp(formData.otp),validateDesc(formData.description)];
+    const allTouched = {}; Object.keys(formData).forEach(k => allTouched[k] = true); setTouched(allTouched);
+    const errs = [validateName(formData.name), validateCompany(formData.company), validateWebsite(formData.website), validatePhone(formData.phone), validateEmail(formData.email), validateOtp(formData.otp), validateDesc(formData.description)];
     if (errs.some(Boolean)) { alert("Please fix errors before submitting."); return; }
     setIsSubmitting(true);
-    await new Promise(r=>setTimeout(r,1000));
+    await new Promise(r => setTimeout(r, 1000));
     alert("Enquiry submitted! (Demo)");
     setIsSubmitting(false); setIsModalOpen(false);
-    setFormData({name:"",company:"",website:"",phone:"",email:"",otp:"",description:""});
+    setFormData({ name: "", company: "", website: "", phone: "", email: "", otp: "", description: "" });
     setTouched({}); setErrors({});
   };
 
   const handleSupplierSubmit = async (e) => {
     e.preventDefault();
-    const allTouched = {}; Object.keys(supplierData).forEach(k => allTouched[k]=true); setSupplierTouched(allTouched);
-    const errs = [validateName(supplierData.name),validateCompany(supplierData.company),validateWebsite(supplierData.website),validatePhone(supplierData.phone),validateEmail(supplierData.email),validateOtp(supplierData.otp)];
+    const allTouched = {}; Object.keys(supplierData).forEach(k => allTouched[k] = true); setSupplierTouched(allTouched);
+    const errs = [validateName(supplierData.name), validateCompany(supplierData.company), validateWebsite(supplierData.website), validatePhone(supplierData.phone), validateEmail(supplierData.email), validateOtp(supplierData.otp)];
     if (errs.some(Boolean)) { alert("Please fix errors before submitting."); return; }
     setIsSupplierSubmitting(true);
-    await new Promise(r=>setTimeout(r,1000));
+    await new Promise(r => setTimeout(r, 1000));
     alert("Supplier registration submitted! (Demo)");
     setIsSupplierSubmitting(false); setIsSupplierModalOpen(false);
-    setSupplierData({name:"",company:"",website:"",phone:"",email:"",otp:""});
+    setSupplierData({ name: "", company: "", website: "", phone: "", email: "", otp: "" });
     setSupplierTouched({}); setSupplierErrors({}); setUploadedFiles([]);
   };
 
@@ -211,7 +211,7 @@ const Contact = () => {
       return;
     }
     setIsConcernSubmitting(true);
-    await new Promise(r=>setTimeout(r,1000));
+    await new Promise(r => setTimeout(r, 1000));
     alert("Concern reported successfully! (Demo)");
     setIsConcernSubmitting(false);
     setConcernData({ name: "", email: "", phone: "", otp: "", concern: "" });
@@ -222,23 +222,27 @@ const Contact = () => {
   };
 
   const offices = [
-    { region: "Americas & Caribbean",       address: "16420 Park Ten Place, Suite 585, Houston, Texas – 77084, United States",                              phone: "+1 713 429 5499"   },
-    { region: "Europe & Russia",             address: "One Kingdom Street, Paddington Central, London, W2 6BD, United Kingdom",                              phone: "+44 74356 80880"  },
-    { region: "Middle East & North Africa",  address: "48 BurjGate Tower, Level 20, Dubai, UAE, PO BOX 36615",                                               phone: "+971 4 518 2635"  },
-    { region: "Asia Pacific",                address: "4th Floor, Hamilton 'A'–Wing, Hiranandani Business Park, Thane – 400 607, India",                     phone: "+91 22 4038 1000" },
-    { region: "Sub-Saharan Africa",          address: "Plot 307 Danjuma Drive, Trans Amadi, Port Harcourt, Nigeria",                                          phone: "+1 713 429 5499"  },
+    { region: "Americas & Caribbean", address: "16420 Park Ten Place, Suite 585, Houston, Texas – 77084, United States", phone: "+1 713 429 5499" },
+    { region: "Europe & Russia", address: "One Kingdom Street, Paddington Central, London, W2 6BD, United Kingdom", phone: "+44 74356 80880" },
+    { region: "Middle East & North Africa", address: "48 BurjGate Tower, Level 20, Dubai, UAE, PO BOX 36615", phone: "+971 4 518 2635" },
+    { region: "Asia Pacific", address: "4th Floor, Hamilton 'A'–Wing, Hiranandani Business Park, Thane – 400 607, India", phone: "+91 22 4038 1000" },
+    { region: "Sub-Saharan Africa", address: "Plot 307 Danjuma Drive, Trans Amadi, Port Harcourt, Nigeria", phone: "+1 713 429 5499" },
   ];
 
-  const generateBubbles = (count, baseSize=20, sizeRange=40) =>
-    Array.from({length:count}, (_,i) => ({
-      id:i, size:Math.random()*sizeRange+baseSize, left:Math.random()*100,
-      delay:Math.random()*15, duration:Math.random()*10+8, opacity:Math.random()*0.3+0.2,
+  const generateBubbles = (count, baseSize = 20, sizeRange = 40) =>
+    Array.from({ length: count }, (_, i) => ({
+      id: i, size: Math.random() * sizeRange + baseSize, left: Math.random() * 100,
+      delay: Math.random() * 15, duration: Math.random() * 10 + 8, opacity: Math.random() * 0.3 + 0.2,
     }));
 
-  const heroBubbles    = generateBubbles(18,15,50);
-  const portalBubbles  = generateBubbles(10,10,30);
+  const heroBubbles = generateBubbles(18, 15, 50);
+  const portalBubbles = generateBubbles(10, 10, 30);
 
   const animationStyles = `
+   :root {
+    --primery: #f59e0b;
+    --primery-dark: #d97706;
+  }
     @keyframes fadeUp { 0%{opacity:0;transform:translateY(30px)} 100%{opacity:1;transform:translateY(0)} }
     @keyframes fadeLeft { 0%{opacity:0;transform:translateX(-30px)} 100%{opacity:1;transform:translateX(0)} }
     @keyframes bubbleFloat { 0%{transform:translateY(0) scale(0.2);opacity:0} 20%{opacity:0.6} 80%{opacity:0.4} 100%{transform:translateY(-100vh) scale(1);opacity:0} }
@@ -252,7 +256,7 @@ const Contact = () => {
   `;
 
   // Reusable field component for enquiry modal
-  const Field = ({label, name, type="text", rows, value, onChange, onBlur, error, touched: t}) => (
+  const Field = ({ label, name, type = "text", rows, value, onChange, onBlur, error, touched: t }) => (
     <div>
       <label className="block text-gray-700 text-sm font-medium mb-1">{label} *</label>
       {rows ? (
@@ -264,19 +268,19 @@ const Contact = () => {
           className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition ${t && error ? "border-red-400" : "border-gray-300"}`}
           value={value} onChange={onChange} onBlur={onBlur} />
       )}
-      {t && error && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><FaExclamationCircle size={10}/>{error}</p>}
+      {t && error && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><FaExclamationCircle size={10} />{error}</p>}
     </div>
   );
 
   // Reusable field for supplier modal (dark style)
-  const DarkField = ({label, name, type="text", value, onChange, onBlur, error, touched: t}) => (
+  const DarkField = ({ label, name, type = "text", value, onChange, onBlur, error, touched: t }) => (
     <div>
       <label className="block text-slate-300 text-sm font-medium mb-1">{label} *</label>
       <input type={type} name={name}
         className={`w-full px-4 py-2.5 rounded-lg outline-none transition text-slate-100 text-sm placeholder-slate-500 ${t && error ? "border border-red-400 bg-red-500/5" : "border border-white/10 bg-white/5 focus:border-amber-500/60 focus:bg-white/8"}`}
-        style={!(t && error) ? {background:"rgba(255,255,255,0.05)"} : undefined}
+        style={!(t && error) ? { background: "rgba(255,255,255,0.05)" } : undefined}
         value={value} onChange={onChange} onBlur={onBlur} />
-      {t && error && <p className="text-red-400 text-xs mt-1 flex items-center gap-1"><FaExclamationCircle size={10}/>{error}</p>}
+      {t && error && <p className="text-red-400 text-xs mt-1 flex items-center gap-1"><FaExclamationCircle size={10} />{error}</p>}
     </div>
   );
 
@@ -290,8 +294,10 @@ const Contact = () => {
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {heroBubbles.map(b => (
             <div key={b.id} className="absolute rounded-full bg-gradient-to-tr from-amber-400/30 to-amber-500/10"
-              style={{width:`${b.size}px`,height:`${b.size}px`,left:`${b.left}%`,bottom:"-50px",opacity:b.opacity,
-                animation:`bubbleFloat ${b.duration}s ease-in-out infinite`,animationDelay:`${b.delay}s`}} />
+              style={{
+                width: `${b.size}px`, height: `${b.size}px`, left: `${b.left}%`, bottom: "-50px", opacity: b.opacity,
+                animation: `bubbleFloat ${b.duration}s ease-in-out infinite`, animationDelay: `${b.delay}s`
+              }} />
           ))}
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 text-center">
@@ -302,7 +308,7 @@ const Contact = () => {
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fadeUp delay-100">
             Contact{" "}
             <span className="bg-gradient-to-r from-amber-400 to-amber-500 bg-clip-text text-transparent"
-              style={{backgroundSize:"200% auto",animation:"shimmer 3s linear infinite"}}>Us</span>
+              style={{ backgroundSize: "200% auto", animation: "shimmer 3s linear infinite" }}>Us</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto leading-relaxed animate-fadeUp delay-200">
             Connect with Pyramid E&C to explore tailored engineering, modular plant and energy-transition
@@ -360,19 +366,21 @@ const Contact = () => {
 
       {/* Procurement Portal Section – unchanged */}
       <section
-        className="py-20 px-6 relative overflow-hidden"
-        style={{background:"linear-gradient(145deg,#0f172a 0%,#1e293b 50%,#0f172a 100%)"}}
+        className="py-12 md:py-20 px-6 relative overflow-hidden"
+        style={{ background: "linear-gradient(145deg,#0f172a 0%,#1e293b 50%,#0f172a 100%)" }}
       >
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-48 pointer-events-none"
-          style={{background:"radial-gradient(ellipse,rgba(245,158,11,0.1) 0%,transparent 70%)"}} />
+          style={{ background: "radial-gradient(ellipse,rgba(245,158,11,0.1) 0%,transparent 70%)" }} />
         <div className="absolute -bottom-20 -right-20 w-80 h-80 rounded-full pointer-events-none"
-          style={{background:"radial-gradient(circle,rgba(245,158,11,0.06) 0%,transparent 70%)"}} />
+          style={{ background: "radial-gradient(circle,rgba(245,158,11,0.06) 0%,transparent 70%)" }} />
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {portalBubbles.map(b => (
             <div key={b.id} className="absolute rounded-full"
-              style={{width:`${b.size}px`,height:`${b.size}px`,left:`${b.left}%`,bottom:"-50px",
-                opacity:b.opacity*0.5, background:"radial-gradient(circle,rgba(245,158,11,0.3),rgba(245,158,11,0.05))",
-                animation:`bubbleFloat ${b.duration}s ease-in-out infinite`,animationDelay:`${b.delay}s`}} />
+              style={{
+                width: `${b.size}px`, height: `${b.size}px`, left: `${b.left}%`, bottom: "-50px",
+                opacity: b.opacity * 0.5, background: "radial-gradient(circle,rgba(245,158,11,0.3),rgba(245,158,11,0.05))",
+                animation: `bubbleFloat ${b.duration}s ease-in-out infinite`, animationDelay: `${b.delay}s`
+              }} />
           ))}
         </div>
 
@@ -402,18 +410,18 @@ const Contact = () => {
               </p>
 
               {[
-                { icon: FaBuilding,   title: "Register your company",            desc: "Submit your company profile and credentials to join our supplier network."    },
-                { icon: FaFileUpload, title: "Submit documents",                 desc: "Upload compliance documents, certifications, and technical specifications."   },
-                { icon: FaShieldAlt,  title: "Supply chain requirements",        desc: "Learn about Pyramid's standards, vendor qualification and audit criteria."    },
-              ].map(({icon:Icon, title, desc}) => (
+                { icon: FaBuilding, title: "Register your company", desc: "Submit your company profile and credentials to join our supplier network." },
+                { icon: FaFileUpload, title: "Submit documents", desc: "Upload compliance documents, certifications, and technical specifications." },
+                { icon: FaShieldAlt, title: "Supply chain requirements", desc: "Learn about Pyramid's standards, vendor qualification and audit criteria." },
+              ].map(({ icon: Icon, title, desc }) => (
                 <div key={title}
                   className="flex items-start gap-4 p-4 rounded-xl border transition-all duration-200 cursor-default"
-                  style={{background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)"}}
-                  onMouseEnter={e=>e.currentTarget.style.borderColor="rgba(245,158,11,0.35)"}
-                  onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(255,255,255,0.08)"}
+                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
+                  onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(245,158,11,0.35)"}
+                  onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"}
                 >
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{background:"rgba(245,158,11,0.15)", border:"1px solid rgba(245,158,11,0.3)"}}>
+                    style={{ background: "rgba(245,158,11,0.15)", border: "1px solid rgba(245,158,11,0.3)" }}>
                     <Icon className="text-amber-400" size={16} />
                   </div>
                   <div>
@@ -433,12 +441,12 @@ const Contact = () => {
             </div>
 
             <div className="rounded-2xl overflow-hidden border"
-              style={{background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.08)"}}>
+              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
               <div className="h-[3px] w-full bg-gradient-to-r from-amber-400 to-amber-600" />
               <div className="p-7">
                 <div className="flex items-center gap-3 mb-5">
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{background:"rgba(245,158,11,0.15)", border:"1px solid rgba(245,158,11,0.3)"}}>
+                    style={{ background: "rgba(245,158,11,0.15)", border: "1px solid rgba(245,158,11,0.3)" }}>
                     <MdSecurity className="text-amber-400" size={16} />
                   </div>
                   <h3 className="text-slate-100 font-bold text-[15px]">Procurement Portal: Privacy Policy</h3>
@@ -482,16 +490,16 @@ const Contact = () => {
               </p>
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <Field label="Full Name"     name="name"    value={formData.name}    onChange={handleChange} onBlur={handleBlur} error={errors.name}    touched={touched.name} />
-                  <Field label="Company"       name="company" value={formData.company} onChange={handleChange} onBlur={handleBlur} error={errors.company} touched={touched.company} />
+                  <Field label="Full Name" name="name" value={formData.name} onChange={handleChange} onBlur={handleBlur} error={errors.name} touched={touched.name} />
+                  <Field label="Company" name="company" value={formData.company} onChange={handleChange} onBlur={handleBlur} error={errors.company} touched={touched.company} />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <Field label="Website"       name="website" type="url" value={formData.website} onChange={handleChange} onBlur={handleBlur} error={errors.website} touched={touched.website} />
-                  <Field label="Phone Number"  name="phone"   type="tel" value={formData.phone}   onChange={handleChange} onBlur={handleBlur} error={errors.phone}   touched={touched.phone} />
+                  <Field label="Website" name="website" type="url" value={formData.website} onChange={handleChange} onBlur={handleBlur} error={errors.website} touched={touched.website} />
+                  <Field label="Phone Number" name="phone" type="tel" value={formData.phone} onChange={handleChange} onBlur={handleBlur} error={errors.phone} touched={touched.phone} />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <Field label="Work Email"    name="email" type="email" value={formData.email} onChange={handleChange} onBlur={handleBlur} error={errors.email} touched={touched.email} />
-                  <Field label="OTP"           name="otp"               value={formData.otp}   onChange={handleChange} onBlur={handleBlur} error={errors.otp}   touched={touched.otp} />
+                  <Field label="Work Email" name="email" type="email" value={formData.email} onChange={handleChange} onBlur={handleBlur} error={errors.email} touched={touched.email} />
+                  <Field label="OTP" name="otp" value={formData.otp} onChange={handleChange} onBlur={handleBlur} error={errors.otp} touched={touched.otp} />
                 </div>
                 <Field label="Project Description" name="description" rows={4} value={formData.description} onChange={handleChange} onBlur={handleBlur} error={errors.description} touched={touched.description} />
                 <button type="submit" disabled={isSubmitting || !isFormValid}
@@ -508,12 +516,12 @@ const Contact = () => {
       {isSupplierModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
           <div className="rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[92vh] overflow-y-auto border border-white/10"
-            style={{background:"linear-gradient(145deg,#0f172a 0%,#1e293b 100%)"}}>
+            style={{ background: "linear-gradient(145deg,#0f172a 0%,#1e293b 100%)" }}>
             <div className="sticky top-0 z-10 px-6 py-4 flex justify-between items-center rounded-t-2xl border-b border-white/10"
-              style={{background:"rgba(15,23,42,0.95)"}}>
+              style={{ background: "rgba(15,23,42,0.95)" }}>
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-                  style={{background:"rgba(245,158,11,0.15)", border:"1px solid rgba(245,158,11,0.3)"}}>
+                  style={{ background: "rgba(245,158,11,0.15)", border: "1px solid rgba(245,158,11,0.3)" }}>
                   <FaBuilding className="text-amber-400" size={14} />
                 </div>
                 <div>
@@ -529,7 +537,7 @@ const Contact = () => {
             <div className="h-[3px] w-full bg-gradient-to-r from-amber-400 to-amber-600" />
             <div className="p-6 md:p-8">
               <div className="mb-6 p-4 rounded-xl flex items-start gap-3 border"
-                style={{background:"rgba(245,158,11,0.06)", border:"1px solid rgba(245,158,11,0.2)"}}>
+                style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.2)" }}>
                 <FaExclamationCircle className="text-amber-400 flex-shrink-0 mt-0.5" size={15} />
                 <p className="text-slate-400 text-[12px] leading-relaxed">
                   <span className="text-amber-400 font-semibold">Report a Concern</span> — Use this form to confidentially
@@ -539,43 +547,43 @@ const Contact = () => {
               </div>
               <form onSubmit={handleSupplierSubmit} className="space-y-5">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <DarkField label="Name"         name="name"    value={supplierData.name}    onChange={handleSupplierChange} onBlur={handleSupplierBlur} error={supplierErrors.name}    touched={supplierTouched.name} />
-                  <DarkField label="Company"       name="company" value={supplierData.company} onChange={handleSupplierChange} onBlur={handleSupplierBlur} error={supplierErrors.company} touched={supplierTouched.company} />
+                  <DarkField label="Name" name="name" value={supplierData.name} onChange={handleSupplierChange} onBlur={handleSupplierBlur} error={supplierErrors.name} touched={supplierTouched.name} />
+                  <DarkField label="Company" name="company" value={supplierData.company} onChange={handleSupplierChange} onBlur={handleSupplierBlur} error={supplierErrors.company} touched={supplierTouched.company} />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <DarkField label="Website"       name="website" type="url" value={supplierData.website} onChange={handleSupplierChange} onBlur={handleSupplierBlur} error={supplierErrors.website} touched={supplierTouched.website} />
-                  <DarkField label="Phone Number"  name="phone"   type="tel" value={supplierData.phone}   onChange={handleSupplierChange} onBlur={handleSupplierBlur} error={supplierErrors.phone}   touched={supplierTouched.phone} />
+                  <DarkField label="Website" name="website" type="url" value={supplierData.website} onChange={handleSupplierChange} onBlur={handleSupplierBlur} error={supplierErrors.website} touched={supplierTouched.website} />
+                  <DarkField label="Phone Number" name="phone" type="tel" value={supplierData.phone} onChange={handleSupplierChange} onBlur={handleSupplierBlur} error={supplierErrors.phone} touched={supplierTouched.phone} />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <DarkField label="Email Address" name="email" type="email" value={supplierData.email} onChange={handleSupplierChange} onBlur={handleSupplierBlur} error={supplierErrors.email} touched={supplierTouched.email} />
-                  <DarkField label="Enter OTP"     name="otp"               value={supplierData.otp}   onChange={handleSupplierChange} onBlur={handleSupplierBlur} error={supplierErrors.otp}   touched={supplierTouched.otp} />
+                  <DarkField label="Enter OTP" name="otp" value={supplierData.otp} onChange={handleSupplierChange} onBlur={handleSupplierBlur} error={supplierErrors.otp} touched={supplierTouched.otp} />
                 </div>
                 <div>
                   <label className="block text-slate-300 text-sm font-medium mb-1">Upload Files *</label>
                   <div
                     className={`relative rounded-xl border-2 border-dashed p-6 text-center transition-all duration-200 cursor-pointer ${dragOver ? "border-amber-400 bg-amber-500/5" : "border-white/15 hover:border-amber-400/50"}`}
-                    style={!dragOver ? {background:"rgba(255,255,255,0.03)"} : undefined}
-                    onDragOver={e=>{e.preventDefault();setDragOver(true)}}
-                    onDragLeave={()=>setDragOver(false)}
-                    onDrop={e=>{e.preventDefault();setDragOver(false);handleFileChange(e.dataTransfer.files)}}
-                    onClick={()=>document.getElementById("supplierFileInput").click()}
+                    style={!dragOver ? { background: "rgba(255,255,255,0.03)" } : undefined}
+                    onDragOver={e => { e.preventDefault(); setDragOver(true) }}
+                    onDragLeave={() => setDragOver(false)}
+                    onDrop={e => { e.preventDefault(); setDragOver(false); handleFileChange(e.dataTransfer.files) }}
+                    onClick={() => document.getElementById("supplierFileInput").click()}
                   >
                     <input id="supplierFileInput" type="file" multiple className="hidden"
-                      onChange={e=>handleFileChange(e.target.files)} />
+                      onChange={e => handleFileChange(e.target.files)} />
                     <FaFileUpload className="text-amber-400 mx-auto mb-2" size={22} />
                     <p className="text-slate-400 text-sm">Drop your file here or <span className="text-amber-400 font-semibold">click here to upload</span></p>
                     <p className="text-slate-600 text-xs mt-1">You can upload up to 5 files.</p>
                   </div>
                   {uploadedFiles.length > 0 && (
                     <div className="mt-3 space-y-2">
-                      {uploadedFiles.map((f,i) => (
+                      {uploadedFiles.map((f, i) => (
                         <div key={i} className="flex items-center justify-between px-3 py-2 rounded-lg border border-white/10"
-                          style={{background:"rgba(255,255,255,0.04)"}}>
+                          style={{ background: "rgba(255,255,255,0.04)" }}>
                           <div className="flex items-center gap-2">
                             <FaCheckCircle className="text-amber-400" size={12} />
                             <span className="text-slate-300 text-xs truncate max-w-[200px]">{f.name}</span>
                           </div>
-                          <button type="button" onClick={()=>setUploadedFiles(p=>p.filter((_,j)=>j!==i))}
+                          <button type="button" onClick={() => setUploadedFiles(p => p.filter((_, j) => j !== i))}
                             className="text-slate-500 hover:text-red-400 transition-colors">
                             <FaTimes size={11} />
                           </button>
@@ -585,7 +593,7 @@ const Contact = () => {
                   )}
                 </div>
                 <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/10"
-                  style={{background:"rgba(255,255,255,0.03)"}}>
+                  style={{ background: "rgba(255,255,255,0.03)" }}>
                   <div className="w-5 h-5 border-2 border-slate-600 rounded flex-shrink-0" />
                   <span className="text-slate-400 text-sm">I'm not a robot</span>
                   <div className="ml-auto text-right">
@@ -595,7 +603,7 @@ const Contact = () => {
                 </div>
                 <button type="submit" disabled={isSupplierSubmitting}
                   className="w-full font-bold py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-slate-900 bg-amber-500 hover:bg-amber-400"
-                  style={{boxShadow: isSupplierSubmitting ? "none" : "0 4px 20px rgba(245,158,11,0.2)"}}>
+                  style={{ boxShadow: isSupplierSubmitting ? "none" : "0 4px 20px rgba(245,158,11,0.2)" }}>
                   {isSupplierSubmitting ? "Submitting..." : "Submit"} <FaArrowRight size={12} />
                 </button>
               </form>
@@ -607,7 +615,7 @@ const Contact = () => {
       {/* ================= REPORT A CONCERN SECTION (UPDATED VALIDATION) ================= */}
       <section className="py-20 px-6 bg-white">
         <div className="max-w-3xl mx-auto">
-         
+
 
           {/* Header with brand styling */}
           <div className="text-center mb-10">

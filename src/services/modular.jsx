@@ -125,7 +125,7 @@ const Modular = () => {
   const [gridRef, gridInView] = useInView();
 
   return (
-    <div className="bg-white">
+    <div className="bg-white overflow-x-hidden">
       <style>{animationStyles}</style>
 
       {/* ================= HERO SECTION (unchanged) ================= */}
