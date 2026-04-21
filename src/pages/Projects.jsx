@@ -133,7 +133,7 @@ const projects = [
   {
     title: "Bio Refinery Plant",
     location: "Europe",
-    image: "/project3.png",
+    image: "/project5.jpg",
   },
   {
     title: "Hydrogen Production Facility",
