@@ -6,6 +6,29 @@ import {
 import { Link } from "react-router-dom";
 
 // ============================================================
+// Continuous scroll‑triggered hook (observer stays alive)
+// ============================================================
+function useInView(options = {}) {
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setInView(entry.isIntersecting);
+      },
+      { threshold: 0.2, ...options }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [options]);
+
+  return [ref, inView];
+}
+
+// ============================================================
 // Animation styles (including bubbleFloat and fade animations)
 // ============================================================
 const animationStyles = `
@@ -43,6 +66,17 @@ const animationStyles = `
   .delay-300 { animation-delay: 0.3s; }
   .delay-400 { animation-delay: 0.4s; }
   .delay-500 { animation-delay: 0.5s; }
+
+  /* Scroll‑triggered transition classes (inline styles will override) */
+  .scroll-slide-left {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scroll-slide-right {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scroll-fade-up {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
 `;
 
 const OilGas = () => {
@@ -60,36 +94,19 @@ const OilGas = () => {
 
   const heroBubbles = generateBubbles(18, 15, 50);
 
-  // Refs for fade-in sections
-  const expertiseRef = useRef(null);
-  const [expertiseInView, setExpertiseInView] = useState(false);
-  const midstreamRef = useRef(null);
-  const [midstreamInView, setMidstreamInView] = useState(false);
-  const valueRef = useRef(null);
-  const [valueInView, setValueInView] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.target === expertiseRef.current) setExpertiseInView(entry.isIntersecting);
-          if (entry.target === midstreamRef.current) setMidstreamInView(entry.isIntersecting);
-          if (entry.target === valueRef.current) setValueInView(entry.isIntersecting);
-        });
-      },
-      { threshold: 0.2 }
-    );
-    if (expertiseRef.current) observer.observe(expertiseRef.current);
-    if (midstreamRef.current) observer.observe(midstreamRef.current);
-    if (valueRef.current) observer.observe(valueRef.current);
-    return () => observer.disconnect();
-  }, []);
+  // Refs for scroll‑triggered sections (continuous)
+  const [expertiseHeaderRef, expertiseHeaderInView] = useInView();
+  const [expertiseCardsRef, expertiseCardsInView] = useInView();
+  const [midstreamLeftRef, midstreamLeftInView] = useInView();
+  const [midstreamRightRef, midstreamRightInView] = useInView();
+  const [valueRef, valueInView] = useInView();
+  const [ctaRef, ctaInView] = useInView();
 
   return (
     <div className="bg-white overflow-x-hidden">
       <style>{animationStyles}</style>
 
-      {/* Hero Section */}
+      {/* Hero Section (unchanged – uses CSS animations) */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950"></div>
 
@@ -143,10 +160,17 @@ const OilGas = () => {
       </section>
 
       {/* Core Expertise - Three Main Pillars */}
-      <section ref={expertiseRef} className="py-12 md:py-20 bg-gray-50">
+      <section className="py-12 md:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10 md:mb-16 transition-all duration-700"
-            style={{ opacity: expertiseInView ? 1 : 0, transform: expertiseInView ? "translateY(0)" : "translateY(30px)" }}>
+          {/* Header slides from left */}
+          <div
+            ref={expertiseHeaderRef}
+            className="text-center mb-10 md:mb-16 scroll-slide-left"
+            style={{
+              opacity: expertiseHeaderInView ? 1 : 0,
+              transform: expertiseHeaderInView ? "translateX(0)" : "translateX(-35px)",
+            }}
+          >
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Core Capabilities
             </span>
@@ -162,10 +186,19 @@ const OilGas = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+          {/* Cards – each fades up with staggered delay */}
+          <div
+            ref={expertiseCardsRef}
+            className="grid md:grid-cols-3 gap-6 md:gap-8"
+            style={{
+              opacity: expertiseCardsInView ? 1 : 0,
+              transform: expertiseCardsInView ? "translateY(0)" : "translateY(30px)",
+              transition: "opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)",
+            }}
+          >
             {/* Surface Production Card */}
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
-              style={{ opacity: expertiseInView ? 1 : 0, transform: expertiseInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.1s" }}>
+              style={{ transitionDelay: "0.1s" }}>
               <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600"></div>
               <div className="p-6 md:p-8">
                 <div className="w-14 h-14 md:w-16 md:h-16 bg-amber-100 rounded-2xl flex items-center justify-center mb-5 md:mb-6 text-amber-600">
@@ -186,7 +219,7 @@ const OilGas = () => {
 
             {/* Gas Processing Plants Card */}
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
-              style={{ opacity: expertiseInView ? 1 : 0, transform: expertiseInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.2s" }}>
+              style={{ transitionDelay: "0.2s" }}>
               <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600"></div>
               <div className="p-6 md:p-8">
                 <div className="w-14 h-14 md:w-16 md:h-16 bg-amber-100 rounded-2xl flex items-center justify-center mb-5 md:mb-6 text-amber-600">
@@ -207,7 +240,7 @@ const OilGas = () => {
 
             {/* Floating Production Card */}
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
-              style={{ opacity: expertiseInView ? 1 : 0, transform: expertiseInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.3s" }}>
+              style={{ transitionDelay: "0.3s" }}>
               <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600"></div>
               <div className="p-6 md:p-8">
                 <div className="w-14 h-14 md:w-16 md:h-16 bg-amber-100 rounded-2xl flex items-center justify-center mb-5 md:mb-6 text-amber-600">
@@ -229,12 +262,19 @@ const OilGas = () => {
         </div>
       </section>
 
-      {/* Midstream Infrastructure Section */}
-      <section ref={midstreamRef} className="py-12 md:py-20 bg-white">
+      {/* Midstream Infrastructure Section – left and right slide from opposite sides */}
+      <section className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-8 md:gap-12 items-center">
-            <div className="lg:w-1/2 transition-all duration-700"
-              style={{ opacity: midstreamInView ? 1 : 0, transform: midstreamInView ? "translateX(0)" : "translateX(-30px)" }}>
+            {/* Left side – slides from left */}
+            <div
+              ref={midstreamLeftRef}
+              className="lg:w-1/2 scroll-slide-left"
+              style={{
+                opacity: midstreamLeftInView ? 1 : 0,
+                transform: midstreamLeftInView ? "translateX(0)" : "translateX(-35px)",
+              }}
+            >
               <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-6 md:p-8 text-white shadow-xl">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center">
@@ -265,8 +305,16 @@ const OilGas = () => {
                 </div>
               </div>
             </div>
-            <div className="lg:w-1/2 transition-all duration-700"
-              style={{ opacity: midstreamInView ? 1 : 0, transform: midstreamInView ? "translateX(0)" : "translateX(30px)" }}>
+
+            {/* Right side – slides from right */}
+            <div
+              ref={midstreamRightRef}
+              className="lg:w-1/2 scroll-slide-right"
+              style={{
+                opacity: midstreamRightInView ? 1 : 0,
+                transform: midstreamRightInView ? "translateX(0)" : "translateX(35px)",
+              }}
+            >
               <div className="bg-amber-50 rounded-2xl p-6 md:p-8 border border-amber-100">
                 <div className="flex items-center gap-3 mb-4">
                   <FaChartLine className="text-amber-600 text-2xl md:text-3xl" />
@@ -289,24 +337,32 @@ const OilGas = () => {
         </div>
       </section>
 
-      {/* Additional Value Proposition */}
-      <section ref={valueRef} className="py-12 md:py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Additional Value Proposition – cards fade up with staggered delay */}
+      <section className="py-12 md:py-16 bg-gray-50">
+        <div
+          ref={valueRef}
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+          style={{
+            opacity: valueInView ? 1 : 0,
+            transform: valueInView ? "translateY(0)" : "translateY(30px)",
+            transition: "opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)",
+          }}
+        >
           <div className="grid md:grid-cols-3 gap-6 md:gap-6 text-center">
-            <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm transition-all duration-700"
-              style={{ opacity: valueInView ? 1 : 0, transform: valueInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.1s" }}>
+            <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm transition-all duration-300 hover:-translate-y-1"
+              style={{ transitionDelay: "0.1s" }}>
               <div className="text-amber-600 text-3xl md:text-4xl mb-3 flex justify-center"><FaShieldAlt /></div>
               <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Safety-Focused Design</h4>
               <p className="text-gray-600 text-sm md:text-base">Hazard identification, risk assessment, and inherently safer design philosophies.</p>
             </div>
-            <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm transition-all duration-700"
-              style={{ opacity: valueInView ? 1 : 0, transform: valueInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.2s" }}>
+            <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm transition-all duration-300 hover:-translate-y-1"
+              style={{ transitionDelay: "0.2s" }}>
               <div className="text-amber-600 text-3xl md:text-4xl mb-3 flex justify-center"><FaBolt /></div>
               <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Operational Efficiency</h4>
               <p className="text-gray-600 text-sm md:text-base">Optimized process configurations and energy-efficient systems.</p>
             </div>
-            <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm transition-all duration-700"
-              style={{ opacity: valueInView ? 1 : 0, transform: valueInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.3s" }}>
+            <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm transition-all duration-300 hover:-translate-y-1"
+              style={{ transitionDelay: "0.3s" }}>
               <div className="text-amber-600 text-3xl md:text-4xl mb-3 flex justify-center"><FaGlobe /></div>
               <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Global Standards</h4>
               <p className="text-gray-600 text-sm md:text-base">Full compliance with international codes and client specifications.</p>
@@ -315,9 +371,16 @@ const OilGas = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA Section – fades up on scroll */}
       <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-16 md:py-20 lg:py-24 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto text-center">
+        <div
+          ref={ctaRef}
+          className="max-w-4xl mx-auto text-center scroll-fade-up"
+          style={{
+            opacity: ctaInView ? 1 : 0,
+            transform: ctaInView ? "translateY(0)" : "translateY(30px)",
+          }}
+        >
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Ready to engineer your next energy project?
           </span>

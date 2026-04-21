@@ -17,33 +17,106 @@ import { GiPipes, GiElectric, GiGears } from "react-icons/gi";
 import { Link } from "react-router-dom";
 
 // ============================================================================
-// Custom hook for scroll animations
+// Continuous scroll‑triggered hook (observer stays alive)
 // ============================================================================
 function useInView(options = {}) {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
+        setInView(entry.isIntersecting);
       },
       { threshold: 0.2, ...options }
     );
     observer.observe(el);
     return () => observer.disconnect();
   }, [options]);
+
   return [ref, inView];
 }
 
 // ============================================================================
-// Animation styles (bubbles, fades)
+// Individual card components to avoid hook‑in‑callback issues
+// ============================================================================
+const DisciplineCard = ({ discipline, index }) => {
+  const [ref, inView] = useInView();
+  return (
+    <div
+      ref={ref}
+      className="group border-t-2 border-gray-100 pt-5 transition-all duration-300 hover:border-t-amber-400"
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateX(0)" : "translateX(-25px)",
+        transition: `opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${index * 0.05}s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${index * 0.05}s`,
+      }}
+    >
+      <discipline.icon className="text-3xl text-amber-500 mb-3 group-hover:text-amber-600 transition-colors" />
+      <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-amber-600 transition-colors">
+        {discipline.title}
+      </h3>
+      <p className="text-gray-600 text-sm leading-relaxed">{discipline.description}</p>
+    </div>
+  );
+};
+
+const PhaseCard = ({ phase, index }) => {
+  const [ref, inView] = useInView();
+  return (
+    <div
+      ref={ref}
+      className="flex-1 text-center relative group transition-all duration-500"
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateX(0)" : "translateX(25px)",
+        transition: `opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${index * 0.15}s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${index * 0.15}s`,
+      }}
+    >
+      <div className="relative z-10">
+        <div className="w-16 h-16 mx-auto rounded-full bg-amber-100 flex items-center justify-center text-2xl font-black text-amber-600 group-hover:bg-amber-500 group-hover:text-white transition-colors duration-300">
+          {phase.step}
+        </div>
+        <div className="mt-4">
+          <phase.icon className="text-3xl text-amber-500 mx-auto mb-2 group-hover:text-amber-600" />
+          <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-amber-600 transition-colors">
+            {phase.title}
+          </h3>
+          <p className="text-gray-600 text-sm leading-relaxed max-w-xs mx-auto">{phase.description}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const DeliverableItem = ({ item, index }) => {
+  const [ref, inView] = useInView();
+  return (
+    <div
+      ref={ref}
+      className="flex items-center gap-3 text-gray-700 border-b border-gray-200 pb-2"
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateX(0)" : "translateX(-20px)",
+        transition: `opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) ${index * 0.05}s, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) ${index * 0.05}s`,
+      }}
+    >
+      <FaClipboardList className="text-amber-500 text-sm flex-shrink-0" />
+      <span className="text-sm">{item}</span>
+    </div>
+  );
+};
+
+// ============================================================================
+// Animation styles (bubbles, fades, scroll transition classes)
 // ============================================================================
 const animationStyles = `
+  :root {
+    --primery: #f59e0b;
+    --primery-dark: #d97706;
+  }
   @keyframes fadeUp {
     0% { opacity: 0; transform: translateY(30px); }
     100% { opacity: 1; transform: translateY(0); }
@@ -74,14 +147,27 @@ const animationStyles = `
   .delay-300 { animation-delay: 0.3s; }
   .delay-400 { animation-delay: 0.4s; }
   .delay-500 { animation-delay: 0.5s; }
+
+  /* Scroll‑triggered transition classes (inline styles override) */
+  .scroll-slide-left {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scroll-slide-right {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scroll-fade-up {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
 `;
 
 const Epcm = () => {
+  // Refs for scroll‑triggered sections (continuous)
   const [introRef, introInView] = useInView();
-  const [imageSectionRef, imageSectionInView] = useInView();
-  const [disciplinesRef, disciplinesInView] = useInView();
-  const [phasesRef, phasesInView] = useInView();
-  const [deliverablesRef, deliverablesInView] = useInView();
+  const [imageSectionTextRef, imageSectionTextInView] = useInView();
+  const [imageSectionImgRef, imageSectionImgInView] = useInView();
+  const [disciplinesHeaderRef, disciplinesHeaderInView] = useInView();
+  const [phasesHeaderRef, phasesHeaderInView] = useInView();
+  const [deliverablesHeaderRef, deliverablesHeaderInView] = useInView();
   const [ctaRef, ctaInView] = useInView();
 
   const generateBubbles = (count, baseSize = 20, sizeRange = 40) => {
@@ -131,7 +217,7 @@ const Epcm = () => {
     <div className="bg-white overflow-x-hidden">
       <style>{animationStyles}</style>
 
-      {/* Hero Section – unchanged */}
+      {/* Hero Section – unchanged (CSS animations) */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950"></div>
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -168,13 +254,14 @@ const Epcm = () => {
         </div>
       </section>
 
-      {/* INTRODUCTION – updated pill badge */}
-      <section ref={introRef} className="py-16 bg-gray-50">
+      {/* INTRODUCTION – slides from left */}
+      <section className="py-16 bg-gray-50">
         <div
-          className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 transition-all duration-700"
+          ref={introRef}
+          className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 scroll-slide-left"
           style={{
             opacity: introInView ? 1 : 0,
-            transform: introInView ? "translateY(0)" : "translateY(30px)",
+            transform: introInView ? "translateX(0)" : "translateX(-35px)",
           }}
         >
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
@@ -188,28 +275,27 @@ const Epcm = () => {
         </div>
       </section>
 
-      {/* Image Section – UPDATED with pill badge + gradient heading + underline */}
-      <section ref={imageSectionRef} className="py-16 px-6 bg-white">
-        <div
-          className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center transition-all duration-700"
-          style={{
-            opacity: imageSectionInView ? 1 : 0,
-            transform: imageSectionInView ? "translateY(0)" : "translateY(30px)",
-          }}
-        >
-          <div className="order-2 md:order-1">
-            {/* Pill badge */}
+      {/* Image Section – text slides left, image slides right */}
+      <section className="py-16 px-6 bg-white">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+          {/* Text column – slides from left */}
+          <div
+            ref={imageSectionTextRef}
+            className="order-2 md:order-1 scroll-slide-left"
+            style={{
+              opacity: imageSectionTextInView ? 1 : 0,
+              transform: imageSectionTextInView ? "translateX(0)" : "translateX(-35px)",
+            }}
+          >
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Global Presence
             </span>
-            {/* Gradient heading */}
             <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4 mb-4">
               Global{" "}
               <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
                 Engineering Centers
               </span>
             </h3>
-            {/* Underline */}
             <div className="w-24 h-1 bg-[var(--primery)] rounded-full mb-6" />
             <p className="text-gray-600 mb-6 leading-relaxed">
               Our Houston and Mumbai offices work as one integrated team, leveraging time zones for round‑the‑clock engineering.
@@ -224,7 +310,16 @@ const Epcm = () => {
               ))}
             </ul>
           </div>
-          <div className="order-1 md:order-2 group">
+
+          {/* Image column – slides from right */}
+          <div
+            ref={imageSectionImgRef}
+            className="order-1 md:order-2 scroll-slide-right"
+            style={{
+              opacity: imageSectionImgInView ? 1 : 0,
+              transform: imageSectionImgInView ? "translateX(0)" : "translateX(35px)",
+            }}
+          >
             <div className="relative rounded-2xl overflow-hidden shadow-xl transition-all duration-500 group-hover:shadow-2xl">
               <img
                 src="/epcm-services.jpg"
@@ -240,28 +335,27 @@ const Epcm = () => {
         </div>
       </section>
 
-      {/* Engineering Disciplines – UPDATED header */}
-      <section ref={disciplinesRef} className="py-20 bg-gray-50">
+      {/* Engineering Disciplines – header slides from right, each card uses its own component */}
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header slides from right */}
           <div
-            className="text-center mb-12 transition-all duration-700"
+            ref={disciplinesHeaderRef}
+            className="text-center mb-12 scroll-slide-right"
             style={{
-              opacity: disciplinesInView ? 1 : 0,
-              transform: disciplinesInView ? "translateY(0)" : "translateY(30px)",
+              opacity: disciplinesHeaderInView ? 1 : 0,
+              transform: disciplinesHeaderInView ? "translateX(0)" : "translateX(35px)",
             }}
           >
-            {/* Pill badge */}
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Our Capabilities
             </span>
-            {/* Gradient heading */}
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4">
               Engineering{" "}
               <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
                 Disciplines
               </span>
             </h2>
-            {/* Underline */}
             <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
             <p className="text-gray-600 mt-6 max-w-2xl mx-auto">
               Full‑spectrum in‑house engineering expertise for complex hydrocarbon projects.
@@ -270,48 +364,33 @@ const Epcm = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
             {disciplines.map((discipline, idx) => (
-              <div
-                key={idx}
-                className="group border-t-2 border-gray-100 pt-5 transition-all duration-300 hover:border-t-amber-400"
-                style={{
-                  opacity: disciplinesInView ? 1 : 0,
-                  transform: disciplinesInView ? "translateY(0)" : "translateY(30px)",
-                  transitionDelay: `${idx * 0.1}s`,
-                }}
-              >
-                <discipline.icon className="text-3xl text-amber-500 mb-3 group-hover:text-amber-600 transition-colors" />
-                <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-amber-600 transition-colors">
-                  {discipline.title}
-                </h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{discipline.description}</p>
-              </div>
+              <DisciplineCard key={idx} discipline={discipline} index={idx} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Project Execution Phases – UPDATED header */}
-      <section ref={phasesRef} className="py-20 bg-white">
+      {/* Project Execution Phases – header slides from left, each card uses its own component */}
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header slides from left */}
           <div
-            className="text-center mb-12 transition-all duration-700"
+            ref={phasesHeaderRef}
+            className="text-center mb-12 scroll-slide-left"
             style={{
-              opacity: phasesInView ? 1 : 0,
-              transform: phasesInView ? "translateY(0)" : "translateY(30px)",
+              opacity: phasesHeaderInView ? 1 : 0,
+              transform: phasesHeaderInView ? "translateX(0)" : "translateX(-35px)",
             }}
           >
-            {/* Pill badge */}
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Our Approach
             </span>
-            {/* Gradient heading */}
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4">
               Project{" "}
               <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
                 Execution Phases
               </span>
             </h2>
-            {/* Underline */}
             <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
             <p className="text-gray-600 mt-6 max-w-2xl mx-auto">
               Structured engineering delivery from FEED through construction.
@@ -320,103 +399,69 @@ const Epcm = () => {
 
           <div className="relative flex flex-col md:flex-row md:justify-between gap-8 md:gap-4">
             {phases.map((phase, idx) => (
-              <div
-                key={idx}
-                className="flex-1 text-center relative group transition-all duration-500"
-                style={{
-                  opacity: phasesInView ? 1 : 0,
-                  transform: phasesInView ? "translateY(0)" : "translateY(30px)",
-                  transitionDelay: `${idx * 0.15}s`,
-                }}
-              >
-                <div className="relative z-10">
-                  <div className="w-16 h-16 mx-auto rounded-full bg-amber-100 flex items-center justify-center text-2xl font-black text-amber-600 group-hover:bg-amber-500 group-hover:text-white transition-colors duration-300">
-                    {phase.step}
-                  </div>
-                  <div className="mt-4">
-                    <phase.icon className="text-3xl text-amber-500 mx-auto mb-2 group-hover:text-amber-600" />
-                    <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-amber-600 transition-colors">
-                      {phase.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm leading-relaxed max-w-xs mx-auto">{phase.description}</p>
-                  </div>
-                </div>
-                {idx < phases.length - 1 && (
-                  <div className="hidden md:block absolute top-8 left-full w-full h-0.5 -translate-y-1/2 border-t-2 border-dashed border-amber-300"></div>
-                )}
-              </div>
+              <PhaseCard key={idx} phase={phase} index={idx} />
             ))}
+            {phases.length > 1 && (
+              <div className="hidden md:block absolute top-8 left-1/3 w-1/3 h-0.5 -translate-y-1/2 border-t-2 border-dashed border-amber-300"></div>
+            )}
           </div>
         </div>
       </section>
 
-      {/* FEED Deliverables – UPDATED header */}
-      <section ref={deliverablesRef} className="py-16 bg-gray-50">
+      {/* FEED Deliverables – header slides from right, each item uses its own component */}
+      <section className="py-16 bg-gray-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header slides from right */}
           <div
-            className="text-center mb-10 transition-all duration-700"
+            ref={deliverablesHeaderRef}
+            className="text-center mb-10 scroll-slide-right"
             style={{
-              opacity: deliverablesInView ? 1 : 0,
-              transform: deliverablesInView ? "translateY(0)" : "translateY(30px)",
+              opacity: deliverablesHeaderInView ? 1 : 0,
+              transform: deliverablesHeaderInView ? "translateX(0)" : "translateX(35px)",
             }}
           >
-            {/* Pill badge */}
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               FEED Phase
             </span>
-            {/* Gradient heading */}
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4">
               Key{" "}
               <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
                 Deliverables
               </span>
             </h2>
-            {/* Underline */}
             <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
             <p className="text-gray-600 mt-6 max-w-2xl mx-auto">
               Comprehensive front‑end engineering design outputs for accurate project definition.
             </p>
           </div>
 
-          <div
-            className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 transition-all duration-700"
-            style={{
-              opacity: deliverablesInView ? 1 : 0,
-              transform: deliverablesInView ? "translateY(0)" : "translateY(20px)",
-              transitionDelay: "0.2s",
-            }}
-          >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
             {feedDeliverables.map((item, idx) => (
-              <div key={idx} className="flex items-center gap-3 text-gray-700 border-b border-gray-200 pb-2">
-                <FaClipboardList className="text-amber-500 text-sm flex-shrink-0" />
-                <span className="text-sm">{item}</span>
-              </div>
+              <DeliverableItem key={idx} item={item} index={idx} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA SECTION – UPDATED with pill badge + gradient heading + underline */}
-      <section ref={ctaRef} className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6">
+      {/* CTA SECTION – fades up */}
+      <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6">
         <div
-          className="max-w-4xl mx-auto text-center transition-all duration-700"
+          ref={ctaRef}
+          className="max-w-4xl mx-auto text-center scroll-fade-up"
           style={{
             opacity: ctaInView ? 1 : 0,
             transform: ctaInView ? "translateY(0)" : "translateY(30px)",
           }}
         >
-          {/* Pill badge */}
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Let's Engineer Your Success
           </span>
-          {/* Gradient heading */}
           <h2 className="text-3xl lg:text-5xl font-extrabold leading-tight text-gray-900 mt-4 mb-6">
             Ready to Engineer{" "}
             <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
               Your Project?
             </span>
           </h2>
-          {/* Underline */}
           <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-2 mb-6 rounded-full" />
           <p className="text-gray-700 text-sm lg:text-base max-w-2xl mx-auto mb-10">
             Leverage our engineering centers in Houston and Mumbai for seamless project delivery.

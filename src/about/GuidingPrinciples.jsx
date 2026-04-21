@@ -9,6 +9,9 @@ import {
 import { MdSecurity } from "react-icons/md";
 import { Link } from "react-router-dom";
 
+// ============================================================
+// Continuous scroll‑triggered hook (observer stays alive)
+// ============================================================
 function useInView(options = {}) {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
@@ -18,10 +21,7 @@ function useInView(options = {}) {
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
+        setInView(entry.isIntersecting);
       },
       { threshold: 0.2, ...options }
     );
@@ -103,15 +103,34 @@ const GuidingPrinciples = () => {
       0% { width: 0; }
       100% { width: 60px; }
     }
+    @keyframes scaleUp {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
     .animate-fadeUp { animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
     .animate-fadeLeft { animation: fadeLeft 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
     .animate-fadeRight { animation: fadeRight 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+    .animate-scaleUp { animation: scaleUp 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards; }
     .delay-100 { animation-delay: 0.1s; }
     .delay-200 { animation-delay: 0.2s; }
     .delay-300 { animation-delay: 0.3s; }
     .delay-400 { animation-delay: 0.4s; }
     .delay-500 { animation-delay: 0.5s; }
     .slide-line { animation: slideLine 0.6s ease-out forwards; }
+
+    /* Scroll‑triggered transition classes */
+    .scroll-slide-left {
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .scroll-slide-right {
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .scroll-fade-up {
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .scroll-scale {
+      transition: opacity 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    }
   `;
 
   const generateBubbles = (count, baseSize = 20, sizeRange = 40) => {
@@ -128,7 +147,9 @@ const GuidingPrinciples = () => {
   const heroBubbles = generateBubbles(18, 15, 50);
   const ctaBubbles = generateBubbles(22, 10, 45);
 
-  const [introRef, introInView] = useInView();
+  // Refs for text animations
+  const [introTextRef, introTextInView] = useInView();
+  const [pillarsHeaderRef, pillarsHeaderInView] = useInView();
   const [pillarsRef, pillarsInView] = useInView();
   const [certRef, certInView] = useInView();
   const [ctaRef, ctaInView] = useInView();
@@ -137,7 +158,7 @@ const GuidingPrinciples = () => {
     <div className="bg-white overflow-x-hidden">
       <style>{animationStyles}</style>
 
-      {/* ── Hero ── */}
+      {/* ── Hero (unchanged, uses CSS animations) ── */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950" />
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -177,13 +198,15 @@ const GuidingPrinciples = () => {
         </div>
       </section>
 
-      {/* ── Intro ── */}
+      {/* ── Intro – slides from LEFT ── */}
       <section className="py-16 bg-gray-50">
         <div
-          ref={introRef}
-          className={`max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 transition-all duration-700 ${
-            introInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
+          ref={introTextRef}
+          className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 scroll-slide-left"
+          style={{
+            opacity: introTextInView ? 1 : 0,
+            transform: introTextInView ? "translateX(0)" : "translateX(-35px)",
+          }}
         >
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Our Priorities
@@ -206,10 +229,17 @@ const GuidingPrinciples = () => {
         </div>
       </section>
 
-      {/* ── Three Pillars ── */}
+      {/* ── Three Pillars – header slides from RIGHT, cards scale up, list items stagger ── */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
+          <div
+            ref={pillarsHeaderRef}
+            className="text-center mb-14 scroll-slide-right"
+            style={{
+              opacity: pillarsHeaderInView ? 1 : 0,
+              transform: pillarsHeaderInView ? "translateX(0)" : "translateX(35px)",
+            }}
+          >
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               ESG Framework
             </span>
@@ -227,9 +257,11 @@ const GuidingPrinciples = () => {
 
           <div
             ref={pillarsRef}
-            className={`grid md:grid-cols-3 gap-6 md:gap-8 transition-all duration-700 ${
-              pillarsInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-            }`}
+            className="grid md:grid-cols-3 gap-6 md:gap-8 scroll-scale"
+            style={{
+              opacity: pillarsInView ? 1 : 0,
+              transform: pillarsInView ? "scale(1)" : "scale(0.95)",
+            }}
           >
             {principles.map((principle, idx) => (
               <div
@@ -270,7 +302,7 @@ const GuidingPrinciples = () => {
         </div>
       </section>
 
-      {/* ── Certification Badges ── */}
+      {/* ── Certification Badges – fade up with scale ── */}
       <section
         className="py-16 px-6 relative overflow-hidden"
         style={{ background: "linear-gradient(145deg,#0f172a 0%,#1e293b 50%,#0f172a 100%)" }}
@@ -281,9 +313,11 @@ const GuidingPrinciples = () => {
         />
         <div
           ref={certRef}
-          className={`max-w-4xl mx-auto text-center relative z-10 transition-all duration-700 ${
-            certInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
+          className="max-w-4xl mx-auto text-center relative z-10 scroll-scale"
+          style={{
+            opacity: certInView ? 1 : 0,
+            transform: certInView ? "scale(1)" : "scale(0.95)",
+          }}
         >
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
             Certified Excellence
@@ -300,11 +334,16 @@ const GuidingPrinciples = () => {
               { icon: MdSecurity, label: "ISO 9001:2015", sub: "Quality Management" },
               { icon: FaShieldAlt, label: "ISO 14001 / 45001", sub: "HSE System" },
               { icon: FaNetworkWired, label: "ISO 27001:2017", sub: "Data Security" },
-            ].map(({ icon: Icon, label, sub }) => (
+            ].map(({ icon: Icon, label, sub }, idx) => (
               <div
                 key={label}
                 className="flex items-center gap-3 px-3 sm:px-6 py-3 rounded-xl cursor-default transition-all duration-300 border border-white/10 hover:border-amber-400/50 hover:-translate-y-1"
-                style={{ background: "rgba(255,255,255,0.05)" }}
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  opacity: certInView ? 1 : 0,
+                  transform: certInView ? "translateY(0)" : "translateY(20px)",
+                  transition: `opacity 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1) ${idx * 0.1}s, transform 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1) ${idx * 0.1}s`,
+                }}
                 onMouseEnter={e => e.currentTarget.style.background = "rgba(245,158,11,0.1)"}
                 onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.05)"}
               >
@@ -321,7 +360,7 @@ const GuidingPrinciples = () => {
         </div>
       </section>
 
-      {/* ── CTA ── */}
+      {/* ── CTA – slides from LEFT ── */}
       <section className="relative overflow-hidden bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {ctaBubbles.map((bubble) => (
@@ -342,9 +381,11 @@ const GuidingPrinciples = () => {
         </div>
         <div
           ref={ctaRef}
-          className={`relative z-10 max-w-5xl mx-auto text-center transition-all duration-700 ${
-            ctaInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
+          className="relative z-10 max-w-5xl mx-auto text-center scroll-slide-left"
+          style={{
+            opacity: ctaInView ? 1 : 0,
+            transform: ctaInView ? "translateX(0)" : "translateX(-35px)",
+          }}
         >
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Committed to Responsible Engineering

@@ -16,31 +16,30 @@ import {
 import { Link } from "react-router-dom";
 
 // ============================================================================
-// Custom hook for scroll animations
+// Continuous scroll‑triggered hook (observer stays alive)
 // ============================================================================
 function useInView(options = {}) {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
+        setInView(entry.isIntersecting);
       },
       { threshold: 0.2, ...options }
     );
     observer.observe(el);
     return () => observer.disconnect();
   }, [options]);
+
   return [ref, inView];
 }
 
 // ============================================================================
-// Animation styles
+// Animation styles (including bubbleFloat and CSS animations for hero)
 // ============================================================================
 const animationStyles = `
 :root {
@@ -77,14 +76,34 @@ const animationStyles = `
   .delay-300 { animation-delay: 0.3s; }
   .delay-400 { animation-delay: 0.4s; }
   .delay-500 { animation-delay: 0.5s; }
+
+  /* Scroll‑triggered transition classes (inline styles override) */
+  .scroll-slide-left {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scroll-slide-right {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scroll-fade-up {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
 `;
 
 const Research = () => {
+  // Refs for scroll‑triggered sections (continuous)
   const [introRef, introInView] = useInView();
   const [imageSectionRef, imageSectionInView] = useInView();
-  const [rdRef, rdInView] = useInView();
-  const [commercialRef, commercialInView] = useInView();
+  const [rdHeaderRef, rdHeaderInView] = useInView();
+  const [commercialHeaderRef, commercialHeaderInView] = useInView();
   const [ctaRef, ctaInView] = useInView();
+
+  // Individual refs for R&D service items (4 cards)
+  const rdServiceRefs = [useInView(), useInView(), useInView(), useInView()];
+  // Individual refs for commercialization steps (7 items)
+  const commercialStepRefs = [
+    useInView(), useInView(), useInView(),
+    useInView(), useInView(), useInView(), useInView()
+  ];
 
   const generateBubbles = (count, baseSize = 20, sizeRange = 40) => {
     return Array.from({ length: count }, (_, i) => ({
@@ -119,7 +138,7 @@ const Research = () => {
     <div className="bg-white">
       <style>{animationStyles}</style>
 
-      {/* Hero – unchanged */}
+      {/* Hero – unchanged (CSS animations) */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950"></div>
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -157,11 +176,15 @@ const Research = () => {
         </div>
       </section>
 
-      {/* Introduction / Technology Centers */}
-      <section ref={introRef} className="py-16 bg-gray-50">
+      {/* Introduction / Technology Centers – slides from left */}
+      <section className="py-16 bg-gray-50">
         <div
-          className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 transition-all duration-700"
-          style={{ opacity: introInView ? 1 : 0, transform: introInView ? "translateY(0)" : "translateY(30px)" }}
+          ref={introRef}
+          className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 scroll-slide-left"
+          style={{
+            opacity: introInView ? 1 : 0,
+            transform: introInView ? "translateX(0)" : "translateX(-35px)",
+          }}
         >
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Our Technology Centers
@@ -173,21 +196,23 @@ const Research = () => {
         </div>
       </section>
 
-      {/* Image Section – with gradient heading */}
-      <section ref={imageSectionRef} className="py-16 px-6 bg-white">
+      {/* Image Section – fades up (whole block) */}
+      <section className="py-16 px-6 bg-white">
         <div
-          className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center transition-all duration-700"
-          style={{ opacity: imageSectionInView ? 1 : 0, transform: imageSectionInView ? "translateY(0)" : "translateY(30px)" }}
+          ref={imageSectionRef}
+          className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center scroll-fade-up"
+          style={{
+            opacity: imageSectionInView ? 1 : 0,
+            transform: imageSectionInView ? "translateY(0)" : "translateY(30px)",
+          }}
         >
           <div className="order-2 md:order-1">
-            {/* Gradient heading for State-of-the-Art Facilities */}
-          
-             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mt-4">
-            State of the Art{" "}
-            <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
-              Facilities
-            </span>
-          </h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mt-4">
+              State of the Art{" "}
+              <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+                Facilities
+              </span>
+            </h2>
             <p className="text-gray-600 mb-6 leading-relaxed">
               Our technology centers in Mumbai and Houston are equipped with advanced pilot plant facilities,
               simulation software, and multidisciplinary engineering teams to accelerate your R&D and commercialization journey.
@@ -217,13 +242,18 @@ const Research = () => {
         </div>
       </section>
 
-      {/* Research & Development Services */}
-      <section ref={rdRef} className="py-20 bg-white">
-        <div
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-700"
-          style={{ opacity: rdInView ? 1 : 0, transform: rdInView ? "translateY(0)" : "translateY(30px)" }}
-        >
-          <div className="text-center mb-12">
+      {/* Research & Development Services – header slides from right, each card fades up individually */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header slides from right */}
+          <div
+            ref={rdHeaderRef}
+            className="text-center mb-12 scroll-slide-right"
+            style={{
+              opacity: rdHeaderInView ? 1 : 0,
+              transform: rdHeaderInView ? "translateX(0)" : "translateX(35px)",
+            }}
+          >
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Our Services
             </span>
@@ -240,38 +270,51 @@ const Research = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {rdServices.map((service, idx) => (
-              <div
-                key={idx}
-                className="group pb-4 border-b border-gray-100 hover:border-amber-400 transition-all duration-300"
-                style={{ transitionDelay: `${idx * 0.1}s` }}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 group-hover:bg-amber-500 group-hover:text-white transition-colors">
-                      <service.icon className="text-xl" />
+            {rdServices.map((service, idx) => {
+              const [ref, inView] = rdServiceRefs[idx];
+              return (
+                <div
+                  key={idx}
+                  ref={ref}
+                  className="group pb-4 border-b border-gray-100 hover:border-amber-400 transition-all duration-300"
+                  style={{
+                    opacity: inView ? 1 : 0,
+                    transform: inView ? "translateY(0)" : "translateY(20px)",
+                    transition: `opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.1}s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.1}s`,
+                  }}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 group-hover:bg-amber-500 group-hover:text-white transition-colors">
+                        <service.icon className="text-xl" />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-amber-600 transition-colors">
+                        {service.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm leading-relaxed">{service.description}</p>
                     </div>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-amber-600 transition-colors">
-                      {service.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">{service.description}</p>
-                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Technology Commercialization */}
-      <section ref={commercialRef} className="py-20 bg-gray-50">
-        <div
-          className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-700"
-          style={{ opacity: commercialInView ? 1 : 0, transform: commercialInView ? "translateY(0)" : "translateY(30px)" }}
-        >
-          <div className="text-center mb-12">
+      {/* Technology Commercialization – header slides from left, each step fades up with staggered delay */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header slides from left */}
+          <div
+            ref={commercialHeaderRef}
+            className="text-center mb-12 scroll-slide-left"
+            style={{
+              opacity: commercialHeaderInView ? 1 : 0,
+              transform: commercialHeaderInView ? "translateX(0)" : "translateX(-35px)",
+            }}
+          >
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               After Pilot Success
             </span>
@@ -290,40 +333,52 @@ const Research = () => {
           <div className="relative">
             <div className="absolute left-4 md:left-8 top-0 bottom-0 w-0.5 bg-amber-200 hidden md:block"></div>
             <div className="space-y-10">
-              {commercializationServices.map((service, idx) => (
-                <div
-                  key={idx}
-                  className="relative flex flex-col md:flex-row gap-6 group"
-                  style={{ transitionDelay: `${idx * 0.1}s` }}
-                >
-                  <div className="flex-shrink-0">
-                    <div className="relative z-10 w-8 h-8 md:w-10 md:h-10 rounded-full bg-amber-500 text-white flex items-center justify-center text-sm font-bold shadow-md">
-                      {idx + 1}
+              {commercializationServices.map((service, idx) => {
+                const [ref, inView] = commercialStepRefs[idx];
+                return (
+                  <div
+                    key={idx}
+                    ref={ref}
+                    className="relative flex flex-col md:flex-row gap-6 group"
+                    style={{
+                      opacity: inView ? 1 : 0,
+                      transform: inView ? "translateX(0)" : "translateX(-20px)",
+                      transition: `opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.07}s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.07}s`,
+                    }}
+                  >
+                    <div className="flex-shrink-0">
+                      <div className="relative z-10 w-8 h-8 md:w-10 md:h-10 rounded-full bg-amber-500 text-white flex items-center justify-center text-sm font-bold shadow-md">
+                        {idx + 1}
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex-1 pb-6 border-b border-gray-200 last:border-0 group-hover:border-amber-300 transition-colors">
-                    <div className="flex items-start gap-3">
-                      <service.icon className="text-2xl text-amber-500 mt-1 group-hover:text-amber-600 transition-colors" />
-                      <div>
-                        <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-amber-600 transition-colors">
-                          {service.title}
-                        </h3>
-                        <p className="text-gray-600 text-sm leading-relaxed">{service.description}</p>
+                    <div className="flex-1 pb-6 border-b border-gray-200 last:border-0 group-hover:border-amber-300 transition-colors">
+                      <div className="flex items-start gap-3">
+                        <service.icon className="text-2xl text-amber-500 mt-1 group-hover:text-amber-600 transition-colors" />
+                        <div>
+                          <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-amber-600 transition-colors">
+                            {service.title}
+                          </h3>
+                          <p className="text-gray-600 text-sm leading-relaxed">{service.description}</p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section – only "Your Technology?" in gradient */}
-      <section ref={ctaRef} className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6">
+      {/* CTA Section – fades up on scroll */}
+      <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6">
         <div
-          className="max-w-4xl mx-auto text-center transition-all duration-700"
-          style={{ opacity: ctaInView ? 1 : 0, transform: ctaInView ? "translateY(0)" : "translateY(30px)" }}
+          ref={ctaRef}
+          className="max-w-4xl mx-auto text-center scroll-fade-up"
+          style={{
+            opacity: ctaInView ? 1 : 0,
+            transform: ctaInView ? "translateY(0)" : "translateY(30px)",
+          }}
         >
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Let's Innovate Together

@@ -1,9 +1,32 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+
+// Add this after your imports
+function useInView(options = {}) {
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setInView(entry.isIntersecting);
+      },
+      { threshold: 0.2, ...options }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [options]);
+
+  return [ref, inView];
+}
 
 const NewsDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [heroTextRef, heroTextInView] = useInView();
+  const [contentRef, contentInView] = useInView();
 
   // ============================================================================
   // Full news data – all 27 items (unchanged)
@@ -408,7 +431,7 @@ const NewsDetail = () => {
     );
   }
 
- 
+
 
   // Generate random bubbles for hero
   const generateBubbles = (count, baseSize = 20, sizeRange = 40) => {
@@ -475,7 +498,14 @@ const NewsDetail = () => {
             Back to all news
           </button>
 
-          <div className="text-center animate-fadeUp">
+          <div
+            ref={heroTextRef}
+            className="text-center transition-all duration-700"
+            style={{
+              opacity: heroTextInView ? 1 : 0,
+              transform: heroTextInView ? "translateY(0)" : "translateY(30px)",
+            }}
+          >
             {/* Pill badge – brand style */}
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)] mb-4">
               {newsItem.category}
@@ -506,7 +536,14 @@ const NewsDetail = () => {
       {/* Content Section – unchanged */}
       <section className="py-16 px-6">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-2xl border-l-4 border-amber-500 shadow-md overflow-hidden">
+          <div
+            ref={contentRef}
+            className="bg-white rounded-2xl border-l-4 border-amber-500 shadow-md overflow-hidden transition-all duration-700"
+            style={{
+              opacity: contentInView ? 1 : 0,
+              transform: contentInView ? "translateY(0)" : "translateY(40px)",
+            }}
+          >
             {newsItem.image && (
               <div className="w-full overflow-hidden">
                 <img

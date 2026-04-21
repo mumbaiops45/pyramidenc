@@ -7,7 +7,7 @@ import {
 } from "react-icons/fa";
 
 // ============================================================================
-// Custom hook for scroll animations
+// Continuous scroll‑triggered hook (observer stays alive)
 // ============================================================================
 function useInView(options = {}) {
   const ref = useRef(null);
@@ -18,10 +18,7 @@ function useInView(options = {}) {
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
+        setInView(entry.isIntersecting);
       },
       { threshold: 0.2, ...options }
     );
@@ -223,17 +220,18 @@ const Career = () => {
     .delay-500 { animation-delay: 0.5s; }
   `;
 
-  // Refs for fade‑in sections
+  // Refs for scroll‑triggered sections (continuous)
   const [openingsRef, openingsInView] = useInView();
   const [competenceRef, competenceInView] = useInView();
   const [careerPathRef, careerPathInView] = useInView();
   const [formRef, formInView] = useInView();
+  const [ctaRef, ctaInView] = useInView();
 
   return (
     <div className="bg-white overflow-x-hidden">
       <style>{animationStyles}</style>
 
-      {/* Hero Section – unchanged */}
+      {/* Hero Section – unchanged (CSS animations) */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950"></div>
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -279,40 +277,48 @@ const Career = () => {
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Left Column */}
             <div>
-              {/* Current Openings – UPDATED */}
-              <div ref={openingsRef} className="mb-10 transition-all duration-700" style={{ opacity: openingsInView ? 1 : 0, transform: openingsInView ? "translateY(0)" : "translateY(30px)" }}>
-                {/* Pill badge */}
+              {/* Current Openings – slides from left */}
+              <div
+                ref={openingsRef}
+                className="mb-10 transition-all duration-700"
+                style={{
+                  opacity: openingsInView ? 1 : 0,
+                  transform: openingsInView ? "translateX(0)" : "translateX(-35px)",
+                }}
+              >
                 <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)] mb-3">
                   Opportunities
                 </span>
-                {/* Gradient heading */}
                 <h2 className="text-2xl font-bold text-gray-900 mb-3">
                   Current{" "}
                   <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
                     Openings
                   </span>
                 </h2>
-                {/* Underline */}
                 <div className="w-20 h-0.5 bg-[var(--primery)] rounded-full mb-4" />
                 <ul className="space-y-2 pl-6 list-disc text-gray-700">
                   {openings.map((opening, idx) => <li key={idx}>{opening}</li>)}
                 </ul>
               </div>
 
-              {/* Competence Development – UPDATED */}
-              <div ref={competenceRef} className="mb-10 p-6 bg-gray-50 rounded-xl border border-gray-100 transition-all duration-700" style={{ opacity: competenceInView ? 1 : 0, transform: competenceInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.1s" }}>
-                {/* Pill badge */}
+              {/* Competence Development – slides from right */}
+              <div
+                ref={competenceRef}
+                className="mb-10 p-6 bg-gray-50 rounded-xl border border-gray-100 transition-all duration-700"
+                style={{
+                  opacity: competenceInView ? 1 : 0,
+                  transform: competenceInView ? "translateX(0)" : "translateX(35px)",
+                }}
+              >
                 <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)] mb-2">
                   Growth
                 </span>
-                {/* Gradient heading */}
                 <h3 className="text-xl font-bold text-gray-900 mb-2">
                   Competence{" "}
                   <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
                     Development
                   </span>
                 </h3>
-                {/* Underline */}
                 <div className="w-16 h-0.5 bg-[var(--primery)] rounded-full mb-3" />
                 <p className="text-gray-600 leading-relaxed">
                   The employees at Pyramid E&C are exposed to world class engineering and project management skills
@@ -323,20 +329,24 @@ const Career = () => {
                 </p>
               </div>
 
-              {/* Career Path – UPDATED */}
-              <div ref={careerPathRef} className="p-6 bg-amber-50 rounded-xl border border-amber-100 transition-all duration-700" style={{ opacity: careerPathInView ? 1 : 0, transform: careerPathInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.2s" }}>
-                {/* Pill badge */}
+              {/* Career Path – slides from left */}
+              <div
+                ref={careerPathRef}
+                className="p-6 bg-amber-50 rounded-xl border border-amber-100 transition-all duration-700"
+                style={{
+                  opacity: careerPathInView ? 1 : 0,
+                  transform: careerPathInView ? "translateX(0)" : "translateX(-35px)",
+                }}
+              >
                 <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)] mb-2">
                   Progression
                 </span>
-                {/* Gradient heading */}
                 <h3 className="text-xl font-bold text-gray-900 mb-2">
                   Career{" "}
                   <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
                     Path
                   </span>
                 </h3>
-                {/* Underline */}
                 <div className="w-16 h-0.5 bg-[var(--primery)] rounded-full mb-3" />
                 <p className="text-gray-700 leading-relaxed">
                   Pyramid E&C provides a full career cycle to a professional beginning from core department,
@@ -350,8 +360,15 @@ const Career = () => {
               </div>
             </div>
 
-            {/* Right Column: Application Form (unchanged) */}
-            <div ref={formRef} className="transition-all duration-700" style={{ opacity: formInView ? 1 : 0, transform: formInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.1s" }}>
+            {/* Right Column: Application Form – slides from right */}
+            <div
+              ref={formRef}
+              className="transition-all duration-700"
+              style={{
+                opacity: formInView ? 1 : 0,
+                transform: formInView ? "translateX(0)" : "translateX(35px)",
+              }}
+            >
               <div className="bg-white rounded-2xl shadow-lg overflow-hidden sticky top-24">
                 <div className="bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-4">
                   <div className="flex items-center gap-2">
@@ -509,14 +526,19 @@ const Career = () => {
         </div>
       </section>
 
-      {/* CTA Section – UPDATED with pill badge + gradient heading + underline */}
+      {/* CTA Section – fades up */}
       <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          {/* Pill badge */}
+        <div
+          ref={ctaRef}
+          className="max-w-4xl mx-auto text-center transition-all duration-700"
+          style={{
+            opacity: ctaInView ? 1 : 0,
+            transform: ctaInView ? "translateY(0)" : "translateY(30px)",
+          }}
+        >
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Shape the Future of Energy
           </span>
-          {/* Gradient heading */}
           <h2 className="text-3xl lg:text-5xl font-extrabold leading-tight text-gray-900 mt-4 mb-6">
             Join a{" "}
             <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
@@ -524,7 +546,6 @@ const Career = () => {
             </span>{" "}
             driving innovation
           </h2>
-          {/* Underline */}
           <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-2 mb-6 rounded-full" />
           <p className="text-gray-700 text-sm lg:text-base max-w-2xl mx-auto mb-10">
             Be part of Pyramid E&C – where your career meets excellence in hydrocarbon and renewable technologies.

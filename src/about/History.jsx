@@ -20,6 +20,7 @@ const MILESTONE_IMAGES = {
   2025: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
 };
 
+// Continuous scroll‑triggered hook (observer stays alive)
 function useInView(options = {}) {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
@@ -28,10 +29,7 @@ function useInView(options = {}) {
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
+        setInView(entry.isIntersecting);
       },
       { threshold: 0.2, ...options }
     );
@@ -107,28 +105,52 @@ const milestones = [
   },
 ];
 
+// Animated milestone block – slides in from alternating sides
 const MilestoneBlock = ({ milestone, idx }) => {
-  const [ref, inView] = useInView();
+  const [textRef, textInView] = useInView();
+  const [imageRef, imageInView] = useInView();
+
+  // Even index: image on left, text on right. Odd index: image on right, text on left.
+  // For scroll animation, we want text and image to slide from opposite sides:
+  // - If index is even: image slides from left, text slides from right.
+  // - If index is odd: image slides from right, text slides from left.
+  const isEven = idx % 2 === 0;
+  const imageSlideDirection = isEven ? "left" : "right";
+  const textSlideDirection = isEven ? "right" : "left";
+
+  const imageSlideStyle = {
+    opacity: imageInView ? 1 : 0,
+    transform: imageInView
+      ? "translateX(0)"
+      : imageSlideDirection === "left"
+      ? "translateX(-40px)"
+      : "translateX(40px)",
+    transition: `opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.05}s, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) ${
+      idx * 0.05
+    }s`,
+  };
+
+  const textSlideStyle = {
+    opacity: textInView ? 1 : 0,
+    transform: textInView
+      ? "translateX(0)"
+      : textSlideDirection === "left"
+      ? "translateX(-40px)"
+      : "translateX(40px)",
+    transition: `opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.05 + 0.1}s, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) ${
+      idx * 0.05 + 0.1
+    }s`,
+  };
 
   return (
-    <section
-      ref={ref}
-      className={`py-12 md:py-16 transition-all duration-700 ${
-        idx % 2 === 0 ? "bg-white" : "bg-gray-50"
-      }`}
-    >
+    <section className={`py-12 md:py-16 ${idx % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
-          className={`flex flex-col ${
-            idx % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
-          } gap-8 items-center transition-all duration-700 ${
-            inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
-          style={{ transitionDelay: `${idx * 0.1}s` }}
+          className={`flex flex-col ${isEven ? "md:flex-row" : "md:flex-row-reverse"} gap-8 items-center`}
         >
-          {/* Image side - FIXED ASPECT RATIO for uniform size */}
-          <div className="md:w-1/2 group transition-all duration-500 delay-100">
-            <div className="relative overflow-hidden rounded-lg aspect-[4/3] sm:aspect-[16/9]">
+          {/* Image side */}
+          <div ref={imageRef} className="md:w-1/2" style={imageSlideStyle}>
+            <div className="group transition-all duration-500 relative overflow-hidden rounded-lg aspect-[4/3] sm:aspect-[16/9]">
               <div className="absolute inset-0 bg-amber-500/0 group-hover:bg-amber-500/10 transition-all duration-500 z-10"></div>
               <img
                 src={milestone.image}
@@ -138,8 +160,8 @@ const MilestoneBlock = ({ milestone, idx }) => {
             </div>
           </div>
 
-          {/* Text side (unchanged) */}
-          <div className="md:w-1/2 transition-all duration-500 delay-200">
+          {/* Text side */}
+          <div ref={textRef} className="md:w-1/2" style={textSlideStyle}>
             <div className="relative">
               <div className="text-6xl sm:text-7xl md:text-8xl font-black text-gray-100 absolute -top-6 -left-4 z-0">
                 {milestone.year}
@@ -189,6 +211,17 @@ const History = () => {
     .animate-fadeLeft { animation: fadeLeft 0.8s cubic-bezier(0.22,1,0.36,1) forwards; }
     .animate-fadeRight { animation: fadeRight 0.8s cubic-bezier(0.22,1,0.36,1) forwards; }
     .delay-100{animation-delay:0.1s} .delay-200{animation-delay:0.2s} .delay-300{animation-delay:0.3s}
+
+    /* Scroll‑triggered transition classes */
+    .scroll-slide-left {
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .scroll-slide-right {
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .scroll-fade-up {
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
   `;
 
   const generateBubbles = (count, baseSize = 20, sizeRange = 40) => {
@@ -210,7 +243,7 @@ const History = () => {
     <div className="bg-white overflow-x-hidden">
       <style>{animationStyles}</style>
 
-      {/* Hero Section */}
+      {/* Hero Section (CSS animated, unchanged) */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950"></div>
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -251,21 +284,23 @@ const History = () => {
         </div>
       </section>
 
-      {/* Legacy Section */}
+      {/* Legacy Section – slides from LEFT */}
       <section className="py-16 bg-gray-50">
         <div
           ref={legacyRef}
-          className={`max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 transition-all duration-700 ${
-            legacyInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
+          className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 scroll-slide-left"
+          style={{
+            opacity: legacyInView ? 1 : 0,
+            transform: legacyInView ? "translateX(0)" : "translateX(-35px)",
+          }}
         >
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Our Legacy
           </span>
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mt-4">
-            A{" "}
+            A Legacy{" "}
             <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
-              Legacy of Excellence
+               of Excellence
             </span>
           </h2>
           <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
@@ -279,18 +314,20 @@ const History = () => {
         </div>
       </section>
 
-      {/* Milestones */}
+      {/* Milestones – each block has its own alternating slide animations (handled inside MilestoneBlock) */}
       {milestones.map((milestone, idx) => (
         <MilestoneBlock key={idx} milestone={milestone} idx={idx} />
       ))}
 
-      {/* CTA Section */}
+      {/* CTA Section – slides from RIGHT */}
       <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6">
         <div
           ref={ctaRef}
-          className={`max-w-4xl mx-auto text-center transition-all duration-700 ${
-            ctaInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
+          className="max-w-4xl mx-auto text-center scroll-slide-right"
+          style={{
+            opacity: ctaInView ? 1 : 0,
+            transform: ctaInView ? "translateX(0)" : "translateX(35px)",
+          }}
         >
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Shaping the Future of Hydrocarbons

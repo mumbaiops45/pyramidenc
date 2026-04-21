@@ -7,6 +7,29 @@ import { GiChemicalDrop, GiGasPump } from 'react-icons/gi';
 import { Link } from "react-router-dom";
 
 // ============================================================
+// Continuous scroll‑triggered hook (observer stays alive)
+// ============================================================
+function useInView(options = {}) {
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setInView(entry.isIntersecting);
+      },
+      { threshold: 0.2, ...options }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [options]);
+
+  return [ref, inView];
+}
+
+// ============================================================
 // Animation styles (including bubbleFloat and fade animations)
 // ============================================================
 const animationStyles = `
@@ -44,6 +67,17 @@ const animationStyles = `
   .delay-300 { animation-delay: 0.3s; }
   .delay-400 { animation-delay: 0.4s; }
   .delay-500 { animation-delay: 0.5s; }
+
+  /* Scroll‑triggered transition classes (inline styles will override) */
+  .scroll-slide-left {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scroll-slide-right {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scroll-fade-up {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
 `;
 
 const SyngasDerivatives = () => {
@@ -61,36 +95,65 @@ const SyngasDerivatives = () => {
 
   const heroBubbles = generateBubbles(18, 15, 50);
 
-  // Refs for fade-in sections
-  const productsRef = useRef(null);
-  const [productsInView, setProductsInView] = useState(false);
-  const expertiseRef = useRef(null);
-  const [expertiseInView, setExpertiseInView] = useState(false);
-  const supportRef = useRef(null);
-  const [supportInView, setSupportInView] = useState(false);
+  // Refs for scroll‑triggered sections (continuous)
+  const [productsHeaderRef, productsHeaderInView] = useInView();
+  const [expertiseHeaderRef, expertiseHeaderInView] = useInView();
+  const [supportHeaderRef, supportHeaderInView] = useInView();
+  const [ctaRef, ctaInView] = useInView();
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.target === productsRef.current) setProductsInView(entry.isIntersecting);
-          if (entry.target === expertiseRef.current) setExpertiseInView(entry.isIntersecting);
-          if (entry.target === supportRef.current) setSupportInView(entry.isIntersecting);
-        });
-      },
-      { threshold: 0.2 }
-    );
-    if (productsRef.current) observer.observe(productsRef.current);
-    if (expertiseRef.current) observer.observe(expertiseRef.current);
-    if (supportRef.current) observer.observe(supportRef.current);
-    return () => observer.disconnect();
-  }, []);
+  // Individual card refs for products (3 cards)
+  const productCardRefs = [useInView(), useInView(), useInView()];
+
+  // Individual card refs for expertise (6 cards)
+  const expertiseCardRefs = [
+    useInView(), useInView(), useInView(),
+    useInView(), useInView(), useInView()
+  ];
+
+  // Individual card refs for support (3 cards)
+  const supportCardRefs = [useInView(), useInView(), useInView()];
+
+  const productsData = [
+    {
+      icon: FaWind,
+      title: "Hydrogen",
+      desc: "Complete hydrogen solutions from production to storage and distribution.",
+      features: ["Green, blue & conventional hydrogen", "Electrolysis & reforming technologies", "Compression & storage systems"]
+    },
+    {
+      icon: GiChemicalDrop,
+      title: "Ammonia",
+      desc: "End-to-end ammonia synthesis, storage, and handling infrastructure.",
+      features: ["Ammonia synthesis loops", "Low-carbon & green ammonia", "Refrigerated storage & export terminals"]
+    },
+    {
+      icon: FaFlask,
+      title: "Methanol",
+      desc: "Methanol production units tailored to global market demands.",
+      features: ["Conventional & renewable methanol", "Methanol synthesis & purification", "Storage and distribution systems"]
+    }
+  ];
+
+  const expertiseData = [
+    { icon: FaCompress, title: "Reforming Technologies", desc: "SMR, ATR, POx, and electrified reforming for hydrogen and syngas production." },
+    { icon: GiGasPump, title: "Synthesis Loops", desc: "Ammonia and methanol synthesis loop design, catalyst selection, and optimization." },
+    { icon: FaCompress, title: "Compression Systems", desc: "Synthesis gas compressors, recycle compressors, and driver selection." },
+    { icon: FaWarehouse, title: "Storage & Handling", desc: "Cryogenic tanks, pressurized bullets, and loading/unloading facilities." },
+    { icon: FaChartLine, title: "Utilities Integration", desc: "Steam systems, cooling water, power generation, and waste heat recovery." },
+    { icon: FaShieldAlt, title: "Safety & Sustainability", desc: "Hazard analysis, carbon capture integration, and low-carbon design." }
+  ];
+
+  const supportData = [
+    { icon: FaBolt, title: "Concept to Detail", desc: "FEED, detailed engineering, and execution support for syngas derivatives." },
+    { icon: FaGlobe, title: "Global Standards", desc: "Compliance with API, ASME, ISO, and international codes." },
+    { icon: FaLeaf, title: "Sustainable Solutions", desc: "Green, blue, and low-carbon pathways for future energy." }
+  ];
 
   return (
     <div className="bg-white overflow-x-hidden">
       <style>{animationStyles}</style>
 
-      {/* Hero Section */}
+      {/* Hero Section (unchanged – uses CSS animations) */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950"></div>
 
@@ -140,11 +203,18 @@ const SyngasDerivatives = () => {
         </div>
       </section>
 
-      {/* Key Derivatives */}
-      <section ref={productsRef} className="py-12 md:py-20 bg-gray-50">
+      {/* Key Derivatives – header slides left, each card fades up individually */}
+      <section className="py-12 md:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10 md:mb-16 transition-all duration-700"
-            style={{ opacity: productsInView ? 1 : 0, transform: productsInView ? "translateY(0)" : "translateY(30px)" }}>
+          {/* Header slides from left */}
+          <div
+            ref={productsHeaderRef}
+            className="text-center mb-10 md:mb-16 scroll-slide-left"
+            style={{
+              opacity: productsHeaderInView ? 1 : 0,
+              transform: productsHeaderInView ? "translateX(0)" : "translateX(-35px)",
+            }}
+          >
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Core Products
             </span>
@@ -160,69 +230,56 @@ const SyngasDerivatives = () => {
             </p>
           </div>
 
+          {/* Cards – each card uses its own useInView and staggered transitionDelay */}
           <div className="grid md:grid-cols-3 gap-6 md:gap-8">
-            {/* Hydrogen Card */}
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
-              style={{ opacity: productsInView ? 1 : 0, transform: productsInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.1s" }}>
-              <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600"></div>
-              <div className="p-6 md:p-8">
-                <div className="w-14 h-14 md:w-16 md:h-16 bg-amber-100 rounded-2xl flex items-center justify-center mb-5 md:mb-6 text-amber-600">
-                  <FaWind size={28} className="md:w-8 md:h-8" />
+            {productsData.map((card, idx) => {
+              const [ref, inView] = productCardRefs[idx];
+              return (
+                <div
+                  key={idx}
+                  ref={ref}
+                  className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+                  style={{
+                    opacity: inView ? 1 : 0,
+                    transform: inView ? "translateY(0)" : "translateY(30px)",
+                    transition: `opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.1}s, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.1}s`,
+                  }}
+                >
+                  <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600"></div>
+                  <div className="p-6 md:p-8">
+                    <div className="w-14 h-14 md:w-16 md:h-16 bg-amber-100 rounded-2xl flex items-center justify-center mb-5 md:mb-6 text-amber-600">
+                      <card.icon size={28} className="md:w-8 md:h-8" />
+                    </div>
+                    <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3">{card.title}</h3>
+                    <p className="text-gray-600 mb-4 text-sm md:text-base">{card.desc}</p>
+                    <ul className="space-y-2 text-gray-600 text-sm md:text-base">
+                      {card.features.map((feature, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="text-amber-500 mt-1">▹</span>
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3">Hydrogen</h3>
-                <p className="text-gray-600 mb-4 text-sm md:text-base">Complete hydrogen solutions from production to storage and distribution.</p>
-                <ul className="space-y-2 text-gray-600 text-sm md:text-base">
-                  <li className="flex items-start gap-2"><span className="text-amber-500 mt-1">▹</span><span>Green, blue & conventional hydrogen</span></li>
-                  <li className="flex items-start gap-2"><span className="text-amber-500 mt-1">▹</span><span>Electrolysis & reforming technologies</span></li>
-                  <li className="flex items-start gap-2"><span className="text-amber-500 mt-1">▹</span><span>Compression & storage systems</span></li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Ammonia Card */}
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
-              style={{ opacity: productsInView ? 1 : 0, transform: productsInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.2s" }}>
-              <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600"></div>
-              <div className="p-6 md:p-8">
-                <div className="w-14 h-14 md:w-16 md:h-16 bg-amber-100 rounded-2xl flex items-center justify-center mb-5 md:mb-6 text-amber-600">
-                  <GiChemicalDrop size={28} className="md:w-8 md:h-8" />
-                </div>
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3">Ammonia</h3>
-                <p className="text-gray-600 mb-4 text-sm md:text-base">End-to-end ammonia synthesis, storage, and handling infrastructure.</p>
-                <ul className="space-y-2 text-gray-600 text-sm md:text-base">
-                  <li className="flex items-start gap-2"><span className="text-amber-500 mt-1">▹</span><span>Ammonia synthesis loops</span></li>
-                  <li className="flex items-start gap-2"><span className="text-amber-500 mt-1">▹</span><span>Low-carbon & green ammonia</span></li>
-                  <li className="flex items-start gap-2"><span className="text-amber-500 mt-1">▹</span><span>Refrigerated storage & export terminals</span></li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Methanol Card */}
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
-              style={{ opacity: productsInView ? 1 : 0, transform: productsInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.3s" }}>
-              <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600"></div>
-              <div className="p-6 md:p-8">
-                <div className="w-14 h-14 md:w-16 md:h-16 bg-amber-100 rounded-2xl flex items-center justify-center mb-5 md:mb-6 text-amber-600">
-                  <FaFlask size={28} className="md:w-8 md:h-8" />
-                </div>
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3">Methanol</h3>
-                <p className="text-gray-600 mb-4 text-sm md:text-base">Methanol production units tailored to global market demands.</p>
-                <ul className="space-y-2 text-gray-600 text-sm md:text-base">
-                  <li className="flex items-start gap-2"><span className="text-amber-500 mt-1">▹</span><span>Conventional & renewable methanol</span></li>
-                  <li className="flex items-start gap-2"><span className="text-amber-500 mt-1">▹</span><span>Methanol synthesis & purification</span></li>
-                  <li className="flex items-start gap-2"><span className="text-amber-500 mt-1">▹</span><span>Storage and distribution systems</span></li>
-                </ul>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Engineering Expertise Section */}
-      <section ref={expertiseRef} className="py-12 md:py-20 bg-white">
+      {/* Engineering Expertise Section – header slides from right, each card fades up individually */}
+      <section className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10 md:mb-12 transition-all duration-700"
-            style={{ opacity: expertiseInView ? 1 : 0, transform: expertiseInView ? "translateY(0)" : "translateY(30px)" }}>
+          {/* Header slides from right */}
+          <div
+            ref={expertiseHeaderRef}
+            className="text-center mb-10 md:mb-12 scroll-slide-right"
+            style={{
+              opacity: expertiseHeaderInView ? 1 : 0,
+              transform: expertiseHeaderInView ? "translateX(0)" : "translateX(35px)",
+            }}
+          >
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Our Expertise
             </span>
@@ -238,77 +295,91 @@ const SyngasDerivatives = () => {
             </p>
           </div>
 
+          {/* Expertise cards – each with own useInView and staggered delay */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-            {/* Expertise cards */}
-            <div className="bg-gray-50 p-5 md:p-6 rounded-xl shadow-sm border-l-4 border-amber-500 transition-all duration-700"
-              style={{ opacity: expertiseInView ? 1 : 0, transform: expertiseInView ? "translateY(0)" : "translateY(20px)", transitionDelay: "0.1s" }}>
-              <FaCompress className="text-amber-600 text-xl md:text-2xl mb-3" />
-              <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Reforming Technologies</h3>
-              <p className="text-gray-600 text-xs md:text-sm">SMR, ATR, POx, and electrified reforming for hydrogen and syngas production.</p>
-            </div>
-            <div className="bg-gray-50 p-5 md:p-6 rounded-xl shadow-sm border-l-4 border-amber-500 transition-all duration-700"
-              style={{ opacity: expertiseInView ? 1 : 0, transform: expertiseInView ? "translateY(0)" : "translateY(20px)", transitionDelay: "0.2s" }}>
-              <GiGasPump className="text-amber-600 text-xl md:text-2xl mb-3" />
-              <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Synthesis Loops</h3>
-              <p className="text-gray-600 text-xs md:text-sm">Ammonia and methanol synthesis loop design, catalyst selection, and optimization.</p>
-            </div>
-            <div className="bg-gray-50 p-5 md:p-6 rounded-xl shadow-sm border-l-4 border-amber-500 transition-all duration-700"
-              style={{ opacity: expertiseInView ? 1 : 0, transform: expertiseInView ? "translateY(0)" : "translateY(20px)", transitionDelay: "0.3s" }}>
-              <FaCompress className="text-amber-600 text-xl md:text-2xl mb-3" />
-              <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Compression Systems</h3>
-              <p className="text-gray-600 text-xs md:text-sm">Synthesis gas compressors, recycle compressors, and driver selection.</p>
-            </div>
-            <div className="bg-gray-50 p-5 md:p-6 rounded-xl shadow-sm border-l-4 border-amber-500 transition-all duration-700"
-              style={{ opacity: expertiseInView ? 1 : 0, transform: expertiseInView ? "translateY(0)" : "translateY(20px)", transitionDelay: "0.4s" }}>
-              <FaWarehouse className="text-amber-600 text-xl md:text-2xl mb-3" />
-              <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Storage & Handling</h3>
-              <p className="text-gray-600 text-xs md:text-sm">Cryogenic tanks, pressurized bullets, and loading/unloading facilities.</p>
-            </div>
-            <div className="bg-gray-50 p-5 md:p-6 rounded-xl shadow-sm border-l-4 border-amber-500 transition-all duration-700"
-              style={{ opacity: expertiseInView ? 1 : 0, transform: expertiseInView ? "translateY(0)" : "translateY(20px)", transitionDelay: "0.5s" }}>
-              <FaChartLine className="text-amber-600 text-xl md:text-2xl mb-3" />
-              <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Utilities Integration</h3>
-              <p className="text-gray-600 text-xs md:text-sm">Steam systems, cooling water, power generation, and waste heat recovery.</p>
-            </div>
-            <div className="bg-gray-50 p-5 md:p-6 rounded-xl shadow-sm border-l-4 border-amber-500 transition-all duration-700"
-              style={{ opacity: expertiseInView ? 1 : 0, transform: expertiseInView ? "translateY(0)" : "translateY(20px)", transitionDelay: "0.6s" }}>
-              <FaShieldAlt className="text-amber-600 text-xl md:text-2xl mb-3" />
-              <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Safety & Sustainability</h3>
-              <p className="text-gray-600 text-xs md:text-sm">Hazard analysis, carbon capture integration, and low-carbon design.</p>
-            </div>
+            {expertiseData.map((card, idx) => {
+              const [ref, inView] = expertiseCardRefs[idx];
+              return (
+                <div
+                  key={idx}
+                  ref={ref}
+                  className="bg-gray-50 p-5 md:p-6 rounded-xl shadow-sm border-l-4 border-amber-500 hover:shadow-md transition-all duration-300 hover:-translate-y-1"
+                  style={{
+                    opacity: inView ? 1 : 0,
+                    transform: inView ? "translateY(0)" : "translateY(20px)",
+                    transition: `opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.07}s, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.07}s`,
+                  }}
+                >
+                  <card.icon className="text-amber-600 text-xl md:text-2xl mb-3" />
+                  <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">{card.title}</h3>
+                  <p className="text-gray-600 text-xs md:text-sm">{card.desc}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Project Support Section */}
-      <section ref={supportRef} className="py-12 md:py-16 bg-gray-50">
+      {/* Project Support Section – header slides from left, cards fade up */}
+      <section className="py-12 md:py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header slides from left */}
+          <div
+            ref={supportHeaderRef}
+            className="text-center mb-10 md:mb-12 scroll-slide-left"
+            style={{
+              opacity: supportHeaderInView ? 1 : 0,
+              transform: supportHeaderInView ? "translateX(0)" : "translateX(-35px)",
+            }}
+          >
+            <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
+              Project Support
+            </span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mt-4">
+              End-to-End{" "}
+              <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+                Delivery
+              </span>
+            </h2>
+            <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
+          </div>
+
           <div className="grid md:grid-cols-3 gap-6 md:gap-6 text-center">
-            <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm transition-all duration-700"
-              style={{ opacity: supportInView ? 1 : 0, transform: supportInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.1s" }}>
-              <div className="text-amber-600 text-3xl md:text-4xl mb-3 flex justify-center"><FaBolt /></div>
-              <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Concept to Detail</h4>
-              <p className="text-gray-600 text-sm md:text-base">FEED, detailed engineering, and execution support for syngas derivatives.</p>
-            </div>
-            <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm transition-all duration-700"
-              style={{ opacity: supportInView ? 1 : 0, transform: supportInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.2s" }}>
-              <div className="text-amber-600 text-3xl md:text-4xl mb-3 flex justify-center"><FaGlobe /></div>
-              <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Global Standards</h4>
-              <p className="text-gray-600 text-sm md:text-base">Compliance with API, ASME, ISO, and international codes.</p>
-            </div>
-            <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm transition-all duration-700"
-              style={{ opacity: supportInView ? 1 : 0, transform: supportInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.3s" }}>
-              <div className="text-amber-600 text-3xl md:text-4xl mb-3 flex justify-center"><FaLeaf /></div>
-              <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Sustainable Solutions</h4>
-              <p className="text-gray-600 text-sm md:text-base">Green, blue, and low-carbon pathways for future energy.</p>
-            </div>
+            {supportData.map((card, idx) => {
+              const [ref, inView] = supportCardRefs[idx];
+              return (
+                <div
+                  key={idx}
+                  ref={ref}
+                  className="bg-white p-6 md:p-8 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1"
+                  style={{
+                    opacity: inView ? 1 : 0,
+                    transform: inView ? "translateY(0)" : "translateY(30px)",
+                    transition: `opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.1}s, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.1}s`,
+                  }}
+                >
+                  <div className="text-amber-600 text-3xl md:text-4xl mb-3 flex justify-center">
+                    <card.icon />
+                  </div>
+                  <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-2">{card.title}</h4>
+                  <p className="text-gray-600 text-sm md:text-base">{card.desc}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA Section – fades up on scroll */}
       <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-16 md:py-20 lg:py-24 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto text-center">
+        <div
+          ref={ctaRef}
+          className="max-w-4xl mx-auto text-center scroll-fade-up"
+          style={{
+            opacity: ctaInView ? 1 : 0,
+            transform: ctaInView ? "translateY(0)" : "translateY(30px)",
+          }}
+        >
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Ready to advance your syngas derivatives project?
           </span>

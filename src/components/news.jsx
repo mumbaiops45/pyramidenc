@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+// ============================================================================
+// Continuous scroll‑triggered hook (observer stays alive)
+// ============================================================================
 function useInView(options = {}) {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
@@ -10,10 +13,7 @@ function useInView(options = {}) {
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
+        setInView(entry.isIntersecting);
       },
       { threshold: 0.1, rootMargin: "0px 0px -50px 0px", ...options }
     );
@@ -24,6 +24,79 @@ function useInView(options = {}) {
   return [ref, inView];
 }
 
+// ============================================================================
+// Individual News Card Component – handles its own animation direction
+// ============================================================================
+const NewsCard = ({ item, index }) => {
+  const [ref, inView] = useInView();
+  // Even index → slide from left, odd index → slide from right
+  const isEven = index % 2 === 0;
+  const initialTransform = isEven ? "translateX(-40px)" : "translateX(40px)";
+  const col = categoryColors[item.category] || categoryColors.Innovation;
+
+  return (
+    <Link
+      ref={ref}
+      to={`/news/${item.id}`}
+      className="group transition-all duration-700"
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateX(0)" : initialTransform,
+        transition: `opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) ${index * 0.05}s, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) ${index * 0.05}s`,
+      }}
+    >
+      <div className="h-full bg-white rounded-2xl border border-slate-100 overflow-hidden
+                      hover:-translate-y-1 hover:shadow-xl hover:border-amber-200
+                      transition-all duration-300 flex flex-col">
+        <div className="h-[3px] w-full bg-gradient-to-r from-amber-400 to-amber-600" />
+        <div className="p-5 flex flex-col flex-1">
+          <div className="flex items-center justify-between mb-3">
+            <div
+              className="w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
+              style={{ background: col.bg, border: `1px solid ${col.border}` }}
+            >
+              {item.icon}
+            </div>
+            <span
+              className="text-[10px] font-bold px-2.5 py-1 rounded-full border"
+              style={{ background: col.bg, color: col.text, borderColor: col.border }}
+            >
+              {item.category}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 text-[11px] text-slate-400 mb-2">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            {item.date}
+          </div>
+          <h3 className="text-[13.5px] font-bold text-gray-900 mb-2 group-hover:text-amber-600 transition-colors line-clamp-2 leading-snug">
+            {item.title}
+          </h3>
+          <p className="text-gray-500 text-[11.5px] leading-relaxed line-clamp-3 flex-1">
+            {item.shortDesc}
+          </p>
+          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+            <span className="inline-flex items-center gap-1 text-amber-600 text-[11px] font-semibold group-hover:gap-2 transition-all">
+              Read more
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </span>
+            <div className="w-1.5 h-1.5 rounded-full bg-amber-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
+};
+
+// ============================================================================
+// Animation styles
+// ============================================================================
 const animationStyles = `
   @keyframes fadeUp {
     0% { opacity: 0; transform: translateY(30px); }
@@ -110,20 +183,16 @@ const categoryColors = {
 };
 
 const News = () => {
-  const [newsRef, newsInView] = useInView();
   const [ctaRef, ctaInView] = useInView();
-
   const heroBubbles = generateBubbles(18, 15, 50);
   const ctaBubbles = generateBubbles(22, 10, 45);
-
   const sortedNews = [...newsData].sort((a, b) => new Date(b.date) - new Date(a.date));
-
 
   return (
     <div className="bg-white">
       <style>{animationStyles}</style>
 
-      {/* ── Hero — dark slate ── */}
+      {/* Hero Section */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950" />
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -163,13 +232,9 @@ const News = () => {
         </div>
       </section>
 
-
-
-      {/* ── News Grid — light white/gray ── */}
+      {/* News Grid – cards slide from left/right individually */}
       <section className="py-20 px-6" style={{ background: "linear-gradient(160deg,#f8fafc 0%,#f1f5f9 40%,#e9eef5 100%)" }}>
         <div className="max-w-7xl mx-auto">
-
-          {/* Section header */}
           <div className="text-center mb-14">
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Latest Updates
@@ -186,90 +251,16 @@ const News = () => {
             </p>
           </div>
 
-          <div
-            ref={newsRef}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-          >
-            {sortedNews.map((item, idx) => {
-              const col = categoryColors[item.category] || categoryColors.Innovation;
-              return (
-                <Link
-                  key={item.id}
-                  to={`/news/${item.id}`}
-                  className="group transition-all duration-700"
-                  style={{
-                    opacity: newsInView ? 1 : 0,
-                    transform: newsInView ? "translateY(0)" : "translateY(40px)",
-                    transitionDelay: `${idx * 0.03}s`,
-                  }}
-                >
-                  <div className="h-full bg-white rounded-2xl border border-slate-100 overflow-hidden
-                                  hover:-translate-y-1 hover:shadow-xl hover:border-amber-200
-                                  transition-all duration-300 flex flex-col">
-
-                    {/* Amber top bar */}
-                    <div className="h-[3px] w-full bg-gradient-to-r from-amber-400 to-amber-600" />
-
-                    <div className="p-5 flex flex-col flex-1">
-
-                      {/* Icon row + category pill */}
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
-                          style={{ background: col.bg, border: `1px solid ${col.border}` }}>
-                          {item.icon}
-                        </div>
-                        <span
-                          className="text-[10px] font-bold px-2.5 py-1 rounded-full border"
-                          style={{ background: col.bg, color: col.text, borderColor: col.border }}
-                        >
-                          {item.category}
-                        </span>
-                      </div>
-
-                      {/* Date */}
-                      <div className="flex items-center gap-1.5 text-[11px] text-slate-400 mb-2">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <rect x="3" y="4" width="18" height="18" rx="2" />
-                          <line x1="16" y1="2" x2="16" y2="6" />
-                          <line x1="8" y1="2" x2="8" y2="6" />
-                          <line x1="3" y1="10" x2="21" y2="10" />
-                        </svg>
-                        {item.date}
-                      </div>
-
-                      {/* Title */}
-                      <h3 className="text-[13.5px] font-bold text-gray-900 mb-2 group-hover:text-amber-600 transition-colors line-clamp-2 leading-snug">
-                        {item.title}
-                      </h3>
-
-                      {/* Description */}
-                      <p className="text-gray-500 text-[11.5px] leading-relaxed line-clamp-3 flex-1">
-                        {item.shortDesc}
-                      </p>
-
-                      {/* Read more */}
-                      <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                        <span className="inline-flex items-center gap-1 text-amber-600 text-[11px] font-semibold group-hover:gap-2 transition-all">
-                          Read more
-                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                            <path d="M5 12h14M12 5l7 7-7 7" />
-                          </svg>
-                        </span>
-                        <div className="w-1.5 h-1.5 rounded-full bg-amber-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {sortedNews.map((item, idx) => (
+              <NewsCard key={item.id} item={item} index={idx} />
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ── CTA — dark slate + amber bubbles ── */}
+      {/* CTA Section – fades up */}
       <section className="relative overflow-hidden bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6">
-
-        {/* Ambient glow */}
         <div
           className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-60 pointer-events-none"
           style={{ background: "radial-gradient(ellipse,rgba(245,158,11,0.1) 0%,transparent 70%)" }}
@@ -290,31 +281,27 @@ const News = () => {
             />
           ))}
         </div>
-
         <div
           ref={ctaRef}
-          className={`relative z-10 max-w-5xl mx-auto text-center transition-all duration-700 ${ctaInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-            }`}
+          className="relative z-10 max-w-5xl mx-auto text-center transition-all duration-700"
+          style={{
+            opacity: ctaInView ? 1 : 0,
+            transform: ctaInView ? "translateY(0)" : "translateY(30px)",
+          }}
         >
-          {/* Pill badge */}
-
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Stay Connected
           </span>
-
           <h2 className="text-3xl lg:text-5xl font-extrabold leading-tight mt-4 mb-4">
             <span className="text-gray-700">Follow our</span>{" "}
             <span className="bg-gradient-to-r from-amber-400 to-amber-500 bg-clip-text text-transparent">
               journey
             </span>
           </h2>
-
           <div className="w-16 h-[2px] bg-amber-500 mx-auto mb-6 rounded-full" />
-
           <p className="text-slate-700 text-sm lg:text-base max-w-2xl mx-auto mb-10">
             Subscribe to our newsletter for the latest updates on innovations, partnerships, and industry events.
           </p>
-
           <Link
             to="/contact"
             className="inline-flex px-8 py-3 rounded-full text-sm font-semibold text-white bg-amber-600 hover:bg-amber-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"

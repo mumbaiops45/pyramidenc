@@ -17,33 +17,103 @@ import { GiFactory } from "react-icons/gi";
 import { Link } from "react-router-dom";
 
 // ============================================================================
-// Custom hook for scroll animations
+// Continuous scroll‑triggered hook (observer stays alive)
 // ============================================================================
 function useInView(options = {}) {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
+        setInView(entry.isIntersecting);
       },
       { threshold: 0.2, ...options }
     );
     observer.observe(el);
     return () => observer.disconnect();
   }, [options]);
+
   return [ref, inView];
 }
 
 // ============================================================================
-// Animation styles (bubbles, fades, shimmer) – using brand colors
+// Individual card components to avoid hook‑in‑callback issues
+// ============================================================================
+const FeatureCard = ({ feature, index }) => {
+  const [ref, inView] = useInView();
+  return (
+    <div
+      ref={ref}
+      className="group border-l-4 border-amber-200 pl-5 py-2 transition-all duration-300 hover:border-amber-500 hover:pl-6"
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateX(0)" : "translateX(-25px)",
+        transition: `opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${index * 0.1}s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${index * 0.1}s`,
+      }}
+    >
+      <feature.icon className="text-3xl text-amber-500 mb-3 group-hover:text-amber-600 transition-colors" />
+      <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-amber-600 transition-colors">
+        {feature.title}
+      </h3>
+      <p className="text-gray-600 text-sm leading-relaxed">{feature.description}</p>
+    </div>
+  );
+};
+
+const PhaseCard = ({ phase, index }) => {
+  const [ref, inView] = useInView();
+  return (
+    <div
+      ref={ref}
+      className="group border-l-4 border-amber-300 pl-5 py-2 transition-all duration-300 hover:border-amber-500 hover:pl-6"
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateX(0)" : "translateX(25px)",
+        transition: `opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${index * 0.1}s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${index * 0.1}s`,
+      }}
+    >
+      <div className="text-5xl font-black text-amber-200 group-hover:text-amber-300 transition-colors mb-2">
+        {phase.step}
+      </div>
+      <phase.icon className="text-2xl text-amber-500 mb-3 group-hover:text-amber-600" />
+      <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-amber-600 transition-colors">
+        {phase.title}
+      </h3>
+      <p className="text-gray-600 text-sm leading-relaxed">{phase.description}</p>
+    </div>
+  );
+};
+
+const BenefitCard = ({ benefit, index }) => {
+  const [ref, inView] = useInView();
+  return (
+    <div
+      ref={ref}
+      className="border-t-2 border-gray-200 pt-4 transition-all duration-300 hover:border-amber-400"
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(20px)",
+        transition: `opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${index * 0.1}s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${index * 0.1}s`,
+      }}
+    >
+      <benefit.icon className="text-3xl text-amber-500 mb-3" />
+      <h3 className="text-xl font-bold text-gray-900 mb-2">{benefit.title}</h3>
+      <p className="text-gray-600 text-sm leading-relaxed">{benefit.description}</p>
+    </div>
+  );
+};
+
+// ============================================================================
+// Animation styles (bubbles, fades, scroll transition classes)
 // ============================================================================
 const animationStyles = `
+  :root {
+    --primery: #f59e0b;
+    --primery-dark: #d97706;
+  }
   @keyframes fadeUp {
     0% { opacity: 0; transform: translateY(30px); }
     100% { opacity: 1; transform: translateY(0); }
@@ -74,13 +144,28 @@ const animationStyles = `
   .delay-300 { animation-delay: 0.3s; }
   .delay-400 { animation-delay: 0.4s; }
   .delay-500 { animation-delay: 0.5s; }
+
+  /* Scroll‑triggered transition classes */
+  .scroll-slide-left {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scroll-slide-right {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scroll-fade-up {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
 `;
 
 const Epc = () => {
-  const [featuresRef, featuresInView] = useInView();
-  const [phasesRef, phasesInView] = useInView();
-  const [benefitsRef, benefitsInView] = useInView();
-  const [imageSectionRef, imageSectionInView] = useInView();
+  // Refs for scroll‑triggered sections (continuous)
+  const [introRef, introInView] = useInView();
+  const [imageSectionTextRef, imageSectionTextInView] = useInView();
+  const [imageSectionImgRef, imageSectionImgInView] = useInView();
+  const [featuresHeaderRef, featuresHeaderInView] = useInView();
+  const [phasesHeaderRef, phasesHeaderInView] = useInView();
+  const [benefitsHeaderRef, benefitsHeaderInView] = useInView();
+  const [ctaRef, ctaInView] = useInView();
 
   const generateBubbles = (count, baseSize = 20, sizeRange = 40) => {
     return Array.from({ length: count }, (_, i) => ({
@@ -121,10 +206,10 @@ const Epc = () => {
   ];
 
   return (
-      <div className="bg-white overflow-x-hidden">
+    <div className="bg-white overflow-x-hidden">
       <style>{animationStyles}</style>
 
-      {/* Hero Section – centered text, brand gradient */}
+      {/* Hero Section – unchanged (CSS animations) */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950"></div>
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -162,13 +247,20 @@ const Epc = () => {
         </div>
       </section>
 
-      {/* Introduction – updated pill badge */}
+      {/* Introduction – slides from left */}
       <section className="py-16 bg-gray-50">
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)] animate-fadeUp">
+        <div
+          ref={introRef}
+          className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 scroll-slide-left"
+          style={{
+            opacity: introInView ? 1 : 0,
+            transform: introInView ? "translateX(0)" : "translateX(-35px)",
+          }}
+        >
+          <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             End‑to‑End Delivery
           </span>
-          <p className="text-gray-700 text-lg leading-relaxed mt-4 animate-fadeUp delay-100">
+          <p className="text-gray-700 text-lg leading-relaxed mt-4">
             Pyramid E&C provides complete turnkey EPC solutions for oil & gas, refining, petrochemical,
             and renewable energy projects. Our integrated approach ensures seamless coordination,
             reduced risks, and predictable outcomes – from initial concept to final handover.
@@ -176,28 +268,27 @@ const Epc = () => {
         </div>
       </section>
 
-      {/* Image Section – with pill badge + gradient heading + underline */}
-      <section ref={imageSectionRef} className="py-16 px-6 bg-white">
-        <div
-          className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center transition-all duration-700"
-          style={{
-            opacity: imageSectionInView ? 1 : 0,
-            transform: imageSectionInView ? "translateY(0)" : "translateY(30px)",
-          }}
-        >
-          <div className="order-2 md:order-1">
-            {/* Pill badge */}
+      {/* Image Section – text slides left, image slides right */}
+      <section className="py-16 px-6 bg-white">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+          {/* Text column – slides from left */}
+          <div
+            ref={imageSectionTextRef}
+            className="order-2 md:order-1 scroll-slide-left"
+            style={{
+              opacity: imageSectionTextInView ? 1 : 0,
+              transform: imageSectionTextInView ? "translateX(0)" : "translateX(-35px)",
+            }}
+          >
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Our Approach
             </span>
-            {/* Gradient heading */}
             <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4 mb-4">
               Integrated{" "}
               <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
                 Project Delivery
               </span>
             </h3>
-            {/* Underline */}
             <div className="w-24 h-1 bg-[var(--primery)] rounded-full mb-6" />
             <p className="text-gray-600 mb-6 leading-relaxed">
               Our multi‑disciplinary teams work in parallel, using advanced 3D modeling and clash detection to eliminate
@@ -216,7 +307,16 @@ const Epc = () => {
               ))}
             </ul>
           </div>
-          <div className="order-1 md:order-2 group">
+
+          {/* Image column – slides from right */}
+          <div
+            ref={imageSectionImgRef}
+            className="order-1 md:order-2 scroll-slide-right"
+            style={{
+              opacity: imageSectionImgInView ? 1 : 0,
+              transform: imageSectionImgInView ? "translateX(0)" : "translateX(35px)",
+            }}
+          >
             <div className="relative rounded-2xl overflow-hidden shadow-xl transition-all duration-500 group-hover:shadow-2xl">
               <img
                 src="/EPC.png"
@@ -229,28 +329,27 @@ const Epc = () => {
         </div>
       </section>
 
-      {/* Features Section – updated header */}
-      <section ref={featuresRef} className="py-20 bg-gray-50">
+      {/* Features Section – header slides from right, cards slide from left individually */}
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header slides from right */}
           <div
-            className="text-center mb-12 transition-all duration-700"
+            ref={featuresHeaderRef}
+            className="text-center mb-12 scroll-slide-right"
             style={{
-              opacity: featuresInView ? 1 : 0,
-              transform: featuresInView ? "translateY(0)" : "translateY(30px)",
+              opacity: featuresHeaderInView ? 1 : 0,
+              transform: featuresHeaderInView ? "translateX(0)" : "translateX(35px)",
             }}
           >
-            {/* Pill badge */}
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Why Choose Us
             </span>
-            {/* Gradient heading */}
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4">
               Turnkey{" "}
               <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
                 EPC Capabilities
               </span>
             </h2>
-            {/* Underline */}
             <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
             <p className="text-gray-600 mt-6 max-w-2xl mx-auto">
               We manage every aspect of your project, delivering a fully operational facility on time and on budget.
@@ -259,48 +358,33 @@ const Epc = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, idx) => (
-              <div
-                key={idx}
-                className="group border-l-4 border-amber-200 pl-5 py-2 transition-all duration-300 hover:border-amber-500 hover:pl-6"
-                style={{
-                  opacity: featuresInView ? 1 : 0,
-                  transform: featuresInView ? "translateY(0)" : "translateY(30px)",
-                  transitionDelay: `${idx * 0.1}s`,
-                }}
-              >
-                <feature.icon className="text-3xl text-amber-500 mb-3 group-hover:text-amber-600 transition-colors" />
-                <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-amber-600 transition-colors">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{feature.description}</p>
-              </div>
+              <FeatureCard key={idx} feature={feature} index={idx} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Phases Section – updated header */}
-      <section ref={phasesRef} className="py-20 bg-white">
+      {/* Phases Section – header slides from left, cards slide from right individually */}
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header slides from left */}
           <div
-            className="text-center mb-12 transition-all duration-700"
+            ref={phasesHeaderRef}
+            className="text-center mb-12 scroll-slide-left"
             style={{
-              opacity: phasesInView ? 1 : 0,
-              transform: phasesInView ? "translateY(0)" : "translateY(30px)",
+              opacity: phasesHeaderInView ? 1 : 0,
+              transform: phasesHeaderInView ? "translateX(0)" : "translateX(-35px)",
             }}
           >
-            {/* Pill badge */}
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Our Process
             </span>
-            {/* Gradient heading */}
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4">
               Project{" "}
               <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
                 Delivery Phases
               </span>
             </h2>
-            {/* Underline */}
             <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
             <p className="text-gray-600 mt-6 max-w-2xl mx-auto">
               A structured, proven methodology from concept to commissioning.
@@ -309,51 +393,33 @@ const Epc = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {phases.map((phase, idx) => (
-              <div
-                key={idx}
-                className="group border-l-4 border-amber-300 pl-5 py-2 transition-all duration-300 hover:border-amber-500 hover:pl-6"
-                style={{
-                  opacity: phasesInView ? 1 : 0,
-                  transform: phasesInView ? "translateY(0)" : "translateY(40px)",
-                  transitionDelay: `${idx * 0.1}s`,
-                }}
-              >
-                <div className="text-5xl font-black text-amber-200 group-hover:text-amber-300 transition-colors mb-2">
-                  {phase.step}
-                </div>
-                <phase.icon className="text-2xl text-amber-500 mb-3 group-hover:text-amber-600" />
-                <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-amber-600 transition-colors">
-                  {phase.title}
-                </h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{phase.description}</p>
-              </div>
+              <PhaseCard key={idx} phase={phase} index={idx} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Benefits Section – updated header */}
-      <section ref={benefitsRef} className="py-20 bg-gray-50">
+      {/* Benefits Section – header slides from right, cards fade up */}
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header slides from right */}
           <div
-            className="text-center mb-12 transition-all duration-700"
+            ref={benefitsHeaderRef}
+            className="text-center mb-12 scroll-slide-right"
             style={{
-              opacity: benefitsInView ? 1 : 0,
-              transform: benefitsInView ? "translateY(0)" : "translateY(30px)",
+              opacity: benefitsHeaderInView ? 1 : 0,
+              transform: benefitsHeaderInView ? "translateX(0)" : "translateX(35px)",
             }}
           >
-            {/* Pill badge */}
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Advantages
             </span>
-            {/* Gradient heading */}
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4">
               Why{" "}
               <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
                 Turnkey EPC?
               </span>
             </h2>
-            {/* Underline */}
             <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
             <p className="text-gray-600 mt-6 max-w-2xl mx-auto">
               Partner with Pyramid E&C for a seamless, risk‑mitigated project experience.
@@ -362,40 +428,32 @@ const Epc = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {benefits.map((benefit, idx) => (
-              <div
-                key={idx}
-                className="border-t-2 border-gray-200 pt-4 transition-all duration-300 hover:border-amber-400"
-                style={{
-                  opacity: benefitsInView ? 1 : 0,
-                  transform: benefitsInView ? "translateY(0)" : "translateY(30px)",
-                  transitionDelay: `${idx * 0.1}s`,
-                }}
-              >
-                <benefit.icon className="text-3xl text-amber-500 mb-3" />
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{benefit.title}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{benefit.description}</p>
-              </div>
+              <BenefitCard key={idx} benefit={benefit} index={idx} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section – updated with pill badge + gradient heading + underline */}
+      {/* CTA Section – fades up */}
       <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          {/* Pill badge */}
+        <div
+          ref={ctaRef}
+          className="max-w-4xl mx-auto text-center scroll-fade-up"
+          style={{
+            opacity: ctaInView ? 1 : 0,
+            transform: ctaInView ? "translateY(0)" : "translateY(30px)",
+          }}
+        >
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Ready for a Single‑Point Solution?
           </span>
-          {/* Gradient heading */}
           <h2 className="text-3xl lg:text-5xl font-extrabold leading-tight text-gray-900 mt-4 mb-6">
             Let's deliver{" "}
             <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
-               your project
+              your project
             </span>{" "}
             together
           </h2>
-          {/* Underline */}
           <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-2 mb-6 rounded-full" />
           <p className="text-gray-700 text-sm lg:text-base max-w-2xl mx-auto mb-10">
             Contact our EPC experts to discuss how we can execute your project with certainty.

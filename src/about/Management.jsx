@@ -6,7 +6,7 @@ import {
 import { Link } from "react-router-dom";
 
 // ============================================================
-// Custom hook with correct dependency handling
+// Continuous scroll‑triggered hook (observer stays alive)
 // ============================================================
 function useInView(options = {}) {
   const ref = useRef(null);
@@ -17,10 +17,7 @@ function useInView(options = {}) {
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
+        setInView(entry.isIntersecting);
       },
       { threshold: 0.2, ...options }
     );
@@ -46,6 +43,7 @@ function TeamCard({ member, index }) {
         opacity: inView ? 1 : 0,
         transform: inView ? "translateY(0)" : "translateY(40px)",
         transitionDelay: `${index * 0.1}s`,
+        transitionProperty: "opacity, transform",
       }}
     >
       <div
@@ -229,10 +227,21 @@ const animationStyles = `
   .delay-300 { animation-delay: 0.3s; }
   .delay-400 { animation-delay: 0.4s; }
   .delay-500 { animation-delay: 0.5s; }
+
+  /* Scroll‑triggered transition classes (inline styles will override) */
+  .scroll-fade-up {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scroll-slide-left {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scroll-slide-right {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
 `;
 
 // ============================================================
-// Main Management Component (Light Theme)
+// Main Management Component (Light Theme) with scroll animations
 // ============================================================
 const Management = () => {
   const generateBubbles = (count, baseSize = 20, sizeRange = 40) => {
@@ -317,11 +326,15 @@ const Management = () => {
     },
   ];
 
+  // Refs for scroll‑triggered sections
+  const [introRef, introInView] = useInView();
+  const [ctaRef, ctaInView] = useInView();
+
   return (
     <div className="bg-white overflow-x-hidden">
       <style>{animationStyles}</style>
 
-      {/* Hero Section */}
+      {/* Hero Section (unchanged – uses CSS animations) */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950"></div>
 
@@ -363,10 +376,18 @@ const Management = () => {
         </div>
       </section>
 
-      {/* Team Grid */}
+      {/* Intro + Team Grid – with scroll‑triggered slide‑in effect */}
       <section className="py-12 md:py-20 px-4 sm:px-6 relative z-10">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-10 md:mb-12">
+          {/* Animated header (slides from left) */}
+          <div
+            ref={introRef}
+            className="text-center mb-10 md:mb-12 scroll-slide-left"
+            style={{
+              opacity: introInView ? 1 : 0,
+              transform: introInView ? "translateX(0)" : "translateX(-35px)",
+            }}
+          >
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Leadership
             </span>
@@ -382,6 +403,7 @@ const Management = () => {
             </p>
           </div>
 
+          {/* Team Cards – each card fades up with staggered delay (already handled inside TeamCard) */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {teamMembers.map((member, idx) => (
               <TeamCard key={idx} member={member} index={idx} />
@@ -390,9 +412,16 @@ const Management = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA Section – fades up on scroll */}
       <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-16 md:py-20 lg:py-24 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto text-center">
+        <div
+          ref={ctaRef}
+          className="max-w-4xl mx-auto text-center scroll-fade-up"
+          style={{
+            opacity: ctaInView ? 1 : 0,
+            transform: ctaInView ? "translateY(0)" : "translateY(30px)",
+          }}
+        >
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Ready to work with our experts?
           </span>

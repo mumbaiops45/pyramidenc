@@ -8,21 +8,26 @@ import {
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
+// ============================================================
+// Continuous scroll‑triggered hook (observer stays alive)
+// ============================================================
 function useInView(options = {}) {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) { setInView(true); observer.disconnect(); }
+        setInView(entry.isIntersecting);
       },
       { threshold: 0.2, ...options }
     );
     observer.observe(el);
     return () => observer.disconnect();
   }, [options]);
+
   return [ref, inView];
 }
 
@@ -31,8 +36,13 @@ function PillarCard({ title, description, icon: Icon, index }) {
   return (
     <div
       ref={ref}
-      className={`group transition-all duration-700 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-      style={{ transitionDelay: `${index * 0.1}s` }}
+      className="group transition-all duration-700"
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(30px)",
+        transitionDelay: `${index * 0.1}s`,
+        transitionProperty: "opacity, transform",
+      }}
     >
       <div className="relative h-full bg-white rounded-2xl p-5 sm:p-6 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-2 border border-gray-100 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-amber-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
@@ -101,11 +111,35 @@ const animationStyles = `
   .animate-fadeRight{ animation: fadeRight 0.8s cubic-bezier(0.22,1,0.36,1) forwards; }
   .delay-100{animation-delay:0.1s} .delay-200{animation-delay:0.2s}
   .delay-300{animation-delay:0.3s} .delay-400{animation-delay:0.4s} .delay-500{animation-delay:0.5s}
+
+  /* Scroll‑triggered transition classes (inline styles will override) */
+  .scroll-slide-left {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scroll-slide-right {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scroll-fade-up {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
 `;
 
 const Leadership = () => {
-  const [visionRef, visionInView] = useInView();
-  const [overviewRef, overviewInView] = useInView();
+  // Refs for each text section (continuous animation)
+  const [heroSubRef, heroSubInView] = useInView();
+  const [founderLeftRef, founderLeftInView] = useInView();
+  const [founderRightRef, founderRightInView] = useInView();
+  const [overviewHeaderRef, overviewHeaderInView] = useInView();
+  const [overviewLeftRef, overviewLeftInView] = useInView();
+  const [overviewRightRef, overviewRightInView] = useInView();
+  const [visionHeaderRef, visionHeaderInView] = useInView();
+  const [expertiseRef, expertiseInView] = useInView();
+  const [investmentRef, investmentInView] = useInView();
+  const [journeyRef, journeyInView] = useInView();
+  const [educationRef, educationInView] = useInView();
+  const [globalCareerHeaderRef, globalCareerHeaderInView] = useInView();
+  const [globalCareerRef, globalCareerInView] = useInView();
+  const [ctaRef, ctaInView] = useInView();
 
   const generateBubbles = (count, baseSize = 20, sizeRange = 40) =>
     Array.from({ length: count }, (_, i) => ({
@@ -147,7 +181,14 @@ const Leadership = () => {
               Leadership
             </span>
           </h1>
-          <p className="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto leading-relaxed animate-fadeUp delay-200">
+          <p
+            ref={heroSubRef}
+            className="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto leading-relaxed scroll-fade-up"
+            style={{
+              opacity: heroSubInView ? 1 : 0,
+              transform: heroSubInView ? "translateY(0)" : "translateY(20px)",
+            }}
+          >
             Visionary direction, operational excellence, and a commitment to global impact.
           </p>
         </div>
@@ -162,36 +203,51 @@ const Leadership = () => {
             <div className="relative order-2 md:order-1">
               <div className="absolute -top-6 -left-6 w-24 h-24 border-2 border-amber-200 rounded-full opacity-50" />
               <div className="relative z-10">
-                <div className="inline-block px-4 py-1 rounded-full bg-gradient-to-r from-amber-100 to-amber-50 text-amber-700 text-sm font-semibold mb-4 animate-fadeLeft delay-100">
-                  Meet The Founder
-                </div>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight text-gray-900 mt-4 mb-6">
-                  Ashish{" "}
-                  <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
-                    Bajpai
-                  </span>
-                </h2>
-                <p className="text-lg sm:text-xl text-amber-600 font-semibold mt-2 animate-fadeLeft delay-300">Chairman, Pyramid E&C Group</p>
-                <p className="text-gray-600 mt-6 leading-relaxed animate-fadeLeft delay-400">
-                  Globally recognized leader in hydrocarbon and renewable energy technologies. Founder of a world-class EPC organization delivering over 700 projects across Asia, the Middle East, Europe, and the USA.
-                </p>
-                <div className="flex gap-4 mt-8 animate-fadeLeft delay-500">
-                  <a href="https://linkedin.com/in/ashish-bajpai" target="_blank" rel="noopener noreferrer"
-                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-100 flex items-center justify-center hover:bg-amber-100 transition-all hover:scale-110 text-amber-600">
-                    <FaLinkedinIn className="text-lg sm:text-xl" />
-                  </a>
-                  <a href="mailto:ashish.bajpai@pyramid-ec.com"
-                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-100 flex items-center justify-center hover:bg-amber-100 transition-all hover:scale-110 text-amber-600">
-                    <FaEnvelope className="text-lg sm:text-xl" />
-                  </a>
+                <div
+                  ref={founderLeftRef}
+                  className="scroll-slide-left"
+                  style={{
+                    opacity: founderLeftInView ? 1 : 0,
+                    transform: founderLeftInView ? "translateX(0)" : "translateX(-35px)",
+                  }}
+                >
+                  <div className="inline-block px-4 py-1 rounded-full bg-gradient-to-r from-amber-100 to-amber-50 text-amber-700 text-sm font-semibold mb-4">
+                    Meet The Founder
+                  </div>
+                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight text-gray-900 mt-4 mb-6">
+                    Ashish{" "}
+                    <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+                      Bajpai
+                    </span>
+                  </h2>
+                  <p className="text-lg sm:text-xl text-amber-600 font-semibold mt-2">Chairman, Pyramid E&C Group</p>
+                  <p className="text-gray-600 mt-6 leading-relaxed">
+                    Globally recognized leader in hydrocarbon and renewable energy technologies. Founder of a world-class EPC organization delivering over 700 projects across Asia, the Middle East, Europe, and the USA.
+                  </p>
+                  <div className="flex gap-4 mt-8">
+                    <a href="https://linkedin.com/in/ashish-bajpai" target="_blank" rel="noopener noreferrer"
+                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-100 flex items-center justify-center hover:bg-amber-100 transition-all hover:scale-110 text-amber-600">
+                      <FaLinkedinIn className="text-lg sm:text-xl" />
+                    </a>
+                    <a href="mailto:ashish.bajpai@pyramid-ec.com"
+                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-100 flex items-center justify-center hover:bg-amber-100 transition-all hover:scale-110 text-amber-600">
+                      <FaEnvelope className="text-lg sm:text-xl" />
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="flex justify-center order-1 md:order-2 animate-fadeRight delay-200">
+            <div
+              ref={founderRightRef}
+              className="flex justify-center order-1 md:order-2 scroll-slide-right"
+              style={{
+                opacity: founderRightInView ? 1 : 0,
+                transform: founderRightInView ? "translateX(0)" : "translateX(35px)",
+              }}
+            >
               <div className="relative group">
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-600 blur-2xl opacity-60 group-hover:opacity-100 transition duration-500" />
                 <div className="relative w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 rounded-2xl overflow-hidden border-4 border-white shadow-2xl">
-                  {/* Original image path preserved */}
                   <img 
                     src="/Ashish-Bajpai.jpg" 
                     alt="Ashish Bajpai" 
@@ -204,16 +260,19 @@ const Leadership = () => {
         </div>
       </section>
 
-      {/* ── LEADERSHIP OVERVIEW — REDESIGNED ─────────────────── */}
-      <section
-        ref={overviewRef}
-        className="py-12 md:py-20 px-4 sm:px-6 bg-gradient-to-r from-amber-50 to-white relative overflow-hidden"
-      >
+      {/* ── LEADERSHIP OVERVIEW ─────────────────────────────── */}
+      <section className="py-12 md:py-20 px-4 sm:px-6 bg-gradient-to-r from-amber-50 to-white relative overflow-hidden">
         <div className="absolute top-0 left-0 w-1 sm:w-1.5 h-full bg-gradient-to-b from-[#F5C518] via-[#d4a017] to-[#F5C518]" />
 
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center gap-3 mb-8 md:mb-12"
-            style={{ opacity: overviewInView ? 1 : 0, transform: overviewInView ? "translateY(0)" : "translateY(20px)", transition: "all 0.7s 0.05s" }}>
+          <div
+            ref={overviewHeaderRef}
+            className="flex items-center gap-3 mb-8 md:mb-12 scroll-slide-left"
+            style={{
+              opacity: overviewHeaderInView ? 1 : 0,
+              transform: overviewHeaderInView ? "translateX(0)" : "translateX(-35px)",
+            }}
+          >
             <div className="w-8 sm:w-10 h-0.5 rounded-full bg-gradient-to-r from-[#F5C518] to-[#d4a017]" />
             <span className="text-[10px] sm:text-xs font-bold tracking-[2px] sm:tracking-[3px] uppercase text-[#d4a017]">
               Leadership Overview
@@ -221,7 +280,14 @@ const Leadership = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-start">
-            <div style={{ opacity: overviewInView ? 1 : 0, transform: overviewInView ? "translateX(0)" : "translateX(-24px)", transition: "all 0.75s 0.1s" }}>
+            <div
+              ref={overviewLeftRef}
+              className="scroll-slide-left"
+              style={{
+                opacity: overviewLeftInView ? 1 : 0,
+                transform: overviewLeftInView ? "translateX(0)" : "translateX(-35px)",
+              }}
+            >
               <div className="relative bg-white border border-[#f5e88a] rounded-2xl p-5 sm:p-6 md:p-7 mb-6 shadow-md">
                 <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#F5C518] to-[#d4a017] rounded-l-2xl" />
                 <FaQuoteLeft className="text-2xl sm:text-3xl text-[#F5C518] mb-3 sm:mb-4 opacity-80" />
@@ -245,10 +311,11 @@ const Leadership = () => {
             </div>
 
             <div
-              className="flex flex-col gap-4"
+              ref={overviewRightRef}
+              className="flex flex-col gap-4 scroll-slide-right"
               style={{
-                opacity: overviewInView ? 1 : 0, transform: overviewInView ? "translateX(0)" : "translateX(24px)",
-                transition: "all 0.75s 0.18s"
+                opacity: overviewRightInView ? 1 : 0,
+                transform: overviewRightInView ? "translateX(0)" : "translateX(35px)",
               }}
             >
               {overviewStats.map(({ icon: Icon, value, sub }, i) => (
@@ -278,10 +345,16 @@ const Leadership = () => {
       </section>
 
       {/* ── VISION & STRATEGIC DIRECTION ────────────────────── */}
-      <section ref={visionRef} className="py-12 md:py-20 px-4 sm:px-6">
+      <section className="py-12 md:py-20 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-10 md:mb-12 transition-all duration-700"
-            style={{ opacity: visionInView ? 1 : 0, transform: visionInView ? "translateY(0)" : "translateY(30px)" }}>
+          <div
+            ref={visionHeaderRef}
+            className="text-center mb-10 md:mb-12 scroll-fade-up"
+            style={{
+              opacity: visionHeaderInView ? 1 : 0,
+              transform: visionHeaderInView ? "translateY(0)" : "translateY(30px)",
+            }}
+          >
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
               Vision & Strategic{" "}
               <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
@@ -301,7 +374,14 @@ const Leadership = () => {
       <section className="py-12 md:py-16 px-4 sm:px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-            <div>
+            <div
+              ref={expertiseRef}
+              className="scroll-slide-left"
+              style={{
+                opacity: expertiseInView ? 1 : 0,
+                transform: expertiseInView ? "translateX(0)" : "translateX(-35px)",
+              }}
+            >
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
                   <FaCogs className="text-lg sm:text-2xl text-white" />
@@ -317,7 +397,14 @@ const Leadership = () => {
                 ))}
               </div>
             </div>
-            <div>
+            <div
+              ref={investmentRef}
+              className="scroll-slide-right"
+              style={{
+                opacity: investmentInView ? 1 : 0,
+                transform: investmentInView ? "translateX(0)" : "translateX(35px)",
+              }}
+            >
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
                   <FaChartLine className="text-lg sm:text-2xl text-white" />
@@ -342,7 +429,14 @@ const Leadership = () => {
       <section className="py-12 md:py-16 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-            <div>
+            <div
+              ref={journeyRef}
+              className="scroll-slide-left"
+              style={{
+                opacity: journeyInView ? 1 : 0,
+                transform: journeyInView ? "translateX(0)" : "translateX(-35px)",
+              }}
+            >
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
                   <FaBriefcase className="text-lg sm:text-2xl text-white" />
@@ -368,7 +462,14 @@ const Leadership = () => {
                 <p className="text-gray-600 text-xs sm:text-sm mt-2">Worked in Hydrocarbon Technologies & Systems Group, Mumbai. Gained expertise in engineering design, automation, and project execution.</p>
               </div>
             </div>
-            <div>
+            <div
+              ref={educationRef}
+              className="scroll-slide-right"
+              style={{
+                opacity: educationInView ? 1 : 0,
+                transform: educationInView ? "translateX(0)" : "translateX(35px)",
+              }}
+            >
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
                   <FaGraduationCap className="text-lg sm:text-2xl text-white" />
@@ -393,7 +494,14 @@ const Leadership = () => {
       {/* ── GLOBAL CAREER ───────────────────────────────────── */}
       <section className="py-12 md:py-16 px-4 sm:px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-8 md:mb-10">
+          <div
+            ref={globalCareerHeaderRef}
+            className="text-center mb-8 md:mb-10 scroll-fade-up"
+            style={{
+              opacity: globalCareerHeaderInView ? 1 : 0,
+              transform: globalCareerHeaderInView ? "translateY(0)" : "translateY(20px)",
+            }}
+          >
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
               Global{" "}
               <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
@@ -403,7 +511,15 @@ const Leadership = () => {
             <div className="w-16 h-0.5 bg-amber-500 mx-auto rounded-full mt-3 mb-3" />
             <p className="text-gray-600 text-sm sm:text-base">Leading complex projects across continents</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+          <div
+            ref={globalCareerRef}
+            className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6"
+            style={{
+              opacity: globalCareerInView ? 1 : 0,
+              transform: globalCareerInView ? "translateY(0)" : "translateY(20px)",
+              transition: "opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)",
+            }}
+          >
             {globalCareer.map((item, i) => (
               <div key={i} className="bg-white rounded-xl p-5 sm:p-6 border border-gray-100 hover:border-amber-200 transition-all hover:shadow-md group">
                 <div className="flex items-start gap-3 sm:gap-4">
@@ -423,7 +539,14 @@ const Leadership = () => {
 
       {/* ── CTA ─────────────────────────────────────────────── */}
       <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-16 md:py-20 lg:py-24 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto text-center">
+        <div
+          ref={ctaRef}
+          className="max-w-4xl mx-auto text-center scroll-fade-up"
+          style={{
+            opacity: ctaInView ? 1 : 0,
+            transform: ctaInView ? "translateY(0)" : "translateY(20px)",
+          }}
+        >
           <div className="flex items-center justify-center gap-2 mb-4">
             <span className="w-6 sm:w-8 h-[2px] bg-amber-600" />
             <span className="text-[10px] sm:text-xs font-semibold tracking-[2px] sm:tracking-[3px] uppercase text-amber-700">

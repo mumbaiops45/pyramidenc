@@ -12,7 +12,7 @@ import { GiChemicalTank, GiGasStove } from "react-icons/gi";
 import { Link } from "react-router-dom";
 
 // ============================================================================
-// Custom hook for scroll animations
+// Continuous scroll‑triggered hook (observer stays alive)
 // ============================================================================
 function useInView(options = {}) {
   const ref = useRef(null);
@@ -23,10 +23,7 @@ function useInView(options = {}) {
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
+        setInView(entry.isIntersecting);
       },
       { threshold: 0.2, ...options }
     );
@@ -38,7 +35,7 @@ function useInView(options = {}) {
 }
 
 // ============================================================================
-// Animation styles (bubbles, fades)
+// Animation styles (bubbles, fades, and scroll transition classes)
 // ============================================================================
 const animationStyles = `
 :root {
@@ -75,14 +72,31 @@ const animationStyles = `
   .delay-300 { animation-delay: 0.3s; }
   .delay-400 { animation-delay: 0.4s; }
   .delay-500 { animation-delay: 0.5s; }
+
+  /* Scroll‑triggered transition classes (inline styles override) */
+  .scroll-slide-left {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scroll-slide-right {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scroll-fade-up {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
 `;
 
 const ProjectDevelopment = () => {
+  // Refs for scroll‑triggered sections (continuous)
   const [introRef, introInView] = useInView();
   const [imageSectionRef, imageSectionInView] = useInView();
-  const [sectorsRef, sectorsInView] = useInView();
-  const [phasesRef, phasesInView] = useInView();
+  const [sectorsHeaderRef, sectorsHeaderInView] = useInView();
+  const [phasesHeaderRef, phasesHeaderInView] = useInView();
   const [ctaRef, ctaInView] = useInView();
+
+  // Individual refs for sector cards (4)
+  const sectorRefs = [useInView(), useInView(), useInView(), useInView()];
+  // Individual refs for phase cards (4)
+  const phaseRefs = [useInView(), useInView(), useInView(), useInView()];
 
   const generateBubbles = (count, baseSize = 20, sizeRange = 40) => {
     return Array.from({ length: count }, (_, i) => ({
@@ -115,7 +129,7 @@ const ProjectDevelopment = () => {
     <div className="bg-white overflow-x-hidden">
       <style>{animationStyles}</style>
 
-      {/* Hero – unchanged */}
+      {/* Hero – unchanged (CSS animations) */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950"></div>
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -153,11 +167,15 @@ const ProjectDevelopment = () => {
         </div>
       </section>
 
-      {/* Introduction – updated pill badge */}
-      <section ref={introRef} className="py-16 bg-gray-50">
+      {/* Introduction – slides from left */}
+      <section className="py-16 bg-gray-50">
         <div
-          className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 transition-all duration-700"
-          style={{ opacity: introInView ? 1 : 0, transform: introInView ? "translateY(0)" : "translateY(30px)" }}
+          ref={introRef}
+          className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 scroll-slide-left"
+          style={{
+            opacity: introInView ? 1 : 0,
+            transform: introInView ? "translateX(0)" : "translateX(-35px)",
+          }}
         >
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Our Track Record
@@ -168,25 +186,27 @@ const ProjectDevelopment = () => {
         </div>
       </section>
 
-      {/* Image Section – UPDATED with pill badge + gradient heading + underline */}
-      <section ref={imageSectionRef} className="py-16 px-6 bg-white">
-        <div
-          className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center transition-all duration-700"
-          style={{ opacity: imageSectionInView ? 1 : 0, transform: imageSectionInView ? "translateY(0)" : "translateY(30px)" }}
-        >
-          <div className="order-2 md:order-1">
-            {/* Pill badge */}
+      {/* Image Section – text (left column) slides from left, image (right) slides from right */}
+      <section className="py-16 px-6 bg-white">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+          {/* Text column – slides from left */}
+          <div
+            ref={imageSectionRef}
+            className="order-2 md:order-1 scroll-slide-left"
+            style={{
+              opacity: imageSectionInView ? 1 : 0,
+              transform: imageSectionInView ? "translateX(0)" : "translateX(-35px)",
+            }}
+          >
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Global Presence
             </span>
-            {/* Gradient heading */}
             <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mt-4 mb-4">
               Global{" "}
               <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
                 Project Delivery
               </span>
             </h3>
-            {/* Underline */}
             <div className="w-24 h-1 bg-[var(--primery)] rounded-full mb-6" />
             <p className="text-gray-600 mb-6 leading-relaxed">
               Our teams across Houston, London, Dubai, and Mumbai work seamlessly to deliver projects on time and on budget.
@@ -201,7 +221,14 @@ const ProjectDevelopment = () => {
               ))}
             </ul>
           </div>
-          <div className="order-1 md:order-2 group">
+
+          {/* Image column – slides from right */}
+          <div className="order-1 md:order-2 group scroll-slide-right"
+            style={{
+              opacity: imageSectionInView ? 1 : 0,
+              transform: imageSectionInView ? "translateX(0)" : "translateX(35px)",
+            }}
+          >
             <div className="relative rounded-2xl overflow-hidden shadow-xl transition-all duration-500 group-hover:shadow-2xl">
               <img
                 src="/project-development.jpg"
@@ -217,13 +244,18 @@ const ProjectDevelopment = () => {
         </div>
       </section>
 
-      {/* Sectors We Serve – updated header */}
-      <section ref={sectorsRef} className="py-20 bg-white">
-        <div
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-700"
-          style={{ opacity: sectorsInView ? 1 : 0, transform: sectorsInView ? "translateY(0)" : "translateY(30px)" }}
-        >
-          <div className="text-center mb-12">
+      {/* Sectors We Serve – header slides from right, cards slide from left individually */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header slides from right */}
+          <div
+            ref={sectorsHeaderRef}
+            className="text-center mb-12 scroll-slide-right"
+            style={{
+              opacity: sectorsHeaderInView ? 1 : 0,
+              transform: sectorsHeaderInView ? "translateX(0)" : "translateX(35px)",
+            }}
+          >
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Our Expertise
             </span>
@@ -240,30 +272,43 @@ const ProjectDevelopment = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {sectors.map((sector, idx) => (
-              <div
-                key={idx}
-                className="group border-l-4 border-amber-200 pl-5 py-2 transition-all duration-300 hover:border-amber-500 hover:pl-6"
-                style={{ transitionDelay: `${idx * 0.1}s` }}
-              >
-                <sector.icon className="text-3xl text-amber-500 mb-3 group-hover:text-amber-600" />
-                <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-amber-600 transition-colors">
-                  {sector.title}
-                </h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{sector.description}</p>
-              </div>
-            ))}
+            {sectors.map((sector, idx) => {
+              const [ref, inView] = sectorRefs[idx];
+              return (
+                <div
+                  key={idx}
+                  ref={ref}
+                  className="group border-l-4 border-amber-200 pl-5 py-2 transition-all duration-300 hover:border-amber-500 hover:pl-6"
+                  style={{
+                    opacity: inView ? 1 : 0,
+                    transform: inView ? "translateX(0)" : "translateX(-25px)",
+                    transition: `opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.1}s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.1}s`,
+                  }}
+                >
+                  <sector.icon className="text-3xl text-amber-500 mb-3 group-hover:text-amber-600" />
+                  <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-amber-600 transition-colors">
+                    {sector.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">{sector.description}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Project Phases – updated header */}
-      <section ref={phasesRef} className="py-20 bg-gray-50">
-        <div
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-700"
-          style={{ opacity: phasesInView ? 1 : 0, transform: phasesInView ? "translateY(0)" : "translateY(30px)" }}
-        >
-          <div className="text-center mb-12">
+      {/* Project Phases – header slides from left, cards slide from right individually */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header slides from left */}
+          <div
+            ref={phasesHeaderRef}
+            className="text-center mb-12 scroll-slide-left"
+            style={{
+              opacity: phasesHeaderInView ? 1 : 0,
+              transform: phasesHeaderInView ? "translateX(0)" : "translateX(-35px)",
+            }}
+          >
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Our Approach
             </span>
@@ -280,31 +325,43 @@ const ProjectDevelopment = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {phases.map((phase, idx) => (
-              <div
-                key={idx}
-                className="group border-l-4 border-amber-300 pl-5 py-2 transition-all duration-300 hover:border-amber-600 hover:pl-6"
-                style={{ transitionDelay: `${idx * 0.1}s` }}
-              >
-                <div className="text-4xl font-black text-amber-200 mb-2 group-hover:text-amber-300 transition-colors">
-                  {phase.step}
+            {phases.map((phase, idx) => {
+              const [ref, inView] = phaseRefs[idx];
+              return (
+                <div
+                  key={idx}
+                  ref={ref}
+                  className="group border-l-4 border-amber-300 pl-5 py-2 transition-all duration-300 hover:border-amber-600 hover:pl-6"
+                  style={{
+                    opacity: inView ? 1 : 0,
+                    transform: inView ? "translateX(0)" : "translateX(25px)",
+                    transition: `opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.1}s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.1}s`,
+                  }}
+                >
+                  <div className="text-4xl font-black text-amber-200 mb-2 group-hover:text-amber-300 transition-colors">
+                    {phase.step}
+                  </div>
+                  <phase.icon className="text-2xl text-amber-500 mb-3 group-hover:text-amber-600" />
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-amber-600 transition-colors">
+                    {phase.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">{phase.description}</p>
                 </div>
-                <phase.icon className="text-2xl text-amber-500 mb-3 group-hover:text-amber-600" />
-                <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-amber-600 transition-colors">
-                  {phase.title}
-                </h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{phase.description}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* CTA Section – updated header */}
-      <section ref={ctaRef} className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6">
+      {/* CTA Section – fades up on scroll */}
+      <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6">
         <div
-          className="max-w-4xl mx-auto text-center transition-all duration-700"
-          style={{ opacity: ctaInView ? 1 : 0, transform: ctaInView ? "translateY(0)" : "translateY(30px)" }}
+          ref={ctaRef}
+          className="max-w-4xl mx-auto text-center scroll-fade-up"
+          style={{
+            opacity: ctaInView ? 1 : 0,
+            transform: ctaInView ? "translateY(0)" : "translateY(30px)",
+          }}
         >
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Let's Build Together

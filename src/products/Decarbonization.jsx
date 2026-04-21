@@ -8,6 +8,29 @@ import { GiWindmill } from 'react-icons/gi';
 import { Link } from "react-router-dom";
 
 // ============================================================
+// Continuous scroll‑triggered hook (observer stays alive)
+// ============================================================
+function useInView(options = {}) {
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setInView(entry.isIntersecting);
+      },
+      { threshold: 0.2, ...options }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [options]);
+
+  return [ref, inView];
+}
+
+// ============================================================
 // Animation styles (including bubbleFloat and fade animations)
 // ============================================================
 const animationStyles = `
@@ -45,6 +68,17 @@ const animationStyles = `
   .delay-300 { animation-delay: 0.3s; }
   .delay-400 { animation-delay: 0.4s; }
   .delay-500 { animation-delay: 0.5s; }
+
+  /* Scroll‑triggered transition classes (inline styles override) */
+  .scroll-slide-left {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scroll-slide-right {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scroll-fade-up {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
 `;
 
 const Decarbonization = () => {
@@ -62,36 +96,41 @@ const Decarbonization = () => {
 
   const heroBubbles = generateBubbles(18, 15, 50);
 
-  // Refs for fade-in sections
-  const solutionsRef = useRef(null);
-  const [solutionsInView, setSolutionsInView] = useState(false);
-  const energyRef = useRef(null);
-  const [energyInView, setEnergyInView] = useState(false);
-  const valueRef = useRef(null);
-  const [valueInView, setValueInView] = useState(false);
+  // Refs for scroll‑triggered sections (continuous)
+  const [solutionsHeaderRef, solutionsHeaderInView] = useInView();
+  const [energyLeftRef, energyLeftInView] = useInView();
+  const [energyRightRef, energyRightInView] = useInView();
+  const [ctaRef, ctaInView] = useInView();
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.target === solutionsRef.current) setSolutionsInView(entry.isIntersecting);
-          if (entry.target === energyRef.current) setEnergyInView(entry.isIntersecting);
-          if (entry.target === valueRef.current) setValueInView(entry.isIntersecting);
-        });
-      },
-      { threshold: 0.2 }
-    );
-    if (solutionsRef.current) observer.observe(solutionsRef.current);
-    if (energyRef.current) observer.observe(energyRef.current);
-    if (valueRef.current) observer.observe(valueRef.current);
-    return () => observer.disconnect();
-  }, []);
+  // Individual card refs for solutions (6 cards)
+  const solutionCardRefs = [
+    useInView(), useInView(), useInView(),
+    useInView(), useInView(), useInView()
+  ];
+
+  // Individual card refs for value proposition (3 cards)
+  const valueCardRefs = [useInView(), useInView(), useInView()];
+
+  const solutionsData = [
+    { icon: FaLeaf, title: "Electric Reforming", desc: "The innovative <strong>HydroBlue® Reformer</strong> eliminates flue gas emissions." },
+    { icon: FaSnowflake, title: "CO₂ Liquefaction", desc: "Concentrated CO₂ is efficiently liquefied or converted into dry ice." },
+    { icon: FaFire, title: "Flare Mitigation", desc: "Liquefy flared hydrocarbons into 'Blue' Ammonia or Methanol." },
+    { icon: FaArrowDown, title: "Carbon Sequestration", desc: "Compression and reinjection to store CO₂ in subsurface reservoirs." },
+    { icon: FaFlask, title: "Fuel Ethanol", desc: "Anhydrous Bio-Ethanol from grains, sugar cane, or cellulosic feedstock." },
+    { icon: FaRecycle, title: "Green Petrochemicals", desc: "Bio-Ethanol as feedstock for petrochemicals, plastics, and hydrogen." }
+  ];
+
+  const valueData = [
+    { icon: FaShieldAlt, title: "Net Zero Ready", desc: "Solutions for carbon neutrality." },
+    { icon: FaBolt, title: "Value Creation", desc: "Turning waste into revenue." },
+    { icon: FaGlobe, title: "ESG Excellence", desc: "Enhance your ESG performance." }
+  ];
 
   return (
     <div className="bg-white overflow-x-hidden">
       <style>{animationStyles}</style>
 
-      {/* Hero Section */}
+      {/* Hero Section (unchanged – uses CSS animations) */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950"></div>
 
@@ -140,11 +179,18 @@ const Decarbonization = () => {
         </div>
       </section>
 
-      {/* Solutions Grid */}
-      <section ref={solutionsRef} className="py-12 md:py-20 bg-gray-50">
+      {/* Solutions Grid – header slides left, each card fades up individually */}
+      <section className="py-12 md:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10 md:mb-16 transition-all duration-700"
-            style={{ opacity: solutionsInView ? 1 : 0, transform: solutionsInView ? "translateY(0)" : "translateY(30px)" }}>
+          {/* Header slides from left */}
+          <div
+            ref={solutionsHeaderRef}
+            className="text-center mb-10 md:mb-16 scroll-slide-left"
+            style={{
+              opacity: solutionsHeaderInView ? 1 : 0,
+              transform: solutionsHeaderInView ? "translateX(0)" : "translateX(-35px)",
+            }}
+          >
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Our Technologies
             </span>
@@ -160,106 +206,49 @@ const Decarbonization = () => {
             </p>
           </div>
 
+          {/* Cards – each card uses its own useInView and staggered transitionDelay */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {/* Electric Reforming */}
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
-              style={{ opacity: solutionsInView ? 1 : 0, transform: solutionsInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.1s" }}>
-              <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
-              <div className="p-5 md:p-6">
-                <div className="w-12 h-12 md:w-14 md:h-14 bg-amber-100 rounded-xl flex items-center justify-center mb-4 text-amber-600">
-                  <FaLeaf size={24} className="md:w-7 md:h-7" />
+            {solutionsData.map((card, idx) => {
+              const [ref, inView] = solutionCardRefs[idx];
+              return (
+                <div
+                  key={idx}
+                  ref={ref}
+                  className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+                  style={{
+                    opacity: inView ? 1 : 0,
+                    transform: inView ? "translateY(0)" : "translateY(30px)",
+                    transition: `opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.07}s, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.07}s`,
+                  }}
+                >
+                  <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
+                  <div className="p-5 md:p-6">
+                    <div className="w-12 h-12 md:w-14 md:h-14 bg-amber-100 rounded-xl flex items-center justify-center mb-4 text-amber-600">
+                      <card.icon size={24} className="md:w-7 md:h-7" />
+                    </div>
+                    <h3 className="text-lg md:text-xl font-bold text-gray-900">{card.title}</h3>
+                    <p className="text-gray-600 text-xs md:text-sm mt-2" dangerouslySetInnerHTML={{ __html: card.desc }} />
+                  </div>
                 </div>
-                <h3 className="text-lg md:text-xl font-bold text-gray-900">Electric Reforming</h3>
-                <p className="text-gray-600 text-xs md:text-sm mt-2">
-                  The innovative <strong>HydroBlue® Reformer</strong> eliminates flue gas emissions.
-                </p>
-              </div>
-            </div>
-
-            {/* CO2 Liquefaction */}
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
-              style={{ opacity: solutionsInView ? 1 : 0, transform: solutionsInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.2s" }}>
-              <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
-              <div className="p-5 md:p-6">
-                <div className="w-12 h-12 md:w-14 md:h-14 bg-amber-100 rounded-xl flex items-center justify-center mb-4 text-amber-600">
-                  <FaSnowflake size={24} className="md:w-7 md:h-7" />
-                </div>
-                <h3 className="text-lg md:text-xl font-bold text-gray-900">CO₂ Liquefaction</h3>
-                <p className="text-gray-600 text-xs md:text-sm mt-2">
-                  Concentrated CO₂ is efficiently liquefied or converted into dry ice.
-                </p>
-              </div>
-            </div>
-
-            {/* Flare Mitigation */}
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
-              style={{ opacity: solutionsInView ? 1 : 0, transform: solutionsInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.3s" }}>
-              <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
-              <div className="p-5 md:p-6">
-                <div className="w-12 h-12 md:w-14 md:h-14 bg-amber-100 rounded-xl flex items-center justify-center mb-4 text-amber-600">
-                  <FaFire size={24} className="md:w-7 md:h-7" />
-                </div>
-                <h3 className="text-lg md:text-xl font-bold text-gray-900">Flare Mitigation</h3>
-                <p className="text-gray-600 text-xs md:text-sm mt-2">
-                  Liquefy flared hydrocarbons into "Blue" Ammonia or Methanol.
-                </p>
-              </div>
-            </div>
-
-            {/* Carbon Sequestration */}
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
-              style={{ opacity: solutionsInView ? 1 : 0, transform: solutionsInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.4s" }}>
-              <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
-              <div className="p-5 md:p-6">
-                <div className="w-12 h-12 md:w-14 md:h-14 bg-amber-100 rounded-xl flex items-center justify-center mb-4 text-amber-600">
-                  <FaArrowDown size={24} className="md:w-7 md:h-7" />
-                </div>
-                <h3 className="text-lg md:text-xl font-bold text-gray-900">Carbon Sequestration</h3>
-                <p className="text-gray-600 text-xs md:text-sm mt-2">
-                  Compression and reinjection to store CO₂ in subsurface reservoirs.
-                </p>
-              </div>
-            </div>
-
-            {/* Fuel Ethanol */}
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
-              style={{ opacity: solutionsInView ? 1 : 0, transform: solutionsInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.5s" }}>
-              <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
-              <div className="p-5 md:p-6">
-                <div className="w-12 h-12 md:w-14 md:h-14 bg-amber-100 rounded-xl flex items-center justify-center mb-4 text-amber-600">
-                  <FaFlask size={24} className="md:w-7 md:h-7" />
-                </div>
-                <h3 className="text-lg md:text-xl font-bold text-gray-900">Fuel Ethanol</h3>
-                <p className="text-gray-600 text-xs md:text-sm mt-2">
-                  Anhydrous Bio-Ethanol from grains, sugar cane, or cellulosic feedstock.
-                </p>
-              </div>
-            </div>
-
-            {/* Green Petrochemicals */}
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
-              style={{ opacity: solutionsInView ? 1 : 0, transform: solutionsInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.6s" }}>
-              <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
-              <div className="p-5 md:p-6">
-                <div className="w-12 h-12 md:w-14 md:h-14 bg-amber-100 rounded-xl flex items-center justify-center mb-4 text-amber-600">
-                  <FaRecycle size={24} className="md:w-7 md:h-7" />
-                </div>
-                <h3 className="text-lg md:text-xl font-bold text-gray-900">Green Petrochemicals</h3>
-                <p className="text-gray-600 text-xs md:text-sm mt-2">
-                  Bio-Ethanol as feedstock for petrochemicals, plastics, and hydrogen.
-                </p>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Alternative Energy Integration */}
-      <section ref={energyRef} className="py-12 md:py-20 bg-white">
+      {/* Alternative Energy Integration – left block slides left, right block slides right */}
+      <section className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-8 md:gap-12 items-center">
-            <div className="lg:w-1/2 transition-all duration-700"
-              style={{ opacity: energyInView ? 1 : 0, transform: energyInView ? "translateX(0)" : "translateX(-30px)" }}>
+            {/* Left block slides from left */}
+            <div
+              ref={energyLeftRef}
+              className="lg:w-1/2 scroll-slide-left"
+              style={{
+                opacity: energyLeftInView ? 1 : 0,
+                transform: energyLeftInView ? "translateX(0)" : "translateX(-35px)",
+              }}
+            >
               <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-6 md:p-8 text-white shadow-xl">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-10 h-10 md:w-12 md:h-12 bg-amber-500 rounded-xl flex items-center justify-center">
@@ -282,8 +271,16 @@ const Decarbonization = () => {
                 </div>
               </div>
             </div>
-            <div className="lg:w-1/2 transition-all duration-700"
-              style={{ opacity: energyInView ? 1 : 0, transform: energyInView ? "translateX(0)" : "translateX(30px)" }}>
+
+            {/* Right block slides from right */}
+            <div
+              ref={energyRightRef}
+              className="lg:w-1/2 scroll-slide-right"
+              style={{
+                opacity: energyRightInView ? 1 : 0,
+                transform: energyRightInView ? "translateX(0)" : "translateX(35px)",
+              }}
+            >
               <div className="bg-amber-50 rounded-2xl p-6 md:p-8 border border-amber-100">
                 <div className="flex items-center gap-3 mb-4">
                   <FaChartLine className="text-amber-600 text-2xl md:text-3xl" />
@@ -304,35 +301,45 @@ const Decarbonization = () => {
         </div>
       </section>
 
-      {/* Value Proposition */}
-      <section ref={valueRef} className="py-12 md:py-16 bg-gray-50">
+      {/* Value Proposition – each card fades up individually */}
+      <section className="py-12 md:py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-6 md:gap-6 text-center">
-            <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm transition-all duration-700"
-              style={{ opacity: valueInView ? 1 : 0, transform: valueInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.1s" }}>
-              <div className="text-amber-600 text-3xl md:text-4xl mb-3 flex justify-center"><FaShieldAlt /></div>
-              <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Net Zero Ready</h4>
-              <p className="text-gray-600 text-sm md:text-base">Solutions for carbon neutrality.</p>
-            </div>
-            <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm transition-all duration-700"
-              style={{ opacity: valueInView ? 1 : 0, transform: valueInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.2s" }}>
-              <div className="text-amber-600 text-3xl md:text-4xl mb-3 flex justify-center"><FaBolt /></div>
-              <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Value Creation</h4>
-              <p className="text-gray-600 text-sm md:text-base">Turning waste into revenue.</p>
-            </div>
-            <div className="bg-white p-6 md:p-8 rounded-xl shadow-sm transition-all duration-700"
-              style={{ opacity: valueInView ? 1 : 0, transform: valueInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.3s" }}>
-              <div className="text-amber-600 text-3xl md:text-4xl mb-3 flex justify-center"><FaGlobe /></div>
-              <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-2">ESG Excellence</h4>
-              <p className="text-gray-600 text-sm md:text-base">Enhance your ESG performance.</p>
-            </div>
+            {valueData.map((card, idx) => {
+              const [ref, inView] = valueCardRefs[idx];
+              return (
+                <div
+                  key={idx}
+                  ref={ref}
+                  className="bg-white p-6 md:p-8 rounded-xl shadow-sm transition-all duration-300 hover:-translate-y-1"
+                  style={{
+                    opacity: inView ? 1 : 0,
+                    transform: inView ? "translateY(0)" : "translateY(30px)",
+                    transition: `opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.1}s, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.1}s`,
+                  }}
+                >
+                  <div className="text-amber-600 text-3xl md:text-4xl mb-3 flex justify-center">
+                    <card.icon />
+                  </div>
+                  <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-2">{card.title}</h4>
+                  <p className="text-gray-600 text-sm md:text-base">{card.desc}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA Section – fades up on scroll */}
       <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-16 md:py-20 lg:py-24 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto text-center">
+        <div
+          ref={ctaRef}
+          className="max-w-4xl mx-auto text-center scroll-fade-up"
+          style={{
+            opacity: ctaInView ? 1 : 0,
+            transform: ctaInView ? "translateY(0)" : "translateY(30px)",
+          }}
+        >
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Ready to decarbonize your operations?
           </span>

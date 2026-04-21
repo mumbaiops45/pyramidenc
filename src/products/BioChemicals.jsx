@@ -7,6 +7,29 @@ import { MdBiotech } from 'react-icons/md';
 import { Link } from "react-router-dom";
 
 // ============================================================
+// Continuous scroll‑triggered hook (observer stays alive)
+// ============================================================
+function useInView(options = {}) {
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setInView(entry.isIntersecting);
+      },
+      { threshold: 0.2, ...options }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [options]);
+
+  return [ref, inView];
+}
+
+// ============================================================
 // Animation styles (including bubbleFloat and fade animations)
 // ============================================================
 const animationStyles = `
@@ -44,6 +67,17 @@ const animationStyles = `
   .delay-300 { animation-delay: 0.3s; }
   .delay-400 { animation-delay: 0.4s; }
   .delay-500 { animation-delay: 0.5s; }
+
+  /* Scroll‑triggered transition classes (inline styles override) */
+  .scroll-slide-left {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scroll-slide-right {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scroll-fade-up {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
 `;
 
 const BioChemicals = () => {
@@ -61,40 +95,39 @@ const BioChemicals = () => {
 
   const heroBubbles = generateBubbles(18, 15, 50);
 
-  // Refs for fade-in sections
-  const portfolioRef = useRef(null);
-  const [portfolioInView, setPortfolioInView] = useState(false);
-  const techRef = useRef(null);
-  const [techInView, setTechInView] = useState(false);
-  const safRef = useRef(null);
-  const [safInView, setSafInView] = useState(false);
-  const envRef = useRef(null);
-  const [envInView, setEnvInView] = useState(false);
+  // Refs for scroll‑triggered sections (continuous)
+  const [portfolioHeaderRef, portfolioHeaderInView] = useInView();
+  const [techLeftRef, techLeftInView] = useInView();
+  const [techRightRef, techRightInView] = useInView();
+  const [safLeftRef, safLeftInView] = useInView();
+  const [safRightRef, safRightInView] = useInView();
+  const [envHeaderRef, envHeaderInView] = useInView();
+  const [ctaRef, ctaInView] = useInView();
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.target === portfolioRef.current) setPortfolioInView(entry.isIntersecting);
-          if (entry.target === techRef.current) setTechInView(entry.isIntersecting);
-          if (entry.target === safRef.current) setSafInView(entry.isIntersecting);
-          if (entry.target === envRef.current) setEnvInView(entry.isIntersecting);
-        });
-      },
-      { threshold: 0.2 }
-    );
-    if (portfolioRef.current) observer.observe(portfolioRef.current);
-    if (techRef.current) observer.observe(techRef.current);
-    if (safRef.current) observer.observe(safRef.current);
-    if (envRef.current) observer.observe(envRef.current);
-    return () => observer.disconnect();
-  }, []);
+  // Individual card refs for portfolio (4 cards)
+  const portfolioCardRefs = [useInView(), useInView(), useInView(), useInView()];
+
+  // Individual card refs for environmental value (3 cards)
+  const envCardRefs = [useInView(), useInView(), useInView()];
+
+  const portfolioData = [
+    { icon: GiPlantSeed, title: "1G Bioethanol", desc: "First generation ethanol from sugar/starch crops" },
+    { icon: FaFlask, title: "Bio Methanol", desc: "Renewable methanol from biomass or captured CO₂" },
+    { icon: GiGasPump, title: "Bio LNG", desc: "Liquefied biomethane for clean transport" },
+    { icon: FaRecycle, title: "Bioplastics", desc: "Renewable and biodegradable polymers" }
+  ];
+
+  const envData = [
+    { icon: FaShieldAlt, title: "Zero Liquid Discharge", desc: "Complete water recycling and effluent elimination." },
+    { icon: FaBolt, title: "Zero GHG Emissions", desc: "Carbon-neutral processes with carbon capture integration." },
+    { icon: FaGlobe, title: "Circular Economy", desc: "Waste-to-value conversion and sustainable feedstocks." }
+  ];
 
   return (
     <div className="bg-white overflow-x-hidden">
       <style>{animationStyles}</style>
 
-      {/* Hero Section */}
+      {/* Hero Section (unchanged – uses CSS animations) */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950"></div>
 
@@ -143,11 +176,18 @@ const BioChemicals = () => {
         </div>
       </section>
 
-      {/* Core Bio-Chemical Products */}
-      <section ref={portfolioRef} className="py-12 md:py-20 bg-gray-50">
+      {/* Core Bio-Chemical Products – header slides left, each card fades up individually */}
+      <section className="py-12 md:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10 md:mb-16 transition-all duration-700"
-            style={{ opacity: portfolioInView ? 1 : 0, transform: portfolioInView ? "translateY(0)" : "translateY(30px)" }}>
+          {/* Header slides from left */}
+          <div
+            ref={portfolioHeaderRef}
+            className="text-center mb-10 md:mb-16 scroll-slide-left"
+            style={{
+              opacity: portfolioHeaderInView ? 1 : 0,
+              transform: portfolioHeaderInView ? "translateX(0)" : "translateX(-35px)",
+            }}
+          >
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Our Portfolio
             </span>
@@ -163,68 +203,49 @@ const BioChemicals = () => {
             </p>
           </div>
 
+          {/* Cards – each fades up with staggered delay */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
-            {/* 1G Bioethanol */}
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
-              style={{ opacity: portfolioInView ? 1 : 0, transform: portfolioInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.1s" }}>
-              <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
-              <div className="p-5 md:p-6 text-center">
-                <div className="w-14 h-14 md:w-16 md:h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-600">
-                  <GiPlantSeed size={28} className="md:w-8 md:h-8" />
+            {portfolioData.map((card, idx) => {
+              const [ref, inView] = portfolioCardRefs[idx];
+              return (
+                <div
+                  key={idx}
+                  ref={ref}
+                  className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+                  style={{
+                    opacity: inView ? 1 : 0,
+                    transform: inView ? "translateY(0)" : "translateY(30px)",
+                    transition: `opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.1}s, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.1}s`,
+                  }}
+                >
+                  <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
+                  <div className="p-5 md:p-6 text-center">
+                    <div className="w-14 h-14 md:w-16 md:h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-600">
+                      <card.icon size={28} className="md:w-8 md:h-8" />
+                    </div>
+                    <h3 className="text-lg md:text-xl font-bold text-gray-900">{card.title}</h3>
+                    <p className="text-gray-500 text-xs md:text-sm mt-2">{card.desc}</p>
+                  </div>
                 </div>
-                <h3 className="text-lg md:text-xl font-bold text-gray-900">1G Bioethanol</h3>
-                <p className="text-gray-500 text-xs md:text-sm mt-2">First generation ethanol from sugar/starch crops</p>
-              </div>
-            </div>
-
-            {/* Bio Methanol */}
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
-              style={{ opacity: portfolioInView ? 1 : 0, transform: portfolioInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.2s" }}>
-              <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
-              <div className="p-5 md:p-6 text-center">
-                <div className="w-14 h-14 md:w-16 md:h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-600">
-                  <FaFlask size={28} className="md:w-8 md:h-8" />
-                </div>
-                <h3 className="text-lg md:text-xl font-bold text-gray-900">Bio Methanol</h3>
-                <p className="text-gray-500 text-xs md:text-sm mt-2">Renewable methanol from biomass or captured CO₂</p>
-              </div>
-            </div>
-
-            {/* Bio LNG */}
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
-              style={{ opacity: portfolioInView ? 1 : 0, transform: portfolioInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.3s" }}>
-              <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
-              <div className="p-5 md:p-6 text-center">
-                <div className="w-14 h-14 md:w-16 md:h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-600">
-                  <GiGasPump size={28} className="md:w-8 md:h-8" />
-                </div>
-                <h3 className="text-lg md:text-xl font-bold text-gray-900">Bio LNG</h3>
-                <p className="text-gray-500 text-xs md:text-sm mt-2">Liquefied biomethane for clean transport</p>
-              </div>
-            </div>
-
-            {/* Bioplastics */}
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
-              style={{ opacity: portfolioInView ? 1 : 0, transform: portfolioInView ? "translateY(0)" : "translateY(40px)", transitionDelay: "0.4s" }}>
-              <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-t-2xl"></div>
-              <div className="p-5 md:p-6 text-center">
-                <div className="w-14 h-14 md:w-16 md:h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-600">
-                  <FaRecycle size={28} className="md:w-8 md:h-8" />
-                </div>
-                <h3 className="text-lg md:text-xl font-bold text-gray-900">Bioplastics</h3>
-                <p className="text-gray-500 text-xs md:text-sm mt-2">Renewable and biodegradable polymers</p>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Technology & Plant Capacities */}
-      <section ref={techRef} className="py-12 md:py-20 bg-white">
+      {/* Technology & Plant Capacities – left block slides left, right block slides right */}
+      <section className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-6 md:gap-10">
-            <div className="bg-gray-50 rounded-2xl p-6 md:p-8 shadow-sm border-b-4 border-amber-500 transition-all duration-700"
-              style={{ opacity: techInView ? 1 : 0, transform: techInView ? "translateX(0)" : "translateX(-30px)" }}>
+            {/* Left block slides from left */}
+            <div
+              ref={techLeftRef}
+              className="bg-gray-50 rounded-2xl p-6 md:p-8 shadow-sm border-b-4 border-amber-500 scroll-slide-left"
+              style={{
+                opacity: techLeftInView ? 1 : 0,
+                transform: techLeftInView ? "translateX(0)" : "translateX(-30px)",
+              }}
+            >
               <div className="flex items-center gap-3 mb-4">
                 <FaLeaf className="text-amber-600 text-2xl md:text-3xl" />
                 <h3 className="text-xl md:text-2xl font-bold text-gray-900">Own Technology</h3>
@@ -235,8 +256,15 @@ const BioChemicals = () => {
               </p>
             </div>
 
-            <div className="bg-gray-50 rounded-2xl p-6 md:p-8 shadow-sm border-b-4 border-amber-500 transition-all duration-700"
-              style={{ opacity: techInView ? 1 : 0, transform: techInView ? "translateX(0)" : "translateX(30px)" }}>
+            {/* Right block slides from right */}
+            <div
+              ref={techRightRef}
+              className="bg-gray-50 rounded-2xl p-6 md:p-8 shadow-sm border-b-4 border-amber-500 scroll-slide-right"
+              style={{
+                opacity: techRightInView ? 1 : 0,
+                transform: techRightInView ? "translateX(0)" : "translateX(30px)",
+              }}
+            >
               <div className="flex items-center gap-3 mb-4">
                 <FaChartLine className="text-amber-600 text-2xl md:text-3xl" />
                 <h3 className="text-xl md:text-2xl font-bold text-gray-900">Standard Plants</h3>
@@ -255,12 +283,19 @@ const BioChemicals = () => {
         </div>
       </section>
 
-      {/* SAF and Partner Technologies */}
-      <section ref={safRef} className="py-12 md:py-20 bg-gray-50">
+      {/* SAF and Partner Technologies – left block slides left, right block slides right */}
+      <section className="py-12 md:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-8 md:gap-12">
-            <div className="lg:w-1/2 transition-all duration-700"
-              style={{ opacity: safInView ? 1 : 0, transform: safInView ? "translateX(0)" : "translateX(-30px)" }}>
+            {/* Left block slides from left */}
+            <div
+              ref={safLeftRef}
+              className="lg:w-1/2 scroll-slide-left"
+              style={{
+                opacity: safLeftInView ? 1 : 0,
+                transform: safLeftInView ? "translateX(0)" : "translateX(-30px)",
+              }}
+            >
               <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-6 md:p-8 text-white shadow-xl h-full">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 md:w-12 md:h-12 bg-amber-500 rounded-xl flex items-center justify-center">
@@ -275,8 +310,15 @@ const BioChemicals = () => {
               </div>
             </div>
 
-            <div className="lg:w-1/2 transition-all duration-700"
-              style={{ opacity: safInView ? 1 : 0, transform: safInView ? "translateX(0)" : "translateX(30px)" }}>
+            {/* Right block slides from right */}
+            <div
+              ref={safRightRef}
+              className="lg:w-1/2 scroll-slide-right"
+              style={{
+                opacity: safRightInView ? 1 : 0,
+                transform: safRightInView ? "translateX(0)" : "translateX(30px)",
+              }}
+            >
               <div className="bg-white rounded-3xl p-6 md:p-8 shadow-lg border border-amber-100 h-full">
                 <div className="flex items-center gap-3 mb-4">
                   <MdBiotech className="text-amber-600 text-2xl md:text-3xl" />
@@ -294,35 +336,66 @@ const BioChemicals = () => {
         </div>
       </section>
 
-      {/* Environmental Value Proposition */}
-      <section ref={envRef} className="py-12 md:py-16 bg-white">
+      {/* Environmental Value Proposition – header slides left, cards fade up individually */}
+      <section className="py-12 md:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header slides from left */}
+          <div
+            ref={envHeaderRef}
+            className="text-center mb-10 md:mb-12 scroll-slide-left"
+            style={{
+              opacity: envHeaderInView ? 1 : 0,
+              transform: envHeaderInView ? "translateX(0)" : "translateX(-35px)",
+            }}
+          >
+            <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
+              Environmental Impact
+            </span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mt-4">
+              Sustainable by{" "}
+              <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
+                Design
+              </span>
+            </h2>
+            <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
+          </div>
+
           <div className="grid md:grid-cols-3 gap-6 md:gap-6 text-center">
-            <div className="bg-gray-50 p-6 md:p-8 rounded-xl shadow-sm transition-all duration-700"
-              style={{ opacity: envInView ? 1 : 0, transform: envInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.1s" }}>
-              <div className="text-amber-600 text-3xl md:text-4xl mb-3 flex justify-center"><FaShieldAlt /></div>
-              <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Zero Liquid Discharge</h4>
-              <p className="text-gray-600 text-sm md:text-base">Complete water recycling and effluent elimination.</p>
-            </div>
-            <div className="bg-gray-50 p-6 md:p-8 rounded-xl shadow-sm transition-all duration-700"
-              style={{ opacity: envInView ? 1 : 0, transform: envInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.2s" }}>
-              <div className="text-amber-600 text-3xl md:text-4xl mb-3 flex justify-center"><FaBolt /></div>
-              <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Zero GHG Emissions</h4>
-              <p className="text-gray-600 text-sm md:text-base">Carbon-neutral processes with carbon capture integration.</p>
-            </div>
-            <div className="bg-gray-50 p-6 md:p-8 rounded-xl shadow-sm transition-all duration-700"
-              style={{ opacity: envInView ? 1 : 0, transform: envInView ? "translateY(0)" : "translateY(30px)", transitionDelay: "0.3s" }}>
-              <div className="text-amber-600 text-3xl md:text-4xl mb-3 flex justify-center"><FaGlobe /></div>
-              <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Circular Economy</h4>
-              <p className="text-gray-600 text-sm md:text-base">Waste-to-value conversion and sustainable feedstocks.</p>
-            </div>
+            {envData.map((card, idx) => {
+              const [ref, inView] = envCardRefs[idx];
+              return (
+                <div
+                  key={idx}
+                  ref={ref}
+                  className="bg-gray-50 p-6 md:p-8 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1"
+                  style={{
+                    opacity: inView ? 1 : 0,
+                    transform: inView ? "translateY(0)" : "translateY(30px)",
+                    transition: `opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.1}s, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.1}s`,
+                  }}
+                >
+                  <div className="text-amber-600 text-3xl md:text-4xl mb-3 flex justify-center">
+                    <card.icon />
+                  </div>
+                  <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-2">{card.title}</h4>
+                  <p className="text-gray-600 text-sm md:text-base">{card.desc}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA Section – fades up on scroll */}
       <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-16 md:py-20 lg:py-24 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto text-center">
+        <div
+          ref={ctaRef}
+          className="max-w-4xl mx-auto text-center scroll-fade-up"
+          style={{
+            opacity: ctaInView ? 1 : 0,
+            transform: ctaInView ? "translateY(0)" : "translateY(30px)",
+          }}
+        >
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Drive the green transition with Pyramid E&C
           </span>

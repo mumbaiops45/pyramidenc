@@ -2,26 +2,25 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 
 // ============================================================
-// Custom hook for scroll animations
+// Continuous scroll‑triggered hook (observer stays alive)
 // ============================================================
 function useInView(options = {}) {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
+        setInView(entry.isIntersecting);
       },
       { threshold: 0.2, ...options }
     );
     observer.observe(el);
     return () => observer.disconnect();
   }, [options]);
+
   return [ref, inView];
 }
 
@@ -75,6 +74,14 @@ const animationStyles = `
   .delay-200 { animation-delay: 0.2s; }
   .delay-300 { animation-delay: 0.3s; }
   .group:hover .animate-slide-underline { animation: slideUnderline 0.4s ease-out forwards; }
+
+  /* Scroll‑triggered transition classes (inline styles will override) */
+  .scroll-slide-left {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scroll-fade-up {
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
 `;
 
 // Helper to generate random bubbles
@@ -90,7 +97,7 @@ const generateBubbles = (count, baseSize = 20, sizeRange = 40) => {
 };
 
 // ============================================================
-// Certification Card Component – Redesigned with responsive image
+// Certification Card Component – with continuous fade‑up
 // ============================================================
 function CertificationCard({ cert, index }) {
   const [ref, inView] = useInView();
@@ -104,6 +111,7 @@ function CertificationCard({ cert, index }) {
         opacity: inView ? 1 : 0,
         transform: inView ? "translateY(0)" : "translateY(30px)",
         transitionDelay: `${index * 0.1}s`,
+        transitionProperty: "opacity, transform",
       }}
     >
       <div className="group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1 overflow-hidden">
@@ -149,16 +157,17 @@ function CertificationCard({ cert, index }) {
 }
 
 // ============================================================
-// Main Certifications Component
+// Main Certifications Component with scroll animations
 // ============================================================
 const Certifications = () => {
   const heroBubbles = generateBubbles(18, 15, 50);
+  const [headerRef, headerInView] = useInView();
 
   return (
     <div className="bg-white overflow-x-hidden">
       <style>{animationStyles}</style>
 
-      {/* Hero Section */}
+      {/* Hero Section (unchanged – uses CSS animations) */}
       <section className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950"></div>
 
@@ -201,31 +210,34 @@ const Certifications = () => {
         </div>
       </section>
 
-      {/* Certifications Grid – Updated header with responsive padding */}
+      {/* Certifications Grid – with scroll‑triggered header slide‑in */}
       <section className="py-12 md:py-20 px-4 sm:px-6 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-10 md:mb-12">
-            {/* Pill badge */}
+          {/* Animated header – slides from left */}
+          <div
+            ref={headerRef}
+            className="text-center mb-10 md:mb-12 scroll-slide-left"
+            style={{
+              opacity: headerInView ? 1 : 0,
+              transform: headerInView ? "translateX(0)" : "translateX(-35px)",
+            }}
+          >
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Our Accreditations
             </span>
-
-            {/* Heading with gradient */}
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mt-4">
               Global{" "}
               <span className="bg-gradient-to-r from-[var(--primery)] to-[var(--primery-dark)] bg-clip-text text-transparent">
                 Standards
               </span>
             </h2>
-
-            {/* Underline */}
             <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
-
             <p className="text-gray-600 mt-6 max-w-2xl mx-auto text-sm sm:text-base px-4">
               We maintain rigorous certifications that reflect our commitment to quality, safety, and information security.
             </p>
           </div>
 
+          {/* Cards grid – each card fades up individually (already implemented in CertificationCard) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {certifications.map((cert, idx) => (
               <CertificationCard key={idx} cert={cert} index={idx} />
