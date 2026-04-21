@@ -72,13 +72,16 @@ const Footer = () => {
                 <img
                   src="/PYRAMID-EC-Logo.png"
                   alt="Pyramid E&C"
-                  className="h-8 w-auto object-contain brightness-0 invert"
+                  className="h-8 w-auto object-contain"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
-                    const fallback = document.createElement("div");
-                    fallback.textContent = "PYRAMID E&C";
-                    fallback.className = "text-xl font-bold tracking-tight text-amber-400";
-                    e.currentTarget.parentNode?.appendChild(fallback);
+                    const parent = e.currentTarget.parentNode;
+                    if (parent && !parent.querySelector(".fallback-logo")) {
+                      const fallback = document.createElement("div");
+                      fallback.textContent = "PYRAMID E&C";
+                      fallback.className = "fallback-logo text-xl font-bold tracking-tight text-amber-400";
+                      parent.appendChild(fallback);
+                    }
                   }}
                 />
               </div>

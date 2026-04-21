@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   FaMapMarkerAlt,
   FaPhoneAlt,
@@ -14,6 +14,29 @@ import {
   FaCheckCircle,
 } from "react-icons/fa";
 import { MdSecurity } from "react-icons/md";
+
+// ============================================================================
+// Continuous scroll‑triggered hook (observer stays alive)
+// ============================================================================
+function useInView(options = {}) {
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setInView(entry.isIntersecting);
+      },
+      { threshold: 0.2, ...options }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [options]);
+
+  return [ref, inView];
+}
 
 const Contact = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -49,6 +72,17 @@ const Contact = () => {
   const [concernOtpSent, setConcernOtpSent] = useState(false);
   const [concernDemoOtp, setConcernDemoOtp] = useState("");
 
+  // ======================== SCROLL ANIMATION REFS ========================
+  const [heroRef, heroInView] = useInView();
+  const [officesHeaderRef, officesHeaderInView] = useInView();
+  const [officesGridRef, officesGridInView] = useInView();
+  const [procurementHeaderRef, procurementHeaderInView] = useInView();
+  const [procurementLeftRef, procurementLeftInView] = useInView();
+  const [procurementRightRef, procurementRightInView] = useInView();
+  const [concernHeaderRef, concernHeaderInView] = useInView();
+  const [concernFormRef, concernFormInView] = useInView();
+  const [ctaRef, ctaInView] = useInView();
+
   useEffect(() => {
     if (window.location.hash === "#enquiry") setIsModalOpen(true);
     const handleScroll = () => setShowFloatingButton(window.scrollY > 200);
@@ -58,7 +92,7 @@ const Contact = () => {
 
   // ======================== VALIDATION FUNCTIONS ========================
   // General validations (for enquiry & supplier)
-  const validateName = (v) => !v.trim() ? "Full name is required" : v.trim().length < 2 ? "Min 2 characters" : !/^[a-zA-Z\s\-']+$/.test(v.trim()) ? "Letters only" : "";
+  const validateName = (v) => !v.trim() ? "Full name is required" : v.trim().length < 2 ? "Min 2 characters" : !/^[a-zA-Z\s\-']+$/.test(v.trim()) ? "Only letters, spaces, hyphens, and apostrophes allowed" : "";
   const validateCompany = (v) => !v.trim() ? "Company name is required" : v.trim().length < 2 ? "Min 2 characters" : "";
   const validateWebsite = (v) => !v.trim() ? "Website is required" : !/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/.test(v.trim()) ? "Enter a valid URL" : "";
   const validatePhone = (v) => !v.trim() ? "Phone is required" : (v.replace(/\D/g, "").length < 8 || v.replace(/\D/g, "").length > 15) ? "8–15 digits required" : "";
@@ -71,18 +105,19 @@ const Contact = () => {
     if (!v.trim()) return "Full name is required";
     if (v.trim().length < 2) return "Min 2 characters";
     if (/^\d+$/.test(v.trim())) return "Name cannot be only numbers";
-    if (!/^[a-zA-Z\s\-']+$/.test(v.trim())) return "Name can only contain letters, spaces, hyphens, and apostrophes";
+    if (!/^[a-zA-Z\s\-']+$/.test(v.trim())) return "Only letters, spaces, hyphens, and apostrophes allowed (no numbers)";
     return "";
   };
   const validateConcernEmail = (v) => {
     if (!v.trim()) return "Email is required";
+    // Must be a Gmail address (case‑insensitive)
     if (!/^[^\s@]+@gmail\.com$/i.test(v.trim())) return "Email must be a valid Gmail address (@gmail.com)";
     return "";
   };
   const validateConcernPhone = (v) => {
     const digits = v.replace(/\D/g, "");
     if (!v.trim()) return "Phone number is required";
-    if (digits.length !== 10) return "Phone number must be exactly 10 digits";
+    if (digits.length !== 10) return "Phone number must be exactly 10 digits (numbers only)";
     return "";
   };
   const validateConcernOtp = (v, sentOtp) => {
@@ -180,18 +215,17 @@ const Contact = () => {
   };
 
   const sendConcernOtp = () => {
-    if (!concernData.email) {
-      alert("Please enter your email address first.");
-      return;
-    }
-    if (validateConcernEmail(concernData.email)) {
-      alert("Please enter a valid Gmail address before requesting OTP.");
+    // Validate email before sending OTP
+    const emailError = validateConcernEmail(concernData.email);
+    if (emailError) {
+      setConcernTouched(prev => ({ ...prev, email: true }));
+      setConcernErrors(prev => ({ ...prev, email: emailError }));
       return;
     }
     const fakeOtp = Math.floor(100000 + Math.random() * 900000).toString();
     setConcernDemoOtp(fakeOtp);
     setConcernOtpSent(true);
-    alert(`Demo OTP sent to ${concernData.email}: ${fakeOtp}`);
+    console.log(`Demo OTP for ${concernData.email}: ${fakeOtp}`);
   };
 
   const handleConcernSubmit = async (e) => {
@@ -207,7 +241,7 @@ const Contact = () => {
     const concernErr = validateConcernText(concernData.concern);
 
     if (nameErr || emailErr || phoneErr || otpErr || concernErr) {
-      alert("Please fix errors before submitting.");
+      // Errors already set via useEffect, just return
       return;
     }
     setIsConcernSubmitting(true);
@@ -245,40 +279,45 @@ const Contact = () => {
   }
     @keyframes fadeUp { 0%{opacity:0;transform:translateY(30px)} 100%{opacity:1;transform:translateY(0)} }
     @keyframes fadeLeft { 0%{opacity:0;transform:translateX(-30px)} 100%{opacity:1;transform:translateX(0)} }
+    @keyframes fadeRight { 0%{opacity:0;transform:translateX(30px)} 100%{opacity:1;transform:translateX(0)} }
     @keyframes bubbleFloat { 0%{transform:translateY(0) scale(0.2);opacity:0} 20%{opacity:0.6} 80%{opacity:0.4} 100%{transform:translateY(-100vh) scale(1);opacity:0} }
     @keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
     @keyframes gentlePulse { 0%,100%{transform:translateY(-50%) scale(1)} 50%{transform:translateY(-50%) scale(1.05)} }
     .animate-fadeUp { animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) forwards; }
     .animate-fadeLeft { animation: fadeLeft 0.8s cubic-bezier(0.22,1,0.36,1) forwards; }
+    .animate-fadeRight { animation: fadeRight 0.8s cubic-bezier(0.22,1,0.36,1) forwards; }
     .animate-pulse-gentle { animation: gentlePulse 2s ease-in-out infinite; }
     .delay-100{animation-delay:0.1s} .delay-200{animation-delay:0.2s}
     .delay-300{animation-delay:0.3s} .delay-400{animation-delay:0.4s}
   `;
 
-  // Reusable field component for enquiry modal
+  // Reusable field component for enquiry modal (with gray placeholder)
   const Field = ({ label, name, type = "text", rows, value, onChange, onBlur, error, touched: t }) => (
     <div>
       <label className="block text-gray-700 text-sm font-medium mb-1">{label} *</label>
       {rows ? (
         <textarea rows={rows} name={name}
-          className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition resize-none ${t && error ? "border-red-400" : "border-gray-300"}`}
+          className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition resize-none placeholder-gray-400 ${t && error ? "border-red-400" : "border-gray-300"}`}
+          placeholder={`Enter ${label.toLowerCase()}`}
           value={value} onChange={onChange} onBlur={onBlur} />
       ) : (
         <input type={type} name={name}
-          className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition ${t && error ? "border-red-400" : "border-gray-300"}`}
+          className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition placeholder-gray-400 ${t && error ? "border-red-400" : "border-gray-300"}`}
+          placeholder={`Enter ${label.toLowerCase()}`}
           value={value} onChange={onChange} onBlur={onBlur} />
       )}
       {t && error && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><FaExclamationCircle size={10} />{error}</p>}
     </div>
   );
 
-  // Reusable field for supplier modal (dark style)
+  // Reusable field for supplier modal (dark style) with gray placeholder
   const DarkField = ({ label, name, type = "text", value, onChange, onBlur, error, touched: t }) => (
     <div>
       <label className="block text-slate-300 text-sm font-medium mb-1">{label} *</label>
       <input type={type} name={name}
         className={`w-full px-4 py-2.5 rounded-lg outline-none transition text-slate-100 text-sm placeholder-slate-500 ${t && error ? "border border-red-400 bg-red-500/5" : "border border-white/10 bg-white/5 focus:border-amber-500/60 focus:bg-white/8"}`}
         style={!(t && error) ? { background: "rgba(255,255,255,0.05)" } : undefined}
+        placeholder={`Enter ${label.toLowerCase()}`}
         value={value} onChange={onChange} onBlur={onBlur} />
       {t && error && <p className="text-red-400 text-xs mt-1 flex items-center gap-1"><FaExclamationCircle size={10} />{error}</p>}
     </div>
@@ -288,8 +327,8 @@ const Contact = () => {
     <div className="bg-white">
       <style>{animationStyles}</style>
 
-      {/* Hero – unchanged */}
-      <section className="relative overflow-hidden text-white">
+      {/* Hero – animated fade-up */}
+      <section ref={heroRef} className="relative overflow-hidden text-white">
         <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950" />
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {heroBubbles.map(b => (
@@ -300,7 +339,8 @@ const Contact = () => {
               }} />
           ))}
         </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 text-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 text-center"
+          style={{ opacity: heroInView ? 1 : 0, transform: heroInView ? "translateY(0)" : "translateY(30px)", transition: "opacity 0.7s ease-out, transform 0.7s ease-out" }}>
           <div className="inline-flex items-center justify-center gap-2 text-sm text-gray-200 mb-6 bg-black/40 backdrop-blur-sm px-4 py-2 rounded-full mx-auto w-fit animate-fadeLeft">
             <span>Home</span><span>›</span>
             <span className="text-amber-400 font-medium">Contact Us</span>
@@ -317,10 +357,11 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* Regional Offices – unchanged */}
+      {/* Regional Offices – unchanged except scroll animations */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div ref={officesHeaderRef} className="text-center mb-12"
+            style={{ opacity: officesHeaderInView ? 1 : 0, transform: officesHeaderInView ? "translateX(0)" : "translateX(-30px)", transition: "opacity 0.7s ease-out, transform 0.7s ease-out" }}>
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Global Presence
             </span>
@@ -335,7 +376,9 @@ const Contact = () => {
               Pyramid E&C's global presence spans strategic regional offices across five continents.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <div ref={officesGridRef} className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            style={{ opacity: officesGridInView ? 1 : 0, transform: officesGridInView ? "translateY(0)" : "translateY(30px)", transition: "opacity 0.7s ease-out 0.1s, transform 0.7s ease-out 0.1s" }}>
             {offices.map((office, idx) => (
               <div key={idx}
                 className="relative border border-gray-100 rounded-xl p-5 transition-all duration-300 hover:border-amber-300 hover:shadow-md group">
@@ -364,7 +407,7 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* Procurement Portal Section – unchanged */}
+      {/* Procurement Portal – unchanged except scroll animations */}
       <section
         className="py-12 md:py-20 px-6 relative overflow-hidden"
         style={{ background: "linear-gradient(145deg,#0f172a 0%,#1e293b 50%,#0f172a 100%)" }}
@@ -385,7 +428,8 @@ const Contact = () => {
         </div>
 
         <div className="max-w-5xl mx-auto relative z-10">
-          <div className="text-center mb-14">
+          <div ref={procurementHeaderRef} className="text-center mb-14"
+            style={{ opacity: procurementHeaderInView ? 1 : 0, transform: procurementHeaderInView ? "translateX(0)" : "translateX(30px)", transition: "opacity 0.7s ease-out, transform 0.7s ease-out" }}>
             <div className="flex items-center justify-center gap-3 mb-3">
               <span className="w-7 h-[2px] bg-amber-500" />
               <span className="text-[11px] font-bold tracking-[4px] uppercase text-amber-500">Suppliers</span>
@@ -401,7 +445,8 @@ const Contact = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start mb-14">
-            <div className="flex flex-col gap-6">
+            <div ref={procurementLeftRef} className="flex flex-col gap-6"
+              style={{ opacity: procurementLeftInView ? 1 : 0, transform: procurementLeftInView ? "translateX(0)" : "translateX(-30px)", transition: "opacity 0.7s ease-out 0.1s, transform 0.7s ease-out 0.1s" }}>
               <p className="text-slate-400 text-[14px] leading-relaxed">
                 Pyramid E&C requires continuous supply of Products and Services for Energy & Chemical industries globally.
                 The supplies are used in various <span className="text-amber-400 font-semibold">LSTK</span> and{" "}
@@ -440,8 +485,8 @@ const Contact = () => {
               </button>
             </div>
 
-            <div className="rounded-2xl overflow-hidden border"
-              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            <div ref={procurementRightRef} className="rounded-2xl overflow-hidden border"
+              style={{ opacity: procurementRightInView ? 1 : 0, transform: procurementRightInView ? "translateX(0)" : "translateX(30px)", transition: "opacity 0.7s ease-out 0.1s, transform 0.7s ease-out 0.1s" }}>
               <div className="h-[3px] w-full bg-gradient-to-r from-amber-400 to-amber-600" />
               <div className="p-7">
                 <div className="flex items-center gap-3 mb-5">
@@ -612,13 +657,12 @@ const Contact = () => {
         </div>
       )}
 
-      {/* ================= REPORT A CONCERN SECTION (UPDATED VALIDATION) ================= */}
+      {/* ================= REDESIGNED REPORT A CONCERN SECTION ================= */}
       <section className="py-20 px-6 bg-white">
         <div className="max-w-3xl mx-auto">
-
-
-          {/* Header with brand styling */}
-          <div className="text-center mb-10">
+          {/* Header with scroll animation */}
+          <div ref={concernHeaderRef} className="text-center mb-10"
+            style={{ opacity: concernHeaderInView ? 1 : 0, transform: concernHeaderInView ? "translateX(0)" : "translateX(-30px)", transition: "opacity 0.7s ease-out, transform 0.7s ease-out" }}>
             <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
               Confidential
             </span>
@@ -631,66 +675,74 @@ const Contact = () => {
             <div className="w-24 h-1 bg-[var(--primery)] mx-auto mt-4 rounded-full" />
           </div>
 
-          <p className="text-gray-600 text-sm text-center mb-10 leading-relaxed">
+          {/* Description */}
+          <p ref={concernFormRef} className="text-gray-600 text-sm text-center mb-10 leading-relaxed"
+            style={{ opacity: concernFormInView ? 1 : 0, transform: concernFormInView ? "translateY(0)" : "translateY(20px)", transition: "opacity 0.7s ease-out 0.1s, transform 0.7s ease-out 0.1s" }}>
             Use this form to confidentially report any concerns or issues to Pyramid E&C,
             ensuring your feedback is sent directly to the company's compliance team for review
             and follow-up.
           </p>
 
+          {/* Form with 2‑column layout for name + email */}
           <form onSubmit={handleConcernSubmit} className="space-y-6">
-            {/* Full Name */}
-            <div>
-              <label className="text-sm text-gray-700 font-medium">
-                Full Name <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={concernData.name}
-                onChange={handleConcernChange}
-                onBlur={handleConcernBlur}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition ${concernTouched.name && concernErrors.name ? "border-red-400" : "border-gray-300"}`}
-              />
-              {concernTouched.name && concernErrors.name && (
-                <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
-                  <FaExclamationCircle size={10} /> {concernErrors.name}
-                </p>
-              )}
-            </div>
-
-            {/* Email with OTP button */}
-            <div>
-              <label className="text-sm text-gray-700 font-medium">
-                Email Address <span className="text-red-500">*</span>
-              </label>
-              <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+            {/* Row 1: Full Name and Email (2 columns) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Full Name */}
+              <div>
+                <label className="block text-sm text-gray-700 font-medium mb-1">
+                  Full Name <span className="text-red-500">*</span>
+                </label>
                 <input
-                  type="email"
-                  name="email"
-                  value={concernData.email}
+                  type="text"
+                  name="name"
+                  value={concernData.name}
                   onChange={handleConcernChange}
                   onBlur={handleConcernBlur}
-                  className={`flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition ${concernTouched.email && concernErrors.email ? "border-red-400" : "border-gray-300"}`}
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition placeholder-gray-400 ${concernTouched.name && concernErrors.name ? "border-red-400" : "border-gray-300"}`}
+                  placeholder="Enter your full name (letters only)"
                 />
-                <button
-                  type="button"
-                  onClick={sendConcernOtp}
-                  className="text-xs px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition whitespace-nowrap"
-                >
-                  {concernOtpSent ? "Resend OTP" : "Send OTP"}
-                </button>
+                {concernTouched.name && concernErrors.name && (
+                  <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                    <FaExclamationCircle size={10} /> {concernErrors.name}
+                  </p>
+                )}
               </div>
-              {concernTouched.email && concernErrors.email && (
-                <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
-                  <FaExclamationCircle size={10} /> {concernErrors.email}
-                </p>
-              )}
+
+              {/* Email with Send OTP button inside the same cell */}
+              <div>
+                <label className="block text-sm text-gray-700 font-medium mb-1">
+                  Email Address <span className="text-red-500">*</span>
+                </label>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input
+                    type="email"
+                    name="email"
+                    value={concernData.email}
+                    onChange={handleConcernChange}
+                    onBlur={handleConcernBlur}
+                    className={`flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition placeholder-gray-400 ${concernTouched.email && concernErrors.email ? "border-red-400" : "border-gray-300"}`}
+                    placeholder="your.email@gmail.com"
+                  />
+                  <button
+                    type="button"
+                    onClick={sendConcernOtp}
+                    className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm rounded-lg transition whitespace-nowrap"
+                  >
+                    {concernOtpSent ? "Resend OTP" : "Send OTP"}
+                  </button>
+                </div>
+                {concernTouched.email && concernErrors.email && (
+                  <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                    <FaExclamationCircle size={10} /> {concernErrors.email}
+                  </p>
+                )}
+              </div>
             </div>
 
-            {/* OTP field (only visible after OTP sent) */}
+            {/* OTP field – appears conditionally */}
             {concernOtpSent && (
               <div>
-                <label className="text-sm text-gray-700 font-medium">
+                <label className="block text-sm text-gray-700 font-medium mb-1">
                   OTP <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -699,7 +751,7 @@ const Contact = () => {
                   value={concernData.otp}
                   onChange={handleConcernChange}
                   onBlur={handleConcernBlur}
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition ${concernTouched.otp && concernErrors.otp ? "border-red-400" : "border-gray-300"}`}
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition placeholder-gray-400 ${concernTouched.otp && concernErrors.otp ? "border-red-400" : "border-gray-300"}`}
                   placeholder="Enter 6-digit OTP"
                 />
                 {concernTouched.otp && concernErrors.otp && (
@@ -710,9 +762,9 @@ const Contact = () => {
               </div>
             )}
 
-            {/* Phone Number – exactly 10 digits */}
+            {/* Phone Number – full width */}
             <div>
-              <label className="text-sm text-gray-700 font-medium">
+              <label className="block text-sm text-gray-700 font-medium mb-1">
                 Phone Number <span className="text-red-500">*</span>
               </label>
               <input
@@ -721,8 +773,8 @@ const Contact = () => {
                 value={concernData.phone}
                 onChange={handleConcernChange}
                 onBlur={handleConcernBlur}
-                placeholder="10-digit mobile number (no spaces or dashes)"
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition ${concernTouched.phone && concernErrors.phone ? "border-red-400" : "border-gray-300"}`}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition placeholder-gray-400 ${concernTouched.phone && concernErrors.phone ? "border-red-400" : "border-gray-300"}`}
+                placeholder="10-digit mobile number (numbers only)"
               />
               {concernTouched.phone && concernErrors.phone && (
                 <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
@@ -731,9 +783,9 @@ const Contact = () => {
               )}
             </div>
 
-            {/* Concern textarea */}
+            {/* Concern textarea – full width */}
             <div>
-              <label className="text-sm text-gray-700 font-medium">
+              <label className="block text-sm text-gray-700 font-medium mb-1">
                 Report a Concern <span className="text-red-500">*</span>
               </label>
               <textarea
@@ -743,7 +795,8 @@ const Contact = () => {
                 value={concernData.concern}
                 onChange={handleConcernChange}
                 onBlur={handleConcernBlur}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition resize-none ${concernTouched.concern && concernErrors.concern ? "border-red-400" : "border-gray-300"}`}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition resize-none placeholder-gray-400 ${concernTouched.concern && concernErrors.concern ? "border-red-400" : "border-gray-300"}`}
+                placeholder="Describe your concern in detail..."
               />
               <div className="flex justify-between items-center mt-1">
                 {concernTouched.concern && concernErrors.concern && (
@@ -757,13 +810,6 @@ const Contact = () => {
               </div>
             </div>
 
-            {/* reCAPTCHA placeholder */}
-            {/* <div className="flex items-center gap-3 bg-gray-50 border border-gray-200 p-3 w-fit rounded-lg">
-              <div className="w-4 h-4 border border-gray-400 rounded-sm"></div>
-              <span className="text-sm text-gray-600">I'm not a robot</span>
-              <span className="text-xs text-gray-400 ml-4">reCAPTCHA</span>
-            </div> */}
-
             {/* Submit button */}
             <button
               type="submit"
@@ -776,8 +822,9 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* CTA – unchanged */}
-      <section className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6">
+      {/* CTA – fades up */}
+      <section ref={ctaRef} className="bg-gradient-to-br from-amber-200 via-amber-50 to-white py-20 lg:py-24 px-6"
+        style={{ opacity: ctaInView ? 1 : 0, transform: ctaInView ? "translateY(0)" : "translateY(30px)", transition: "opacity 0.7s ease-out, transform 0.7s ease-out" }}>
         <div className="max-w-4xl mx-auto text-center">
           <span className="text-sm font-semibold tracking-wider uppercase inline-block px-4 py-1 rounded-full bg-[var(--primery)]/10 text-[var(--primery)]">
             Let's Build Together
